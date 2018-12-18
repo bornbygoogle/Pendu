@@ -1,4 +1,4 @@
-package frontend;
+package client;
 
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -12,7 +12,7 @@ public class MainGUI extends Application{
 		ClientPanel clientPanel = new ClientPanel();
 		Group root = new Group();
 		root.getChildren().add(clientPanel);
-		Scene scene = new Scene(root, 500, 725);
+		Scene scene = new Scene(root, 500, 775);
 		stage.setTitle("Pendu");
 		stage.setScene(scene);
 		stage.show();
