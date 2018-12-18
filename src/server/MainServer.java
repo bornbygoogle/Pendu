@@ -1,18 +1,30 @@
 package server;
 
-public class MainServer {
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
 
-	public static void main(String[] args) {
-		if(args.length != 1) {
-			printUsage();
-		} else {
-			Integer port = new Integer(args[0]);
-			new Server(port);
-		}
-	}
+import commum.Joueur;
+
+public class MainServer {
 	
-	private static void printUsage() {
-		System.out.println("java server.Server <port>");
-		System.out.println("\t<port>: server's port");
+	private List<Joueur> joueurs;
+
+	public void main(String[] args) {
+		try {
+			// Récupération des paramètres BDD
+			Properties propBDD = new Properties();
+			FileInputStream inputBDD = new FileInputStream("config.properties");
+			propBDD.load(inputBDD);
+			
+			Bdd bdd = new Bdd(propBDD.getProperty("url"), propBDD.getProperty("login"), propBDD.getProperty("pass"));
+			
+			System.out.println("Récupération des joueurs inscrit...");
+			
+			this.joueurs = bdd.getJoueurs();
+		} catch(IOException e) {
+			System.out.println("Erreur initilisation appli" + e.getMessage());
+		}
 	}
 }
