@@ -2,3 +2,5 @@
 /client/
 /Images/
 .classpath
+.settings
+.project
