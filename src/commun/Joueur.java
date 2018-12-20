@@ -1,4 +1,4 @@
-package commum;
+package commun;
 
 public class Joueur {
 

@@ -1,4 +1,4 @@
-package commum;
+package commun;
 
 import java.util.List;
 
