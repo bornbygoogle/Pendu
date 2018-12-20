@@ -12,6 +12,7 @@ public class MainGUI extends Application{
 		ClientPanel clientPanel = new ClientPanel();
 		Group root = new Group();
 		Scene scene = new Scene(root, 500, 825);
+		root.getChildren().add(clientPanel);
 		stage.setTitle("Pendu");
 		stage.setScene(scene);
 		stage.show();

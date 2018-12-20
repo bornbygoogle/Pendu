@@ -17,6 +17,12 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
@@ -56,21 +62,17 @@ public class ClientPanel extends Parent {
 		letters = new ArrayList<TextFlow>();
 		
 		for (int i=0; i<8; i++) {
-			ScrollPane scrollReceivedText = new ScrollPane();
-			scrollReceivedText.setLayoutX(50+i*50);
-			scrollReceivedText.setLayoutY(550);
-			scrollReceivedText.setPrefWidth(50);
-			scrollReceivedText.setPrefHeight(50);
-			scrollReceivedText.setMaxHeight(50);
-			scrollReceivedText.setMaxWidth(50);
 			
 			TextFlow receivedText = new TextFlow();
-			
-			scrollReceivedText.setContent(receivedText);
-			scrollReceivedText.vvalueProperty().bind(receivedText.heightProperty());
+			receivedText.setLayoutX(50+i*50);
+			receivedText.setLayoutY(550);
+			receivedText.setPrefWidth(50);
+			receivedText.setPrefHeight(50);
+			receivedText.setTextAlignment(TextAlignment.CENTER);
+			receivedText.setBorder(new Border(new BorderStroke(Color.GAINSBORO, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 			
 			letters.add(receivedText);
-			this.getChildren().add(scrollReceivedText);
+			this.getChildren().add(receivedText);
 		}
 		
 		Image image = new Image(new FileInputStream("./Images/etape1.png"));
@@ -93,8 +95,7 @@ public class ClientPanel extends Parent {
 					label = label.substring(1, 2);
 					Text letter = new Text();
 					letter.setText(label);
-					letter.setTextAlignment(TextAlignment.CENTER);
-					letter.setFont(Font.font("Helvetica", FontPosture.REGULAR, 40));
+					letter.setFont(Font.font("Helvetica", FontPosture.REGULAR, 30));
 					letters.get(1).getChildren().add(letter);
 					System.out.println(letter);
 				}
