@@ -1,4 +1,4 @@
-package frontend;
+package client;
 
 import java.io.EOFException;
 import java.io.IOException;

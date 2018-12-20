@@ -11,7 +11,8 @@ public class MainGUI extends Application{
 	public void start(Stage stage) throws Exception {
 		ClientPanel clientPanel = new ClientPanel();
 		Group root = new Group();
-		root.getChildren().add(clientPanel);
+		//root.getChildren().add(clientPanel);
+		root.getChildren().add(new Connexion());
 		Scene scene = new Scene(root, 500, 775);
 		stage.setTitle("Pendu");
 		stage.setScene(scene);

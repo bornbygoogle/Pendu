@@ -3,7 +3,7 @@ package server;
 import java.util.ArrayList;
 import java.util.List;
 
-import commum.Joueur;
+import commun.Joueur;
 
 public class Bdd {
 
