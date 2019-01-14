@@ -21,16 +21,16 @@ public class ClientSend implements Runnable {
 		while(true) {
 			System.out.print("Votre message >> ");
 			String m = sc.nextLine();
-			try {
-				/*
+			/*try {
+				
 				Message mess = new Message(m);
 				mess.setSender("client");
 				out.writeObject(mess);
 				out.flush();
-				*/
+				
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			}*/
 		}
 	}
 }

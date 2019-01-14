@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Statement;
 
 public class Connection implements Runnable {
 
@@ -33,5 +34,11 @@ public class Connection implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public Statement createStatement() 
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
