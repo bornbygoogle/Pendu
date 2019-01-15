@@ -3,6 +3,7 @@ package client;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import commun.Utils;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -121,6 +122,6 @@ public class Connexion extends Parent {
 	
 	public void definirIdentifiantsJoueur() {
 		this.main.getJoueur().setLogin(this.login.getText());
-		this.main.getJoueur().setPass(this.password.getText());
+		this.main.getJoueur().setPass(Utils.encrypt(this.password.getText()));
 	}
 }

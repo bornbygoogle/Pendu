@@ -30,16 +30,9 @@ public class MainGUI extends Application {
 		
 		// Affichage de la page de connexion
 		Group root = new Group();
-<<<<<<< HEAD
 		Scene scene = new Scene(root, 500, 825);
 		root.getChildren().add(new Connexion(this));
 		// Ajouter un titre
-=======
-		root.getChildren().add(new ClientPanel("ESCALIER"));
-		Scene scene = new Scene(root, 500, 825);
-		//root.getChildren().add(new ClientPanel());
-		//root.getChildren().add(new Connexion(this));
->>>>>>> b723bb36ad1f84478f0868d32a7a723b7e7a4097
 		stage.setTitle("Pendu");
 		stage.setScene(scene);
 		stage.show();
