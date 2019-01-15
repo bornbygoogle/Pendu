@@ -14,15 +14,15 @@ import commun.Theme;
 
 public class MainServer
 {
-	private static Bdd connBdd;
-	static FileInputStream		input;
+	//private Bdd connBdd;
+	FileInputStream		input;
 	//private List<Joueur> joueurs;
 	private List<Theme> themes;
 
-	public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException 
+	public void main(String[] args) throws IOException, SQLException, ClassNotFoundException 
 	{
-    	connBdd = new Bdd();
-    	connBdd.getConnection();
+    	//connBdd = new Bdd();
+    	//connBdd.getConnection();
 			/*
 			  //step3 create the statement object  
 			 
