@@ -22,10 +22,10 @@ public class MainGUI extends Application {
 		this.partie = new Partie();
 		
 		Group root = new Group();
-		root.getChildren().add(new ClientPanel());
+		root.getChildren().add(new ClientPanel("ESCALIER"));
 		Scene scene = new Scene(root, 500, 825);
 		//root.getChildren().add(new ClientPanel());
-		root.getChildren().add(new Connexion(this));
+		//root.getChildren().add(new Connexion(this));
 		stage.setTitle("Pendu");
 		stage.setScene(scene);
 		stage.show();
