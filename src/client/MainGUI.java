@@ -32,7 +32,7 @@ public class MainGUI extends Application {
 
 		// Config graphique de l'appli
 		this.groupe = new Group();
-		Scene scene = new Scene(this.groupe, 500, 825);
+		Scene scene = new Scene(this.groupe, 500, 925);
 		stage.setTitle("Pendu");
 		stage.setScene(scene);
 		
