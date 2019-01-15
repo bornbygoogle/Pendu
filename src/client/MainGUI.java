@@ -26,7 +26,7 @@ public class MainGUI extends Application {
 		
 		
 		/////////////////////////
-		// Démarrage du client //
+		// DÃ©marrage du client //
 		/////////////////////////
 
 
@@ -38,14 +38,14 @@ public class MainGUI extends Application {
 		
 		
 		
-		// Lancement du réseau -> connexion au port 1025 en local 
+		// Lancement du rÃ©seau -> connexion au port 1025 en local 
 		this.client = new Client("127.0.0.1", 1025);
 		
-		// Déclaration des classes métiers
+		// DÃ©claration des classes mÃ©tiers
 		this.joueur = new Joueur();
 		this.partie = new Partie();
 		
-		// Verif si joueur est connecté au serveur ou non
+		// Verif si joueur est connectÃ© au serveur ou non
 		this.connecte = false;
 		
 		// Affichage de la page de connexion
