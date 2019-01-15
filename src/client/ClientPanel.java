@@ -29,9 +29,13 @@ public class ClientPanel extends Parent {
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
 	protected String wordToFind;
+	protected int dangerLevel;
+	protected int winLevel;
 	
 	public ClientPanel(String word) throws FileNotFoundException {
 		wordToFind = word;
+		dangerLevel = 1;
+		winLevel = 0;
 		
 		alphabet = new ArrayList<Button>();
 		
@@ -39,13 +43,13 @@ public class ClientPanel extends Parent {
 			Button btn = new Button();
 			if (i/9 == 0) {
 				btn.setLayoutX(25 + i*50);
-				btn.setLayoutY(650);
+				btn.setLayoutY(750);
 			} else if (i/9 == 1) {
 				btn.setLayoutX(25 + (i-9)*50);
-				btn.setLayoutY(700);
+				btn.setLayoutY(800);
 			} else {
 				btn.setLayoutX(50 + (i-18)*50);
-				btn.setLayoutY(750);
+				btn.setLayoutY(850);
 			}
 			btn.setPrefWidth(50);
 			btn.setPrefHeight(50);
@@ -59,11 +63,21 @@ public class ClientPanel extends Parent {
 		
 		letters = new ArrayList<TextFlow>();
 		
-		for (int i=0; i<8; i++) {
-			
+		for (int i=0; i<wordToFind.length(); i++) {
 			TextFlow receivedText = new TextFlow();
-			receivedText.setLayoutX(50+i*50);
-			receivedText.setLayoutY(550);
+			if (i/8 == 0) {
+				receivedText.setLayoutX(50+i*50);
+				receivedText.setLayoutY(550);
+				
+			} else if (i/8 == 1) {
+				receivedText.setLayoutX(50+(i-8)*50);
+				receivedText.setLayoutY(600);
+				
+			} else if (i/8 == 2) {
+				receivedText.setLayoutX(50+(i-16)*50);
+				receivedText.setLayoutY(650);
+				
+			}
 			receivedText.setPrefWidth(50);
 			receivedText.setPrefHeight(50);
 			receivedText.setTextAlignment(TextAlignment.CENTER);
@@ -86,23 +100,45 @@ public class ClientPanel extends Parent {
 			alphabet.get(i).setOnAction(new EventHandler<ActionEvent>() {
 				
 				@Override
-				public void handle(ActionEvent event) {
+				public void handle(ActionEvent event) {	
+					Boolean test = false;
 					String button = event.getSource().toString();
 					String label = button.substring(button.indexOf("'"));
 					label = label.substring(1, 2);
 					
 					for (int i=0; i<wordToFind.length(); i++) {
 						String letterToFind = Character.toString(wordToFind.charAt(i));
-						System.out.println(letterToFind + "  " + label);
 						if (label.equals(letterToFind)) {
 							letters.get(i).getChildren().clear();
 							Text letter = new Text();
 							letter.setText(label);
 							letter.setFont(Font.font("Helvetica", FontPosture.REGULAR, 30));
 							letters.get(i).getChildren().add(letter);
-							System.out.println(letter);
+							test = true;
+							winLevel++;
 						}
 					}
+					
+					if (test == false) {
+						dangerLevel++;
+						Image image;
+						try {
+							image = new Image(new FileInputStream("./Images/etape" + dangerLevel + ".png"));
+							screen.setImage(image);
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						}
+						if (dangerLevel == 7) {
+							System.out.println("c'est perdu");
+						}
+					}
+					
+					if (winLevel == wordToFind.length()) {
+						System.out.println("c'est gagné");
+					}
+				
+					int actualButton = ((int) label.charAt(0))-65;
+					alphabet.get(actualButton).setDisable(true);
 					
 				}
 				
