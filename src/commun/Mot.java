@@ -2,44 +2,26 @@ package commun;
 
 public class Mot {
 	
-	private int id;
-	private String mot;
-	private Theme theme;
+	private int id = 0;
+	private String mot = "";
+	private Theme theme = new Theme();
 	
-	public Mot(int id, String mot, Theme theme) {
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
 		this.id = id;
+	}
+	public String getMot() {
+		return mot;
+	}
+	public void setMot(String mot) {
 		this.mot = mot;
+	}
+	public Theme getTheme() {
+		return theme;
+	}
+	public void setTheme(Theme theme) {
 		this.theme = theme;
 	}
-
-	public int getId()
-	{
-		return this.id;
-	}
-
-	public void setId(int _id)
-	{
-		this.id = _id;
-	}
-
-	public String getMot()
-	{
-		return this.mot;
-	}
-
-	public void setLibelle(String _mot)
-	{
-		this.mot = _mot;
-	}
-
-	public Theme getTheme()
-	{
-		return this.theme;
-	}
-
-	public void setTheme(Theme _theme)
-	{
-		this.theme = _theme;
-	}
-
 }

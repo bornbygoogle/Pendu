@@ -1,18 +1,31 @@
 package client;
 
+import commun.Joueur;
+import commun.Partie;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class MainGUI extends Application{
+public class MainGUI extends Application {
+	
+	private Client client;
+	
+	private Joueur joueur;
+	private Partie partie;
+	
 	@Override
 	public void start(Stage stage) throws Exception {
-		ClientPanel clientPanel = new ClientPanel();
+		this.client = new Client("127.0.0.1", 1025);
+		
+		this.joueur = new Joueur();
+		this.partie = new Partie();
+		
 		Group root = new Group();
 		root.getChildren().add(new ClientPanel());
 		Scene scene = new Scene(root, 500, 825);
+		//root.getChildren().add(new ClientPanel());
+		root.getChildren().add(new Connexion(this));
 		stage.setTitle("Pendu");
 		stage.setScene(scene);
 		stage.show();
@@ -21,4 +34,11 @@ public class MainGUI extends Application{
 		launch(args);
 	}
 
+	public Client getClient() {
+		return client;
+	}
+
+	public Joueur getJoueur() {
+		return joueur;
+	}
 }

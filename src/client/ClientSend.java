@@ -1,36 +1,41 @@
 package client;
 
-import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.util.Scanner;
 
 public class ClientSend implements Runnable {
 	
-	private Socket socket;
 	private ObjectOutputStream out;
+	private Object element;
 	
-	public ClientSend(Socket socket, ObjectOutputStream out) {
-		this.socket = socket;
+	public ClientSend(ObjectOutputStream out) {
 		this.out = out;
 	}
 
 	@Override
 	public void run() {
-		Scanner sc = new Scanner(System.in);
-		while(true) {
-			System.out.print("Votre message >> ");
-			String m = sc.nextLine();
-			/*try {
-				
-				Message mess = new Message(m);
-				mess.setSender("client");
-				out.writeObject(mess);
+		try {
+			if(this.element != null) {
+				out.writeObject(this.element);
 				out.flush();
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			}*/
+				this.element = null;
+			} else {
+				System.out.println("Un �l�ment vide a tent� d'�tre envoy� !");
+			}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
 		}
+	}
+	
+	public boolean envoyer(Thread thread, Object element) {
+		boolean verif = false;
+		try {
+			if(element != null) {
+				this.element = element;
+				thread.start();
+			}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return verif;
 	}
 }

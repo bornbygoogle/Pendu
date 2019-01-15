@@ -8,39 +8,26 @@ public class Theme {
 	private String libelle;
 	private List<Mot> mots;
 	
-	public Theme(int id, String libelle) {
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
 		this.id = id;
+	}
+	public String getLibelle() {
+		return libelle;
+	}
+	public void setLibelle(String libelle) 
+	{
 		this.libelle = libelle;
-		//this.mots = mots;
 	}
 
-	public int getId()
-	{
-		return this.id;
+	public List<Mot> getMots() {
+		return mots;
+	}
+	public void setMots(List<Mot> mots) {
+		this.mots = mots;
 	}
 
-	public void setId(int _id)
-	{
-		this.id = _id;
-	}
-
-	public String getLibelle()
-	{
-		return this.libelle;
-	}
-
-	public void setLibelle(String _libelle)
-	{
-		this.libelle = _libelle;
-	}
-
-	public List<Mot> getMots()
-	{
-		return this.mots;
-	}
-
-	public void setMots(List<Mot> _mots)
-	{
-		this.mots = _mots;
-	}
+	
 }
