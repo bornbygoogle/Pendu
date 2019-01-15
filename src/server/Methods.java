@@ -23,20 +23,21 @@ public class Methods
 	{
 		List<Joueur> lesJoueurs = new ArrayList<Joueur>();
 
-		String selectJoueurSQL = "SELECT ID, PSEUDO, SCORE, NBPARTIES FROM PENDU_THEME";
+		String selectJoueurSQL = "SELECT ID, LOGIN, PSEUDO, PASS, SCORE, NBPARTIES FROM PENDU_THEME";
 		ResultSet rs = SQLQuery(connectionDB, selectJoueurSQL);
 
 		while (rs.next()) 
 		{
-			Joueur unJoueur = new Joueur(
-								Integer.valueOf(rs.getString("ID")), 
-								rs.getString("PSEUDO"),
-								Integer.valueOf(rs.getString("SCORE")),
-								Integer.valueOf(rs.getString("NBPARTIES"))
-								);
-			List<Mot> mots = getListMots(connectionDB, unTheme);
-			unTheme.setMots(mots);	
-			lesThemes.add(unTheme);
+			Joueur unJoueur = new Joueur();
+
+			unJoueur.setId(Integer.valueOf(rs.getString("ID")));
+			unJoueur.setLogin(rs.getString("LOGIN"));
+			unJoueur.setPseudo(rs.getString("PSEUDO"));
+			unJoueur.setPass(rs.getString("PASS"));
+			unJoueur.setNbParties(Integer.valueOf(rs.getString("NBPARTIES")));
+			unJoueur.setNbScore(Integer.valueOf(rs.getString("SCORE")));
+
+			lesJoueurs.add(unJoueur);
 		}
 		SQLStatementClean();
 		return lesJoueurs;
@@ -51,7 +52,9 @@ public class Methods
 
 		while (rs.next()) 
 		{
-			Theme unTheme = new Theme(Integer.valueOf(rs.getString("ID")), rs.getString("LIBELLE"));
+			Theme unTheme = new Theme();
+			unTheme.setId(Integer.valueOf(rs.getString("ID")));
+			unTheme.setLibelle(rs.getString("LIBELLE"));
 			List<Mot> mots = getListMots(connectionDB, unTheme);
 			unTheme.setMots(mots);	
 			lesThemes.add(unTheme);
@@ -69,7 +72,10 @@ public class Methods
 
 		while (rs.next())
 		{
-			Mot unMot = new Mot(Integer.valueOf(rs.getString("ID")), rs.getString("MOT"), unTheme);
+			Mot unMot = new Mot();
+			unMot.setId(Integer.valueOf(rs.getString("ID")));
+			unMot.setMot(rs.getString("MOT"));
+			unMot.setTheme(unTheme);
 			mots.add(unMot);
 		}
 		SQLStatementClean();

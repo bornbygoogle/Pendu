@@ -22,7 +22,7 @@ public class MainGUI extends Application {
 		this.partie = new Partie();
 		
 		Group root = new Group();
-		root.getChildren().add(new ClientPanel());
+		//root.getChildren().add(new ClientPanel("abcdefg"));
 		Scene scene = new Scene(root, 500, 825);
 		//root.getChildren().add(new ClientPanel());
 		root.getChildren().add(new Connexion(this));
