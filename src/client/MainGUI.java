@@ -14,18 +14,25 @@ public class MainGUI extends Application {
 	private Joueur joueur;
 	private Partie partie;
 	
+	private boolean estConnecte;
+	
 	@Override
 	public void start(Stage stage) throws Exception {
+		// Déclaration de la connexion
 		this.client = new Client("127.0.0.1", 1025);
 		
+		// Déclaration des classes métiers
 		this.joueur = new Joueur();
 		this.partie = new Partie();
 		
+		// Verif si joueur est connecté au serveur ou non
+		this.estConnecte = false;
+		
+		// Affichage de la page de connexion
 		Group root = new Group();
-		root.getChildren().add(new ClientPanel());
 		Scene scene = new Scene(root, 500, 825);
-		//root.getChildren().add(new ClientPanel());
 		root.getChildren().add(new Connexion(this));
+		// Ajouter un titre
 		stage.setTitle("Pendu");
 		stage.setScene(scene);
 		stage.show();

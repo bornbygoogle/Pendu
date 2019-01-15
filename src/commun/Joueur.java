@@ -1,7 +1,5 @@
 package commun;
 
-import java.sql.Date;
-
 public class Joueur {
 
 
@@ -10,6 +8,8 @@ public class Joueur {
 	private String pass = "";
 	private int score = 0;
 	private int nbParties = 0;
+	private boolean status = false;
+	private String message = "";
 	
 	public String getLogin() {
 		return login;
@@ -51,4 +51,18 @@ public class Joueur {
 	{
 		this.nbParties = _nbParties;
 	}
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
+	
 }
