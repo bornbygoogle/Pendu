@@ -3,6 +3,7 @@ package client;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import commun.Joueur;
 import commun.Utils;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -27,9 +28,17 @@ public class Connexion extends Parent {
 	private Button boutonConnexion;
 	private Label message;
 	
+	private ConnexionReceive connexionReceive;
+	private Thread threadReceive;
+	
 	public Connexion(MainGUI main) {
 		this.main = main;
 		try {
+			// Lancement du theard d'écoute de la connexion
+			this.connexionReceive = new ConnexionReceive(this);
+			this.threadReceive = new Thread(this.connexionReceive);
+			this.threadReceive.start();
+			
 			this.login = new TextField();
 			this.login.setPrefWidth(200);
 			this.login.setPrefHeight(20);
@@ -44,9 +53,9 @@ public class Connexion extends Parent {
 			
 			
 
-			Label texteLogin = new Label("Identifiant :");
+			Label texteLogin = new Label("Pseudo :");
 			texteLogin.setPrefWidth(80);
-			Label textePassword = new Label("Password :");
+			Label textePassword = new Label("Mot de passe :");
 			textePassword.setPrefWidth(80);
 
 			VBox conteneur = new VBox();
@@ -121,7 +130,29 @@ public class Connexion extends Parent {
 	}
 	
 	public void definirIdentifiantsJoueur() {
-		this.main.getJoueur().setLogin(this.login.getText());
+		this.main.getJoueur().setPseudo(this.login.getText());
 		this.main.getJoueur().setPass(Utils.encrypt(this.password.getText()));
+	}
+	
+	public void envoyerDemandeConnexion() {
+		this.definirIdentifiantsJoueur();
+		this.main.getClient().envoyer(this.main.getJoueur());
+	}
+	
+	public void verifierReponseConnexion(Joueur unJoueur) {
+		// Check du status renvoyé
+		if(unJoueur.isStatus()) {
+			// Si connexion ok -> redéfinir le joueur + mettre connexion à true + charger le jeu
+			this.main.setJoueur(unJoueur);
+			this.main.setConnecte(true);
+			this.main.AfficherJeu();
+		} else {
+			// Si connexion pas bonne, afficher le message d'erreur renvoyé par le serveur et laisser la page de connexion
+			this.setMessageColor(Color.RED);
+			if(unJoueur.getMessage().length() > 0)
+				this.setMessageText(unJoueur.getMessage());
+			else
+				this.setMessageText("Login ou mot de passe incorrect.");
+		}
 	}
 }

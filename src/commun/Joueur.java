@@ -2,21 +2,13 @@ package commun;
 
 public class Joueur {
 
-
-	private String login = "";
 	private String pseudo = "";
 	private String pass = "";
 	private int score = 0;
 	private int nbParties = 0;
 	private boolean status = false;
 	private String message = "";
-	
-	public String getLogin() {
-		return login;
-	}
-	public void setLogin(String login) {
-		this.login = login;
-	}
+
 	public String getPseudo() {
 		return pseudo;
 	}
