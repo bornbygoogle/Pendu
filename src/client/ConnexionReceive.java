@@ -26,18 +26,18 @@ public class ConnexionReceive implements Runnable {
 	@Override
 	public void run() {
 		try {
-			// Lancement de l'écoute du réseau
+			// Lancement de l'ï¿½coute du rï¿½seau
 			this.in = new ObjectInputStream(this.socket.getInputStream());
-			// Tant que le joueur n'est pas connecté, ce theard tournera toujours
+			// Tant que le joueur n'est pas connectï¿½, ce theard tournera toujours
 			while(this.connexion.getMain().isConnecte()) {
-				// Récupération de l'objet envoyé par le serveur
+				// Rï¿½cupï¿½ration de l'objet envoyï¿½ par le serveur
 				Object element = in.readObject();
-				// Si cet objet n'est pas null et que c'est un objet de type joueur, sinon on attend que ce soit bien un objet de type joueur qui nous est renvoyé
+				// Si cet objet n'est pas null et que c'est un objet de type joueur, sinon on attend que ce soit bien un objet de type joueur qui nous est renvoyï¿½
 				if(element != null && element instanceof Joueur)
 					// Verif de la connexion
 					this.connexion.verifierReponseConnexion((Joueur)element);
 			}
-			// Lorsque la connexion est établie (c'est à dire que le bool connexion est passé à true), la boucle est stoppé et le theard ne fait plus rien
+			// Lorsque la connexion est ï¿½tablie (c'est ï¿½ dire que le bool connexion est passï¿½ ï¿½ true), la boucle est stoppï¿½ et le theard ne fait plus rien
 		} catch(EOFException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

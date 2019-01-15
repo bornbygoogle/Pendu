@@ -10,9 +10,10 @@ public class Server {
 	
 	public Server(int port) {
 		this.port = port;
-		this.clients = new ArrayList<ConnectedClient>();
+		System.out.println("Connect to server port " + port);
+		/*this.clients = new ArrayList<ConnectedClient>();
 		Thread threadConnection = new Thread(new Connection(this));
-		threadConnection.start();
+		threadConnection.start();*/
 	}
 	
 	public int getPort() {
@@ -40,7 +41,7 @@ public class Server {
 		discClient.closeClient();
 		this.clients.remove(discClient);
 		/*
-		Message mess = new Message("Le client " + discClient.getId() + " nous a quitté");
+		Message mess = new Message("Le client " + discClient.getId() + " nous a quittï¿½");
 		mess.setSender("server");
 		for(ConnectedClient client : this.clients)
 			client.sendMessage(mess);

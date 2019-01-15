@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 
@@ -23,17 +24,16 @@ public class Methods
 	{
 		List<Joueur> lesJoueurs = new ArrayList<Joueur>();
 
-		String selectJoueurSQL = "SELECT ID, LOGIN, PSEUDO, PASS, SCORE, NBPARTIES FROM PENDU_THEME";
+		String selectJoueurSQL = "SELECT PSEUDO, PASS, SCORE, DATEINSCRIPTION, DATEDERNIERECO NBPARTIES FROM PENDU_JOUEUR";
 		ResultSet rs = SQLQuery(connectionDB, selectJoueurSQL);
 
 		while (rs.next()) 
 		{
 			Joueur unJoueur = new Joueur();
 
-			unJoueur.setId(Integer.valueOf(rs.getString("ID")));
-			unJoueur.setLogin(rs.getString("LOGIN"));
 			unJoueur.setPseudo(rs.getString("PSEUDO"));
-			unJoueur.setPass(rs.getString("PASS"));
+			unJoueur.setPseudo(rs.getString("PASS"));
+			unJoueur.setDate
 			unJoueur.setNbParties(Integer.valueOf(rs.getString("NBPARTIES")));
 			unJoueur.setNbScore(Integer.valueOf(rs.getString("SCORE")));
 
@@ -80,6 +80,46 @@ public class Methods
 		}
 		SQLStatementClean();
 		return mots;
+	}
+
+	public static String getMot(List<Mot> mots)
+	{
+		Random randomGenerator = new Random();
+		int index = randomGenerator.nextInt(mots.size());
+		return mots.get(index).getMot().toUpperCase();
+	}
+
+// status true --> renvoie les infos : nbr de parties
+// status false --> mise a jour message : "Login failed !"
+
+	private static String getJoueurPass(Connection _connection, String _pseudo) throws SQLException
+	{
+		String selectUserPassSQL = "SELECT PASS FROM PENDU_JOUEUR WHERE PSEUDO = '" + _pseudo + "'";
+		Statement statement = _connection.createStatement();
+		ResultSet rs = statement.executeQuery(selectUserPassSQL);
+		if (/*rs.first() &&*/ rs.next())
+		{
+			System.out.println(rs.getString("PASS").toString());
+			return rs.getString("PASS").toString();
+		}
+		return null;
+	}
+
+	public static boolean getJoueurStatus(Joueur unJoueur) throws SQLException
+	{
+		Connection connection = null;
+		connection = ConnectionBDD.getInstance();
+		System.out.println(unJoueur.getPseudo().toString());
+		if (unJoueur.getPass().equals(getJoueurPass(connection, unJoueur.getPseudo())))
+		{
+			System.out.println("true");
+			return true;
+		}
+		else
+		{
+			System.out.println("false");
+			return true;
+		}
 	}
 
 	private static ResultSet SQLQuery(Connection connectionDB, String requeteSQL) throws SQLException

@@ -1,14 +1,18 @@
 package commun;
 
-public class Joueur {
+import java.time.LocalDateTime;
+import java.util.Date;
 
+public class Joueur 
+{
 	private String pseudo = "";
 	private String pass = "";
 	private int score = 0;
 	private int nbParties = 0;
 	private boolean status = false;
-	private String message = "";
-
+	private String	message = "";
+	private Date	dateDernierCo = LocalDateTime.now();
+	
 	public String getPseudo() {
 		return pseudo;
 	}
@@ -32,11 +36,6 @@ public class Joueur {
 	}
 	public void setNbParties(int nbParties) {
 		this.nbParties = nbParties;
-	}
-	
-	public void setId(String _pseudo)
-	{
-		this.pseudo = _pseudo;
 	}
 
 	public void setNbScore(int _nbParties)
