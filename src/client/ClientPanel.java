@@ -87,15 +87,23 @@ public class ClientPanel extends Parent {
 				
 				@Override
 				public void handle(ActionEvent event) {
-					letters.get(1).getChildren().clear();
 					String button = event.getSource().toString();
 					String label = button.substring(button.indexOf("'"));
 					label = label.substring(1, 2);
-					Text letter = new Text();
-					letter.setText(label);
-					letter.setFont(Font.font("Helvetica", FontPosture.REGULAR, 30));
-					letters.get(1).getChildren().add(letter);
-					System.out.println(letter);
+					
+					for (int i=0; i<wordToFind.length(); i++) {
+						String letterToFind = Character.toString(wordToFind.charAt(i));
+						System.out.println(letterToFind + "  " + label);
+						if (label.equals(letterToFind)) {
+							letters.get(i).getChildren().clear();
+							Text letter = new Text();
+							letter.setText(label);
+							letter.setFont(Font.font("Helvetica", FontPosture.REGULAR, 30));
+							letters.get(i).getChildren().add(letter);
+							System.out.println(letter);
+						}
+					}
+					
 				}
 				
 			});
