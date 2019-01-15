@@ -10,6 +10,8 @@ public class Client {
 	private String address;
 	private int port;
 	private Socket socket;
+	private Thread threadSend;
+	private ClientSend clientSend;
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
 	
@@ -19,19 +21,17 @@ public class Client {
 		try {
 			this.socket = new Socket(this.address, this.port);
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
+			this.clientSend = new ClientSend(this.out);
+			this.threadSend = new Thread(this.clientSend);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Thread threadClientSend = new Thread(new ClientSend(this.socket, this.out));
-		threadClientSend.start();
-		Thread threadClientReceive = new Thread(new ClientReceive(this, this.socket));
-		threadClientReceive.start();
 	}
-	/*
-	public void messageReceived(Message mess) {
-		System.out.println("\nMessage reçu : " + mess.getContent());
+	
+	public void envoyer(Object element) {
+		this.clientSend.envoyer(this.threadSend, element); 
 	}
-	*/
+
 	public void disconnectedServer() {
 		try {
 			if(this.in != null)
