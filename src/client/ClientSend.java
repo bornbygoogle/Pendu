@@ -19,7 +19,7 @@ public class ClientSend implements Runnable {
 				out.flush();
 				this.element = null;
 			} else {
-				System.out.println("Un ï¿½lï¿½ment vide a tentï¿½ d'ï¿½tre envoyï¿½ !");
+				System.out.println("Un élément vide a tenté d'être envoyé !");
 			}
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

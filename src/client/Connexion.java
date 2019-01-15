@@ -37,7 +37,7 @@ public class Connexion extends Parent {
 			this.password.setPrefHeight(20);
 			this.boutonConnexion = new Button("Se connecter");
 			this.boutonConnexion.setOnMouseClicked(new BoutonConnexionClicked(this));
-			this.message = new Label("Test");
+			this.message = new Label("");
 			this.message.setTextFill(Color.RED);
 			
 			
