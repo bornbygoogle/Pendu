@@ -33,8 +33,11 @@ public class ClientPanel extends Parent {
 	protected ImageView screen;
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
+	protected String wordToFind;
 	
-	public ClientPanel() throws FileNotFoundException {
+	public ClientPanel(String word) throws FileNotFoundException {
+		wordToFind = word;
+		
 		alphabet = new ArrayList<Button>();
 		
 		for (int i=0; i<26; i++) {
