@@ -1,45 +1,51 @@
 package commun;
 
-import java.sql.Date;
-
-public class Joueur {
-
-
+public class Joueur 
+{
+	private int id = 0;
 	private String login = "";
 	private String pseudo = "";
 	private String pass = "";
 	private int score = 0;
 	private int nbParties = 0;
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int _id) {
+		this.id = _id;
+	}
+
 	public String getLogin() {
 		return login;
 	}
-	public void setLogin(String login) {
-		this.login = login;
+	public void setLogin(String _login) {
+		this.login = _login;
 	}
 	public String getPseudo() {
 		return pseudo;
 	}
-	public void setPseudo(String pseudo) {
-		this.pseudo = pseudo;
+	public void setPseudo(String _pseudo) {
+		this.pseudo = _pseudo;
 	}
 	public String getPass() {
 		return pass;
 	}
-	public void setPass(String pass) {
-		this.pass = pass;
+	public void setPass(String _pass) {
+		this.pass = _pass;
 	}
 	public int getScore() {
 		return score;
 	}
-	public void setScore(int score) {
-		this.score = score;
+	public void setScore(int _score) {
+		this.score = _score;
 	}
 	public int getNbParties() {
 		return nbParties;
 	}
-	public void setNbParties(int nbParties) {
-		this.nbParties = nbParties;
+	public void setNbParties(int _nbParties) {
+		this.nbParties = _nbParties;
 	}
 	
 	public void setId(String _pseudo)
