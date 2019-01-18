@@ -41,28 +41,19 @@ public class ConnectionBDD
 			e.printStackTrace();
 		}
 
-    	connection = DriverManager.getConnection(_bddurl, _user, _passwd);  
-
-        if (connection != null) {
-            System.out.println("You made it, take control your database now!");
-        } else {
-            System.out.println("Failed to make connection!");
-        }
+		connection = DriverManager.getConnection(_bddurl, _user, _passwd);
 	}
 	
 	public static Connection getInstance() 
 	{
-		// sigleton connection
+		// singleton connection
 		if(connection == null){
 			try {
 				new ConnectionBDD();
 			} catch (ClassNotFoundException | IOException | SQLException e) {
 				e.printStackTrace();
 			}
-			System.out.println("Instancier l'objet !");
 		}
-		else
-		System.out.println("Connection existante !");
 		return connection;
 	}
 }

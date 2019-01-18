@@ -1,7 +1,7 @@
 package commun;
 
 public enum StatusJoueur {
-	Perdu,
-	Trouv�,
-	EnJeu
-}
+		Perdu,
+		Trouve,
+		EnJeu
+	}

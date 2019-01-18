@@ -13,6 +13,7 @@ import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 import commun.Joueur;
 import commun.Mot;
 import commun.Theme;
+import commun.Utils;
 
 public class Methods 
 {
@@ -24,7 +25,7 @@ public class Methods
 	{
 		List<Joueur> lesJoueurs = new ArrayList<Joueur>();
 
-		String selectJoueurSQL = "SELECT PSEUDO, PASS, SCORE, DATEINSCRIPTION, DATEDERNIERECO NBPARTIES FROM PENDU_JOUEUR";
+		String selectJoueurSQL = "SELECT PSEUDO, PASS, SCORE, DATEINSCRIPTION, DATEDERNIERECO, NBPARTIES FROM PENDU_JOUEUR";
 		ResultSet rs = SQLQuery(connectionDB, selectJoueurSQL);
 
 		while (rs.next()) 
@@ -33,7 +34,8 @@ public class Methods
 
 			unJoueur.setPseudo(rs.getString("PSEUDO"));
 			unJoueur.setPseudo(rs.getString("PASS"));
-			unJoueur.setDate
+			//TODO : convertion date to String
+			//unJoueur.setDateDernierCo(rs.getDate("DATEDERNIERECO"));
 			unJoueur.setNbParties(Integer.valueOf(rs.getString("NBPARTIES")));
 			unJoueur.setNbScore(Integer.valueOf(rs.getString("SCORE")));
 
@@ -41,6 +43,18 @@ public class Methods
 		}
 		SQLStatementClean();
 		return lesJoueurs;
+	}
+
+	public static void updateJoueur(Connection connectionDB, List<Joueur> nouveauxJoueurs) throws SQLException
+	{
+		for (Joueur j : nouveauxJoueurs)
+		{
+			Statement statement = connectionDB.createStatement();
+			statement.executeUpdate("INSERT INTO PENDU_JOUEUR (pseudo, pass, dateInscription, dateDerniereCo, score, nbParties) " +
+									"VALUES ('" + j.getPseudo() + "', '" + j.getPass() + "', to_date('" + Utils.getCurrentTimeUsingCalendar() + "','DD/MM/RRRR'),null, 0, 0)");
+			if (statement != null)
+				statement.close();
+		}
 	}
 	
 	public static List<Theme> getListThemes(Connection connectionDB) throws SQLException
@@ -91,36 +105,6 @@ public class Methods
 
 // status true --> renvoie les infos : nbr de parties
 // status false --> mise a jour message : "Login failed !"
-
-	private static String getJoueurPass(Connection _connection, String _pseudo) throws SQLException
-	{
-		String selectUserPassSQL = "SELECT PASS FROM PENDU_JOUEUR WHERE PSEUDO = '" + _pseudo + "'";
-		Statement statement = _connection.createStatement();
-		ResultSet rs = statement.executeQuery(selectUserPassSQL);
-		if (/*rs.first() &&*/ rs.next())
-		{
-			System.out.println(rs.getString("PASS").toString());
-			return rs.getString("PASS").toString();
-		}
-		return null;
-	}
-
-	public static boolean getJoueurStatus(Joueur unJoueur) throws SQLException
-	{
-		Connection connection = null;
-		connection = ConnectionBDD.getInstance();
-		System.out.println(unJoueur.getPseudo().toString());
-		if (unJoueur.getPass().equals(getJoueurPass(connection, unJoueur.getPseudo())))
-		{
-			System.out.println("true");
-			return true;
-		}
-		else
-		{
-			System.out.println("false");
-			return true;
-		}
-	}
 
 	private static ResultSet SQLQuery(Connection connectionDB, String requeteSQL) throws SQLException
 	{

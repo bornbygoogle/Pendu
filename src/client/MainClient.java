@@ -10,11 +10,11 @@ public class MainClient {
 			Integer port = new Integer(args[1]);
 			new Client(address, port);
 		}
-	}*/
+	}
 
 	private static void printUsage() {
 		System.out.println("java client.Client <address> <port>");
 		System.out.println("\t<address>: server's ip address");
 		System.out.println("\t<port>: server's port");
-	}
+	}*/
 }

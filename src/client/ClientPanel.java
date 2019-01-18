@@ -9,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Border;
@@ -134,7 +133,7 @@ public class ClientPanel extends Parent {
 					}
 					
 					if (winLevel == wordToFind.length()) {
-						System.out.println("c'est gagné");
+						System.out.println("c'est gagnï¿½");
 					}
 				
 					int actualButton = ((int) label.charAt(0))-65;
