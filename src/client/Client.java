@@ -17,7 +17,7 @@ public class Client {
 	private ObjectOutputStream out;
 	
 	public Client(String address, int port) {
-		// Définition des attributs passés
+		// Dï¿½finition des attributs passï¿½s
 		this.address = address;
 		this.port = port;
 		
@@ -26,17 +26,17 @@ public class Client {
 			this.socket = new Socket(this.address, this.port);
 			
 
-			// Création du thread d'envoie
+			// Crï¿½ation du thread d'envoie
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
 			this.clientSend = new ClientSend(this.out);
 			this.threadSend = new Thread(this.clientSend);
 		} catch (IOException e) {
-			// Si problème lors de connexion au serveur, on affiche un message et on ferme l'appli
+			// Si problï¿½me lors de connexion au serveur, on affiche un message et on ferme l'appli
 			e.printStackTrace();
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Pendu");
 			alert.setHeaderText(null);
-			alert.setContentText("Le serveur n'est pas lancé.");
+			alert.setContentText("Le serveur n'est pas lancï¿½.");
 
 			alert.showAndWait();
 			

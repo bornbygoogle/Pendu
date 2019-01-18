@@ -34,7 +34,7 @@ public class Connexion extends Parent {
 	public Connexion(MainGUI main) {
 		this.main = main;
 		try {
-			// Lancement du theard d'écoute de la connexion
+			// Lancement du theard d'ï¿½coute de la connexion
 			this.connexionReceive = new ConnexionReceive(this);
 			this.threadReceive = new Thread(this.connexionReceive);
 			this.threadReceive.start();
@@ -50,9 +50,6 @@ public class Connexion extends Parent {
 			this.message = new Label("");
 			this.message.setTextFill(Color.RED);
 			
-			
-			
-
 			Label texteLogin = new Label("Pseudo :");
 			texteLogin.setPrefWidth(80);
 			Label textePassword = new Label("Mot de passe :");
@@ -140,14 +137,14 @@ public class Connexion extends Parent {
 	}
 	
 	public void verifierReponseConnexion(Joueur unJoueur) {
-		// Check du status renvoyé
-		if(unJoueur.isStatus()) {
-			// Si connexion ok -> redéfinir le joueur + mettre connexion à true + charger le jeu
+		// Check du status renvoyï¿½
+		if(unJoueur.getStatus()) {
+			// Si connexion ok -> redï¿½finir le joueur + mettre connexion ï¿½ true + charger le jeu
 			this.main.setJoueur(unJoueur);
 			this.main.setConnecte(true);
 			this.main.AfficherJeu();
 		} else {
-			// Si connexion pas bonne, afficher le message d'erreur renvoyé par le serveur et laisser la page de connexion
+			// Si connexion pas bonne, afficher le message d'erreur renvoyï¿½ par le serveur et laisser la page de connexion
 			this.setMessageColor(Color.RED);
 			if(unJoueur.getMessage().length() > 0)
 				this.setMessageText(unJoueur.getMessage());
