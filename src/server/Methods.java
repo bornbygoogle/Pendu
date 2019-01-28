@@ -33,7 +33,8 @@ public class Methods
 			Joueur unJoueur = new Joueur();
 
 			unJoueur.setPseudo(rs.getString("PSEUDO"));
-			unJoueur.setPseudo(rs.getString("PASS"));
+			//System.out.println(unJoueur.getPseudo());
+			unJoueur.setPass(rs.getString("PASS"));
 			//TODO : convertion date to String
 			//unJoueur.setDateDernierCo(rs.getDate("DATEDERNIERECO"));
 			unJoueur.setNbParties(Integer.valueOf(rs.getString("NBPARTIES")));

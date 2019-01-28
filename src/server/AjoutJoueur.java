@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 
 import commun.Joueur;
 import commun.Utils;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -53,6 +54,9 @@ public class AjoutJoueur extends Parent
 			//this.boutonFermer.setOnMouseClicked(/*Connection.arret()*/);
 			this.message = new Label("");
 			this.message.setTextFill(Color.RED);
+
+			Button exitBtn = new Button("Exit");
+			exitBtn.setOnAction(e -> Platform.exit());
 			
 			Label texteLogin = new Label("Pseudo :");
 			texteLogin.setPrefWidth(80);
