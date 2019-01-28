@@ -1,5 +1,6 @@
 package server;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +16,18 @@ public class Server {
 
 	private List<ConnectedClient> clients;
 	
-	public Server(int port) {
-		conn = new Connection(this);
-		this.port = port;
-		System.out.println("Connect to server port " + port);
+	public Server(int _port) throws IOException {
+		/*
+		 * conn = new Connection(this); this.port = port;
+		 * System.out.println("Connect to server port " + port); this.clients = new
+		 * ArrayList<ConnectedClient>(); Thread threadConnection = new Thread(conn);
+		 * threadConnection.start();
+		 */
+		this.port = _port;
 		this.clients = new ArrayList<ConnectedClient>();
+		System.out.println("Connect to server port " + port);
+
+		conn = new Connection(this);
 		Thread threadConnection = new Thread(conn);
 		threadConnection.start();
 	}
