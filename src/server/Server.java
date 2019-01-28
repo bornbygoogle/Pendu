@@ -4,25 +4,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.lang.model.util.ElementScanner6;
+import commun.Joueur;
 
 public class Server {
 
 	private int port;
-
+	
 	private boolean serverRunning;
 
 	private Connection conn;
 
 	private List<ConnectedClient> clients;
 	
-	public Server(int _port) throws IOException 
+	public Server(List<Joueur> lesJoueurs, int _port) throws IOException 
 	{
 		this.port = _port;
 		this.clients = new ArrayList<ConnectedClient>();
 		System.out.println("Connect to server port " + port);
 
-		conn = new Connection(this);
+		conn = new Connection(lesJoueurs, this);
 		Thread threadConnection = new Thread(conn);
 		threadConnection.start();
 	}
