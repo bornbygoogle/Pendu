@@ -33,6 +33,4 @@ public class Partie {
 	public void setParticipants(HashMap<Joueur, StatusJoueur> participants) {
 		this.participants = participants;
 	}
-	
-	
 }
