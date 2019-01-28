@@ -9,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Border;
@@ -32,11 +31,19 @@ public class ClientPanel extends Parent {
 	protected int dangerLevel;
 	protected int winLevel;
 	
-	public ClientPanel(String word) throws FileNotFoundException {
-		wordToFind = word;
+	public ClientPanel(MainGUI game) throws FileNotFoundException {
+		wordToFind = game.getPartie().getMot().getMot();
 		dangerLevel = 1;
 		winLevel = 0;
 		
+		this.setButtons();
+		this.setTexts();
+		this.setImage();
+		this.setButtonsActions();
+		
+	}
+	
+	protected void setButtons() {
 		alphabet = new ArrayList<Button>();
 		
 		for (int i=0; i<26; i++) {
@@ -60,7 +67,9 @@ public class ClientPanel extends Parent {
 			alphabet.add(btn);
 			this.getChildren().add(btn);
 		}
-		
+	}
+	
+	protected void setTexts() {
 		letters = new ArrayList<TextFlow>();
 		
 		for (int i=0; i<wordToFind.length(); i++) {
@@ -68,15 +77,12 @@ public class ClientPanel extends Parent {
 			if (i/8 == 0) {
 				receivedText.setLayoutX(50+i*50);
 				receivedText.setLayoutY(550);
-				
 			} else if (i/8 == 1) {
 				receivedText.setLayoutX(50+(i-8)*50);
 				receivedText.setLayoutY(600);
-				
 			} else if (i/8 == 2) {
 				receivedText.setLayoutX(50+(i-16)*50);
 				receivedText.setLayoutY(650);
-				
 			}
 			receivedText.setPrefWidth(50);
 			receivedText.setPrefHeight(50);
@@ -86,7 +92,9 @@ public class ClientPanel extends Parent {
 			letters.add(receivedText);
 			this.getChildren().add(receivedText);
 		}
-		
+	}
+	
+	protected void setImage() throws FileNotFoundException {
 		Image image = new Image(new FileInputStream("./Images/etape1.png"));
 		screen = new ImageView(image);
 		screen.setLayoutX(50);
@@ -95,7 +103,9 @@ public class ClientPanel extends Parent {
 		screen.setFitWidth(400);
 		
 		this.getChildren().add(screen);
-		
+	}
+	
+	protected void setButtonsActions() {
 		for (int i=0; i<alphabet.size(); i++) {
 			alphabet.get(i).setOnAction(new EventHandler<ActionEvent>() {
 				
@@ -144,6 +154,6 @@ public class ClientPanel extends Parent {
 				
 			});
 		}
-		
 	}
+	
 }

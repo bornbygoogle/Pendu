@@ -49,7 +49,7 @@ public class MainGUI extends Application {
 		this.connecte = false;
 		
 		// Affichage de la page de connexion
-		this.AfficherConnexion();
+		this.AfficherJeu();
 		
 		// Affichage
 		stage.show();
@@ -64,6 +64,10 @@ public class MainGUI extends Application {
 
 	public Joueur getJoueur() {
 		return joueur;
+	}
+	
+	public Partie getPartie() {
+		return partie;
 	}
 
 	public void setJoueur(Joueur unJoueur) {
@@ -84,7 +88,7 @@ public class MainGUI extends Application {
 	
 	public void AfficherJeu() {
 		try {
-			this.groupe.getChildren().add(new ClientPanel("Mot"));
+			this.groupe.getChildren().add(new ClientPanel(this));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

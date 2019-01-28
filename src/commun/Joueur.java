@@ -11,7 +11,7 @@ public class Joueur
 	private int nbParties = 0;
 	private boolean status = false;
 	private String	message = "";
-	private Date	dateDernierCo = LocalDateTime.now();
+	private Date	dateDernierCo = null;
 	
 	public String getPseudo() {
 		return pseudo;
