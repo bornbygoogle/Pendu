@@ -78,7 +78,7 @@ public class MainServer extends Application
 
 		// Instancier une connection
 		System.out.println();
-		this.server = new Server(1025);
+		this.server = new Server(this.joueurs, 1026);
 
 		
 		// Déclaration des classes métiers
