@@ -31,25 +31,23 @@ public class Connection implements Runnable {
 		while(running) {
 			//this.running = false;
 
-			if (!running)
-			{
-				System.out.println(this.serverSocket.getLocalPort());
-				System.out.println(this.serverSocket.getLocalSocketAddress());
-				System.out.println("Server will off");
-			}
-			/*try {
-				//sockNewClient = this.serverSocket.accept();
+			try {
+				if (!running)
+				{
+					System.out.println(this.serverSocket.getLocalPort());
+					System.out.println(this.serverSocket.getLocalSocketAddress());
+					System.out.println("Server will off");
+				}
+				sockNewClient = this.serverSocket.accept();
 				System.out.println("Addresse : " + sockNewClient.getLocalAddress() + " port : " + sockNewClient.getPort());
 				/*ConnectedClient newClient = new ConnectedClient(this.server, sockNewClient);
 				this.server.addClient(newClient);
 				Thread threadNewClient = new Thread(newClient);
 				threadNewClient.start();
-				//if ()
-			} catch (IOException e) {
-				e.printStackTrace();
+				//if ()*/
 			} catch (Exception e) {
 				e.printStackTrace();
-			}*/
+			}
 		}
 	}
 }
