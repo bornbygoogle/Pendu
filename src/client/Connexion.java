@@ -142,7 +142,8 @@ public class Connexion extends Parent {
 			// Si connexion ok -> red�finir le joueur + mettre connexion � true + charger le jeu
 			this.main.setJoueur(unJoueur);
 			this.main.setConnecte(true);
-			this.main.AfficherJeu();
+			// On Charge le jeu
+			this.main.ChargerJeu();
 		} else {
 			// Si connexion pas bonne, afficher le message d'erreur renvoy� par le serveur et laisser la page de connexion
 			this.setMessageColor(Color.RED);
