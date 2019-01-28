@@ -2,7 +2,7 @@ package client;
 
 public class MainClient {
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		if(args.length != 2) {
 			printUsage();
 		} else {
@@ -16,5 +16,5 @@ public class MainClient {
 		System.out.println("java client.Client <address> <port>");
 		System.out.println("\t<address>: server's ip address");
 		System.out.println("\t<port>: server's port");
-	}
+	}*/
 }

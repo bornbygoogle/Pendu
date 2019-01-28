@@ -2,12 +2,13 @@ package server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 public class Connection implements Runnable {
 
 	private Server server;
 	private ServerSocket serverSocket;
+
+    protected volatile boolean running = true;
 	
 	public Connection(Server server) {
 		this.server = server;
@@ -18,20 +19,29 @@ public class Connection implements Runnable {
 		}
 	}
 
+	public void arret() {
+		this.running = false;
+	}
+
 	@Override
 	public synchronized void run() {
-		while(true) {
-			try {
+		System.out.println("Server run");
+		while(running) {
+			//this.running = false;
+			if (!running)
+				System.out.println("Server will off");
+			/*try {
 				Socket sockNewClient = this.serverSocket.accept();
 				ConnectedClient newClient = new ConnectedClient(this.server, sockNewClient);
 				this.server.addClient(newClient);
 				Thread threadNewClient = new Thread(newClient);
 				threadNewClient.start();
+				//if ()
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			}*/
 		}
 	}
 }

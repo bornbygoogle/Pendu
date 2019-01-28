@@ -2,21 +2,21 @@ package client;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.sound.midi.Receiver;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
@@ -27,21 +27,36 @@ public class ClientPanel extends Parent {
 	protected ImageView screen;
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
+	protected String wordToFind;
+	protected int dangerLevel;
+	protected int winLevel;
 	
-	public ClientPanel() throws FileNotFoundException {
+	public ClientPanel(MainGUI game) throws FileNotFoundException {
+		wordToFind = game.getPartie().getMot().getMot();
+		dangerLevel = 1;
+		winLevel = 0;
+		
+		this.setButtons();
+		this.setTexts();
+		this.setImage();
+		this.setButtonsActions();
+		
+	}
+	
+	protected void setButtons() {
 		alphabet = new ArrayList<Button>();
 		
 		for (int i=0; i<26; i++) {
 			Button btn = new Button();
 			if (i/9 == 0) {
 				btn.setLayoutX(25 + i*50);
-				btn.setLayoutY(650);
+				btn.setLayoutY(750);
 			} else if (i/9 == 1) {
 				btn.setLayoutX(25 + (i-9)*50);
-				btn.setLayoutY(700);
+				btn.setLayoutY(800);
 			} else {
 				btn.setLayoutX(50 + (i-18)*50);
-				btn.setLayoutY(750);
+				btn.setLayoutY(850);
 			}
 			btn.setPrefWidth(50);
 			btn.setPrefHeight(50);
@@ -52,27 +67,34 @@ public class ClientPanel extends Parent {
 			alphabet.add(btn);
 			this.getChildren().add(btn);
 		}
-		
+	}
+	
+	protected void setTexts() {
 		letters = new ArrayList<TextFlow>();
 		
-		for (int i=0; i<8; i++) {
-			ScrollPane scrollReceivedText = new ScrollPane();
-			scrollReceivedText.setLayoutX(50+i*50);
-			scrollReceivedText.setLayoutY(550);
-			scrollReceivedText.setPrefWidth(50);
-			scrollReceivedText.setPrefHeight(50);
-			scrollReceivedText.setMaxHeight(50);
-			scrollReceivedText.setMaxWidth(50);
-			
+		for (int i=0; i<wordToFind.length(); i++) {
 			TextFlow receivedText = new TextFlow();
-			
-			scrollReceivedText.setContent(receivedText);
-			scrollReceivedText.vvalueProperty().bind(receivedText.heightProperty());
+			if (i/8 == 0) {
+				receivedText.setLayoutX(50+i*50);
+				receivedText.setLayoutY(550);
+			} else if (i/8 == 1) {
+				receivedText.setLayoutX(50+(i-8)*50);
+				receivedText.setLayoutY(600);
+			} else if (i/8 == 2) {
+				receivedText.setLayoutX(50+(i-16)*50);
+				receivedText.setLayoutY(650);
+			}
+			receivedText.setPrefWidth(50);
+			receivedText.setPrefHeight(50);
+			receivedText.setTextAlignment(TextAlignment.CENTER);
+			receivedText.setBorder(new Border(new BorderStroke(Color.GAINSBORO, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 			
 			letters.add(receivedText);
-			this.getChildren().add(scrollReceivedText);
+			this.getChildren().add(receivedText);
 		}
-		
+	}
+	
+	protected void setImage() throws FileNotFoundException {
 		Image image = new Image(new FileInputStream("./Images/etape1.png"));
 		screen = new ImageView(image);
 		screen.setLayoutX(50);
@@ -81,26 +103,57 @@ public class ClientPanel extends Parent {
 		screen.setFitWidth(400);
 		
 		this.getChildren().add(screen);
-		
+	}
+	
+	protected void setButtonsActions() {
 		for (int i=0; i<alphabet.size(); i++) {
 			alphabet.get(i).setOnAction(new EventHandler<ActionEvent>() {
 				
 				@Override
-				public void handle(ActionEvent event) {
-					letters.get(1).getChildren().clear();
+				public void handle(ActionEvent event) {	
+					Boolean test = false;
 					String button = event.getSource().toString();
 					String label = button.substring(button.indexOf("'"));
 					label = label.substring(1, 2);
-					Text letter = new Text();
-					letter.setText(label);
-					letter.setTextAlignment(TextAlignment.CENTER);
-					letter.setFont(Font.font("Helvetica", FontPosture.REGULAR, 40));
-					letters.get(1).getChildren().add(letter);
-					System.out.println(letter);
+					
+					for (int i=0; i<wordToFind.length(); i++) {
+						String letterToFind = Character.toString(wordToFind.charAt(i));
+						if (label.equals(letterToFind)) {
+							letters.get(i).getChildren().clear();
+							Text letter = new Text();
+							letter.setText(label);
+							letter.setFont(Font.font("Helvetica", FontPosture.REGULAR, 30));
+							letters.get(i).getChildren().add(letter);
+							test = true;
+							winLevel++;
+						}
+					}
+					
+					if (test == false) {
+						dangerLevel++;
+						Image image;
+						try {
+							image = new Image(new FileInputStream("./Images/etape" + dangerLevel + ".png"));
+							screen.setImage(image);
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						}
+						if (dangerLevel == 7) {
+							System.out.println("c'est perdu");
+						}
+					}
+					
+					if (winLevel == wordToFind.length()) {
+						System.out.println("c'est gagn�");
+					}
+				
+					int actualButton = ((int) label.charAt(0))-65;
+					alphabet.get(actualButton).setDisable(true);
+					
 				}
 				
 			});
 		}
-		
 	}
+	
 }

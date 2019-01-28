@@ -17,9 +17,11 @@ public class Theme {
 	public String getLibelle() {
 		return libelle;
 	}
-	public void setLibelle(String libelle) {
+	public void setLibelle(String libelle) 
+	{
 		this.libelle = libelle;
 	}
+
 	public List<Mot> getMots() {
 		return mots;
 	}

@@ -24,6 +24,4 @@ public class Mot {
 	public void setTheme(Theme theme) {
 		this.theme = theme;
 	}
-	
-	
 }

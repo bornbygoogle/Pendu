@@ -38,16 +38,14 @@ public class ConnectedClient implements Runnable {
 			this.in = new ObjectInputStream(socket.getInputStream());
 			boolean isActive = true;
 			while(isActive) {
-				/*
-				Message mess = (Message) in.readObject();
+				/*Message mess = (Message) in.readObject();
 				if(mess != null) {
 					mess.setSender(String.valueOf(this.id));
 					this.server.broadcastMessage(mess, this.id);
 				} else {
 					this.server.disconnectedClient(this);
 					isActive = false;
-				}
-				*/
+				}*/
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

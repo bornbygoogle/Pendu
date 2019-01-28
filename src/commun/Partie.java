@@ -1,14 +1,13 @@
 package commun;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class Partie {
 
 	private int id = 0;
 	private Mot mot = new Mot();
 	private Joueur joueurGagnant = new Joueur();
-	private List<Joueur> participants = new ArrayList<Joueur>();
+	private HashMap<Joueur, StatusJoueur> participants = new HashMap<Joueur, StatusJoueur>();
 	
 	public int getId() {
 		return id;
@@ -28,12 +27,10 @@ public class Partie {
 	public void setJoueurGagnant(Joueur joueurGagnant) {
 		this.joueurGagnant = joueurGagnant;
 	}
-	public List<Joueur> getParticipants() {
+	public HashMap<Joueur, StatusJoueur> getParticipants() {
 		return participants;
 	}
-	public void setParticipants(List<Joueur> participants) {
+	public void setParticipants(HashMap<Joueur, StatusJoueur> participants) {
 		this.participants = participants;
 	}
-	
-	
 }
