@@ -19,7 +19,6 @@ public class MainGUI extends Application {
 	private Client client;
 	
 	private Joueur joueur;
-	
 	private Partie partie;
 	
 	private PartieReceive partieReceive;
@@ -40,19 +39,19 @@ public class MainGUI extends Application {
 		stage.setScene(scene);
 		
 		// Lancement du réseau -> connexion au port 1025 en local 
-		this.client = new Client("127.0.0.1", 1026);
+		this.client = new Client("127.0.0.1", 1025);
 		
 		// Déclaration des classes métiers
 		this.joueur = new Joueur();
-		//this.partie = new Partie();
+		this.partie = new Partie();
 		
 		// Verif si joueur est connecté au serveur ou non
 		this.connecte = false;
 		
 		// Affichage de la page de connexion
-		//this.AfficherConnexion();
+		this.AfficherConnexion();
 		//this.AfficherJeu();
-		this.AfficherMessage("Test", Color.RED);
+		//this.AfficherMessage("Test", Color.RED);
 		
 		// Affichage
 		stage.show();
