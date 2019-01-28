@@ -1,8 +1,5 @@
 package commun;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-
 public class Joueur 
 {
 	private String pseudo = "";
@@ -11,7 +8,7 @@ public class Joueur
 	private int nbParties = 0;
 	private boolean status = false;
 	private String	message = "";
-	private Date	dateDernierCo = null;
+	private String	dateDernierCo = Utils.getCurrentTimeUsingCalendar();
 	
 	public String getPseudo() {
 		return pseudo;
@@ -42,7 +39,7 @@ public class Joueur
 	{
 		this.nbParties = _nbParties;
 	}
-	public boolean isStatus() {
+	public boolean getStatus() {
 		return status;
 	}
 	public void setStatus(boolean status) {
@@ -55,5 +52,10 @@ public class Joueur
 		this.message = message;
 	}
 	
-	
+	public String getDateDernierCo() {
+		return dateDernierCo;
+	}
+	public void setDateDernierCo(String _dateDernierCo) {
+		this.dateDernierCo = _dateDernierCo;
+	}
 }

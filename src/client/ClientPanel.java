@@ -144,7 +144,7 @@ public class ClientPanel extends Parent {
 					}
 					
 					if (winLevel == wordToFind.length()) {
-						System.out.println("c'est gagné");
+						System.out.println("c'est gagnï¿½");
 					}
 				
 					int actualButton = ((int) label.charAt(0))-65;

@@ -1,6 +1,9 @@
 package commun;
 
 import java.security.Key;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -32,5 +35,13 @@ public class Utils {
 			System.out.println(e);
 			return null;
 		}
+	}
+
+	public static String getCurrentTimeUsingCalendar() {
+		Calendar cal = Calendar.getInstance();
+		java.util.Date date = cal.getTime();
+		DateFormat dateFormat = new SimpleDateFormat("DD/MM/YYYY");
+		String formattedDate = dateFormat.format(date);
+		return formattedDate;
 	}
 }
