@@ -23,15 +23,20 @@ public class Client {
 		
 		try {
 			// Connexion au serveur
+			System.out.println(this.address);
+			System.out.println(this.port);
+
 			this.socket = new Socket(this.address, this.port);
-			
+
+			System.out.println(this.socket.getLocalAddress());
+			System.out.println(this.socket.getPort());
 
 			// Crï¿½ation du thread d'envoie
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
 			this.clientSend = new ClientSend(this.out);
 			this.threadSend = new Thread(this.clientSend);
 		} catch (IOException e) {
-			// Si problème lors de connexion au serveur, on affiche un message et on ferme l'appli
+			// Si problï¿½me lors de connexion au serveur, on affiche un message et on ferme l'appli
 			e.printStackTrace();/*
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Pendu");

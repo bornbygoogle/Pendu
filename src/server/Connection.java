@@ -2,6 +2,7 @@ package server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Connection implements Runnable {
 
@@ -26,13 +27,20 @@ public class Connection implements Runnable {
 	@Override
 	public synchronized void run() {
 		System.out.println("Server run");
+		Socket sockNewClient;
 		while(running) {
 			//this.running = false;
+
 			if (!running)
+			{
+				System.out.println(this.serverSocket.getLocalPort());
+				System.out.println(this.serverSocket.getLocalSocketAddress());
 				System.out.println("Server will off");
+			}
 			/*try {
-				Socket sockNewClient = this.serverSocket.accept();
-				ConnectedClient newClient = new ConnectedClient(this.server, sockNewClient);
+				//sockNewClient = this.serverSocket.accept();
+				System.out.println("Addresse : " + sockNewClient.getLocalAddress() + " port : " + sockNewClient.getPort());
+				/*ConnectedClient newClient = new ConnectedClient(this.server, sockNewClient);
 				this.server.addClient(newClient);
 				Thread threadNewClient = new Thread(newClient);
 				threadNewClient.start();

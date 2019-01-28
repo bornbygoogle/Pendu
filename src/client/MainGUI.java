@@ -16,7 +16,7 @@ public class MainGUI extends Application {
 	private Client client;
 	
 	private Joueur joueur;
-	//private Partie partie;
+	private Partie partie;
 	
 	private boolean connecte;
 	
@@ -38,7 +38,7 @@ public class MainGUI extends Application {
 		
 		// Déclaration des classes métiers
 		this.joueur = new Joueur();
-		//this.partie = new Partie();
+		this.partie = new Partie();
 		
 		// Verif si joueur est connecté au serveur ou non
 		this.connecte = false;
