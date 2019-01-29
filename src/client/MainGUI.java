@@ -7,11 +7,9 @@ import commun.DemandeServeur;
 import commun.Joueur;
 import commun.Mot;
 import commun.Partie;
-<<<<<<< HEAD
+
 import commun.StatusJoueur;
-=======
 import commun.ReponseServeur;
->>>>>>> afecc6f77d478b639f4559d3d84364727a2e0959
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -26,11 +24,8 @@ public class MainGUI extends Application {
 	
 	private Joueur joueur;
 	private Partie partie;
-<<<<<<< HEAD
-=======
 	
 	private PartieReceive partieReceive;
->>>>>>> afecc6f77d478b639f4559d3d84364727a2e0959
 	
 	private boolean connecte;
 	
