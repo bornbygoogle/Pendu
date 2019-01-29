@@ -40,9 +40,12 @@ public class ClientPanel extends Parent {
 	protected int winLevel;
 	
 	public ClientPanel(MainGUI game) {
-		wordToFind = game.getPartie().getMot().getMot();
-		dangerLevel = 1;
-		winLevel = 0;
+		this.gui = game;
+		this.partie = game.getPartie();
+		this.wordToFind = this.partie.getMot().getMot();
+		this.listJoueurs = this.partie.getParticipants();
+		this.dangerLevel = 1;
+		this.winLevel = 0;
 		
 		this.setButtons();
 		this.setTexts();
