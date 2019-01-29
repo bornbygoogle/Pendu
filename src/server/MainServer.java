@@ -55,16 +55,16 @@ public class MainServer extends Application
 		nouveaux.add(newJ2);
 		Methods.updateJoueur(connection, nouveaux);
 		System.out.println(Methods.getMot(themes.get(1).getMots()));
-/*
+
 		Joueur unJoueur = new Joueur();
-		unJoueur.setPseudo("dylan");
+		unJoueur.setPseudo("dylan");*/
 
 		for(Joueur j : joueurs)
-			if (j.getPseudo().equals(unJoueur.getPseudo()))
+			System.out.println(j.getPseudo() + " " + j.getPass());
+			/*if (j.getPseudo().equals(unJoueur.getPseudo()))
 				// envoie status to client
-				System.out.println("true");
-				*/
-
+				System.out.println("true");*/
+				
 		///////////////////////////
 		// Démarrage du serveur //
 		/////////////////////////
@@ -72,12 +72,15 @@ public class MainServer extends Application
 		// Config graphique de l'appli
 		this.groupe = new Group();
 		Scene scene = new Scene(this.groupe, 500, 925);
+
 		stage.setTitle("GUI Serveur");
 		stage.setScene(scene);
 
 		// Instancier une connection
+		System.out.println();
 		this.server = new Server(1025);
 
+		
 		// Déclaration des classes métiers
 		//this.joueur = new Joueur();
 		//this.partie = new Partie();
@@ -92,7 +95,8 @@ public class MainServer extends Application
 		stage.show();
 
 		// Exit de l'application
-		stage.setOnHidden(e -> {
+		stage.setOnCloseRequest(e -> 
+		{
 			this.shutdown();
 			Platform.exit();
 		});
