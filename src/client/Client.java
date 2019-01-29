@@ -33,7 +33,7 @@ public class Client {
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
 		} catch (IOException e) {
 			// Si probl�me lors de connexion au serveur, on affiche un message et on ferme l'appli
-			e.printStackTrace();
+			e.printStackTrace();/*
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Pendu");
 			alert.setHeaderText(null);
@@ -41,7 +41,7 @@ public class Client {
 
 			alert.showAndWait();
 			
-			System.exit(0);
+			System.exit(0);*/
 		}
 	}
 	

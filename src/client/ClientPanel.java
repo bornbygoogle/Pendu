@@ -3,8 +3,12 @@ package client;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import commun.Joueur;
+import commun.Partie;
+import commun.StatusJoueur;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -27,25 +31,27 @@ public class ClientPanel extends Parent {
 	protected ImageView screen;
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
+	protected TextFlow joueurs;
+	protected MainGUI gui;
+	protected Partie partie;
+	protected HashMap<Joueur, StatusJoueur> listJoueurs;
 	protected String wordToFind;
 	protected int dangerLevel;
 	protected int winLevel;
 	
 	public ClientPanel(MainGUI game) {
-		wordToFind = game.getPartie().getMot().getMot();
-		dangerLevel = 1;
-		winLevel = 0;
+		this.gui = game;
+		this.partie = game.getPartie();
+		this.wordToFind = this.partie.getMot().getMot();
+		this.listJoueurs = this.partie.getParticipants();
+		this.dangerLevel = 1;
+		this.winLevel = 0;
 		
 		this.setButtons();
 		this.setTexts();
-		try {
-			this.setImage();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.setImage();
+		this.setJoueurs();
 		this.setButtonsActions();
-		
 	}
 	
 	protected void setButtons() {
@@ -99,15 +105,51 @@ public class ClientPanel extends Parent {
 		}
 	}
 	
-	protected void setImage() throws FileNotFoundException {
-		Image image = new Image(new FileInputStream("./Images/etape1.png"));
-		screen = new ImageView(image);
-		screen.setLayoutX(50);
-		screen.setLayoutY(0);
-		screen.setFitHeight(550);
-		screen.setFitWidth(400);
+	protected void setJoueurs() {
+		this.joueurs = new TextFlow();
+		this.joueurs.setLayoutX(500);
+		this.joueurs.setLayoutY(200);
+		this.joueurs.setPrefWidth(150);
+		this.joueurs.setPrefHeight(200);
+		this.joueurs.setTextAlignment(TextAlignment.LEFT);
+		this.joueurs.setBorder(new Border(new BorderStroke(Color.GAINSBORO, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+
+		Text titre = new Text();
+		titre.setText("Joueurs : \n");
+		titre.setFont(Font.font("Helvetica", FontPosture.REGULAR, 18));
+		this.joueurs.getChildren().add(titre);
 		
-		this.getChildren().add(screen);
+		for (Joueur j : this.listJoueurs.keySet()) {
+			Text joueur = new Text();
+			if (this.listJoueurs.get(j) == StatusJoueur.EnJeu) {
+				joueur.setText(j.getPseudo() + "\n");
+			} else if (this.listJoueurs.get(j) == StatusJoueur.Perdu) {
+				joueur.setText(j.getPseudo() + " - Perdu");
+			} else if (this.listJoueurs.get(j) == StatusJoueur.Trouve) {
+				joueur.setText(j.getPseudo() + " - Gagné");
+			}
+			joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 12));
+			this.joueurs.getChildren().add(joueur);
+		}
+		
+		this.getChildren().add(this.joueurs);
+	}
+	
+	protected void setImage() {
+		Image image;
+		try {
+			image = new Image(new FileInputStream("./Images/etape1.png"));
+			screen = new ImageView(image);
+			screen.setLayoutX(50);
+			screen.setLayoutY(0);
+			screen.setFitHeight(550);
+			screen.setFitWidth(400);
+			
+			this.getChildren().add(screen);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	protected void setButtonsActions() {
@@ -144,12 +186,12 @@ public class ClientPanel extends Parent {
 							e.printStackTrace();
 						}
 						if (dangerLevel == 7) {
-							System.out.println("c'est perdu");
+							gui.AfficherMessage("Vous avez perdu", Color.BLACK);
 						}
 					}
 					
 					if (winLevel == wordToFind.length()) {
-						System.out.println("c'est gagn�");
+						gui.AfficherMessage("Vous avez gagné", Color.BLACK);
 					}
 				
 					int actualButton = ((int) label.charAt(0))-65;
