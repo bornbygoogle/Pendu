@@ -65,8 +65,8 @@ public class MainGUI extends Application {
 		this.connecte = false;
 		
 		// Affichage de la page de connexion
-		this.AfficherConnexion();
-		//this.AfficherJeu();
+		//this.AfficherConnexion();
+		this.AfficherJeu();
 		//this.AfficherMessage("Test", Color.RED);
 		
 		// Affichage
