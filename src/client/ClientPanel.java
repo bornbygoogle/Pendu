@@ -12,8 +12,6 @@ import commun.StatusJoueur;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -34,13 +32,15 @@ public class ClientPanel extends Parent {
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
 	protected TextFlow joueurs;
+	protected MainGUI gui;
 	protected Partie partie;
 	protected HashMap<Joueur, StatusJoueur> listJoueurs;
 	protected String wordToFind;
 	protected int dangerLevel;
 	protected int winLevel;
 	
-	public ClientPanel(MainGUI game) throws FileNotFoundException {
+	public ClientPanel(MainGUI game) {
+		this.gui = game;
 		this.partie = game.getPartie();
 		this.listJoueurs = this.partie.getParticipants();
 		this.wordToFind = this.partie.getMot().getMot();
@@ -52,7 +52,6 @@ public class ClientPanel extends Parent {
 		this.setImage();
 		this.setJoueurs();
 		this.setButtonsActions();
-		
 	}
 	
 	protected void setButtons() {
@@ -136,15 +135,21 @@ public class ClientPanel extends Parent {
 		this.getChildren().add(this.joueurs);
 	}
 	
-	protected void setImage() throws FileNotFoundException {
-		Image image = new Image(new FileInputStream("./Images/etape1.png"));
-		screen = new ImageView(image);
-		screen.setLayoutX(50);
-		screen.setLayoutY(0);
-		screen.setFitHeight(550);
-		screen.setFitWidth(400);
-		
-		this.getChildren().add(screen);
+	protected void setImage() {
+		Image image;
+		try {
+			image = new Image(new FileInputStream("./Images/etape1.png"));
+			screen = new ImageView(image);
+			screen.setLayoutX(50);
+			screen.setLayoutY(0);
+			screen.setFitHeight(550);
+			screen.setFitWidth(400);
+			
+			this.getChildren().add(screen);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	protected void setButtonsActions() {
@@ -181,26 +186,12 @@ public class ClientPanel extends Parent {
 							e.printStackTrace();
 						}
 						if (dangerLevel == 7) {
-							Alert alert = new Alert(AlertType.INFORMATION);
-							alert.setTitle("Pendu");
-							alert.setHeaderText(null);
-							alert.setContentText("Vous avez perdu");
-
-							alert.showAndWait();
-							
-							System.exit(0);
+							gui.AfficherMessage("Vous avez perdu", Color.BLACK);
 						}
 					}
 					
 					if (winLevel == wordToFind.length()) {
-						Alert alert = new Alert(AlertType.INFORMATION);
-						alert.setTitle("Pendu");
-						alert.setHeaderText(null);
-						alert.setContentText("Vous avez gagné");
-
-						alert.showAndWait();
-						
-						System.exit(0);
+						gui.AfficherMessage("Vous avez gagné", Color.BLACK);
 					}
 				
 					int actualButton = ((int) label.charAt(0))-65;
