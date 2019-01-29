@@ -78,7 +78,7 @@ public class MainServer extends Application
 
 		// Instancier une connection
 		System.out.println();
-		this.server = new Server(this.joueurs, 1026);
+		this.server = new Server(this.joueurs, 1025);
 
 		
 		// Déclaration des classes métiers
@@ -99,7 +99,9 @@ public class MainServer extends Application
 		{
 			this.shutdown();
 			Platform.exit();
+			System.exit(0);
 		});
+		
 	}
 
 	public static void main(String[] args) {

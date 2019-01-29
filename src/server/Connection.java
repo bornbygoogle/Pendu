@@ -37,16 +37,9 @@ public class Connection implements Runnable {
 			//this.running = false;
 
 			try {
-				if (!running)
-				{
-					System.out.println(this.serverSocket.getLocalPort());
-					System.out.println(this.serverSocket.getLocalSocketAddress());
-					System.out.println("Server will off");
-				}
+
 				Socket sockNewClient = this.serverSocket.accept();
-				
-				
-				
+
 				System.out.println("Addresse : " + sockNewClient.getLocalAddress() + " port : " + sockNewClient.getPort());
 				
 				
@@ -55,8 +48,14 @@ public class Connection implements Runnable {
 				this.server.addClient(newClient);
 				Thread threadNewClient = new Thread(newClient);
 				threadNewClient.start();
+				if (!running)
+					System.out.println("Server will off");
 			} catch (Exception e) {
 				e.printStackTrace();
+			}
+			finally
+			{
+				this.running = false;
 			}
 		}
 	}
