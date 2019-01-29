@@ -45,12 +45,13 @@ public class ConnectedClient implements Runnable {
 			this.in = new ObjectInputStream(socket.getInputStream());
 			boolean isActive = true;
 			while(isActive) {
-				// On récupère les infos qui ont été envoyé via le client
+				// On recupere les infos qui ont ete envoye via le client
 				Object element = in.readObject();
 				if(element != null) {
-					// Si le client a envoyé une classe joueur, cela veut dire qu'il veut s'identifier
-					if(element instanceof Joueur) {
+					// Si le client a envoye une classe joueur, cela veut dire qu'il veut s'identifier
+					if (element instanceof Joueur) {
 						Joueur joueur = (Joueur)element;
+
 						// On va vérifier que le joueur existe
 						Joueur joueurLocal = null;
 						for(Joueur j : this.main.getListeJoueurs()) {
@@ -66,7 +67,7 @@ public class ConnectedClient implements Runnable {
 							} else
 								joueur.setMessage("Le mot de passe n'est pas valide.");
 						} else
-							joueur.setMessage("Vous n'êtes pas incrit.");
+							joueur.setMessage("Vous n'etes pas incrit.");
 						
 						this.envoyer(joueur);
 					} else if(element instanceof DemandeServeur) {
