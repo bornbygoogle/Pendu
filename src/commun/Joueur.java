@@ -1,7 +1,12 @@
 package commun;
 
-public class Joueur 
-{
+import java.io.Serializable;
+
+public class Joueur implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String pseudo = "";
 	private String pass = "";
 	private int score = 0;

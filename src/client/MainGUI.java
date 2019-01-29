@@ -7,6 +7,7 @@ import commun.Joueur;
 import commun.Partie;
 import commun.ReponseServeur;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -39,7 +40,7 @@ public class MainGUI extends Application {
 		stage.setScene(scene);
 		
 		// Lancement du réseau -> connexion au port 1025 en local 
-		this.client = new Client("127.0.0.1", 1026);
+		this.client = new Client("127.0.0.1", 1033);
 		
 		// Déclaration des classes métiers
 		this.joueur = new Joueur();
@@ -85,25 +86,32 @@ public class MainGUI extends Application {
 	}
 	
 	public void AfficherConnexion() {
-		this.groupe.getChildren().clear();
-		this.groupe.getChildren().add(new Connexion(this));
+		Platform.runLater(() -> {
+			this.groupe.getChildren().clear();
+			this.groupe.getChildren().add(new Connexion(this));
+		});
 	}
 	
 	public void AfficherJeu() {
-		try {
-			this.groupe.getChildren().clear();
-			this.groupe.getChildren().add(new ClientPanel(this));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		Platform.runLater(() -> {
+				this.groupe.getChildren().clear();
+				this.groupe.getChildren().add(new ClientPanel(this));
+		});
 	}
 	
 	public void AfficherMessage(String message, Color couleur) {
-		this.groupe.getChildren().clear();
-		this.groupe.getChildren().add(new MessagePanel(message, couleur));
+		Platform.runLater(new Runnable() {
+		    @Override
+		    public void run() {
+				groupe.getChildren().clear();
+				groupe.getChildren().add(new MessagePanel(message, couleur));
+		    }
+		});
 	}
 	
 	public void ChargerJeu() {
+		this.AfficherMessage("En attente de joueurs...", Color.ORANGE);
+		/*
 		this.lancerEcoutePartie();
 		// Ici on va demander le status de la partie
 		this.demanderStatusPartie();
@@ -125,6 +133,7 @@ public class MainGUI extends Application {
 				this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE);
 				break;
 		}
+		*/
 	}
 	
 	

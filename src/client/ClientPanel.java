@@ -31,14 +31,19 @@ public class ClientPanel extends Parent {
 	protected int dangerLevel;
 	protected int winLevel;
 	
-	public ClientPanel(MainGUI game) throws FileNotFoundException {
+	public ClientPanel(MainGUI game) {
 		wordToFind = game.getPartie().getMot().getMot();
 		dangerLevel = 1;
 		winLevel = 0;
 		
 		this.setButtons();
 		this.setTexts();
-		this.setImage();
+		try {
+			this.setImage();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.setButtonsActions();
 		
 	}

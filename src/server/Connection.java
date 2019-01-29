@@ -47,7 +47,7 @@ public class Connection implements Runnable {
 				
 				
 				
-				System.out.println("Addresse : " + sockNewClient.getLocalAddress() + " port : " + sockNewClient.getPort());
+				//System.out.println("New user : Addresse : " + sockNewClient.getLocalAddress() + " port : " + sockNewClient.getPort());
 				
 				
 				
