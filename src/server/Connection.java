@@ -9,15 +9,15 @@ import commun.Joueur;
 
 public class Connection implements Runnable {
 
-	private List<Joueur> lesJoueurs;
+	private MainServer main;
 	
 	private Server server;
 	private ServerSocket serverSocket;
 
     protected volatile boolean running = true;
 	
-	public Connection(List<Joueur> lesJoueurs, Server server) {
-		this.lesJoueurs = lesJoueurs;
+	public Connection(MainServer main, Server server) {
+		this.main = main;
 		this.server = server;
 		try {
 			this.serverSocket = new ServerSocket(server.getPort());
@@ -51,7 +51,7 @@ public class Connection implements Runnable {
 				
 				
 				
-				ConnectedClient newClient = new ConnectedClient(sockNewClient, this.lesJoueurs);
+				ConnectedClient newClient = new ConnectedClient(sockNewClient, this.main);
 				this.server.addClient(newClient);
 				Thread threadNewClient = new Thread(newClient);
 				threadNewClient.start();

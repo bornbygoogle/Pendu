@@ -26,6 +26,7 @@ public class MainGUI extends Application {
 	private Joueur joueur;
 	private Partie partie;
 	
+	private ConnexionReceive connexionReceive;
 	private PartieReceive partieReceive;
 	
 	private boolean connecte;
@@ -50,7 +51,7 @@ public class MainGUI extends Application {
 		this.joueur = new Joueur();
 		this.partie = new Partie();
 		
-		Mot mot = new Mot();
+		/*Mot mot = new Mot();
 		mot.setMot("ESCALIER");
 		partie.setMot(mot);
 		Joueur joueur1 = new Joueur();
@@ -60,15 +61,13 @@ public class MainGUI extends Application {
 		HashMap<Joueur, StatusJoueur> participants = new HashMap<Joueur, StatusJoueur>();
 		participants.put(joueur1, StatusJoueur.EnJeu);
 		participants.put(joueur2, StatusJoueur.EnJeu);
-		partie.setParticipants(participants);
+		partie.setParticipants(participants);*/
 		
 		// Verif si joueur est connectÃ© au serveur ou non
 		this.connecte = false;
 		
 		// Affichage de la page de connexion
-		//this.AfficherConnexion();
-		this.AfficherJeu();
-		//this.AfficherMessage("Test", Color.RED);
+		this.AfficherConnexion();
 		
 		// Affichage
 		stage.show();
@@ -76,7 +75,14 @@ public class MainGUI extends Application {
 		// Exit de l'application
 		stage.setOnCloseRequest(e -> 
 		{
+			this.client.envoyer(DemandeServeur.Quitter);
+			if(this.partieReceive != null)
+				this.partieReceive.close();
+			if(this.connexionReceive != null)
+				this.connexionReceive.close();
+			this.client.disconnectedServer();
 			Platform.exit();
+			System.exit(0);
 		});
 	}
 	public static void main(String[] args) {
@@ -110,7 +116,7 @@ public class MainGUI extends Application {
 	public void AfficherConnexion() {
 		Platform.runLater(() -> {
 			this.groupe.getChildren().clear();
-			this.groupe.getChildren().add(new Connexion(this));
+			this.groupe.getChildren().add(new Connexion(this.connexionReceive, this));
 		});
 	}
 	
@@ -133,32 +139,23 @@ public class MainGUI extends Application {
 	
 	public void ChargerJeu() {
 		// On lance l'écoute sur la partie
-		this.lancerEcoutePartie();
+		this.partieReceive = new PartieReceive(this);
 		// Ici on va demander le status de la partie
 		this.demanderStatusPartie();
-		ReponseServeur repServeur = null;
-		while(repServeur == null) {
-			Object reponse = this.partieReceive.attenteReponse();
-			if(reponse != null && reponse instanceof ReponseServeur) {
-				ReponseServeur repServ = (ReponseServeur)reponse;
-				if(repServ == ReponseServeur.PartieEnAttenteJoueur || repServ == ReponseServeur.PartieEnCours)
-					repServeur = repServ;
+		Object reponse = this.partieReceive.attenteReponse();
+		if(reponse != null && reponse instanceof ReponseServeur) {
+			ReponseServeur repServ = (ReponseServeur)reponse;
+			if(repServ == ReponseServeur.PartieEnAttenteJoueur || repServ == ReponseServeur.PartieEnCours) {
+				switch (repServ) {
+					case PartieEnAttenteJoueur:
+						this.AfficherMessage("En attente de joueurs...", Color.ORANGE);
+						break;
+					case PartieEnCours:
+						this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE);
+						break;
+				}
 			}
 		}
-		
-		switch (repServeur) {
-			case PartieEnAttenteJoueur:
-				this.AfficherMessage("En attente de joueurs...", Color.ORANGE);
-				break;
-			case PartieEnCours:
-				this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE);
-				break;
-		}
-	}
-	
-	
-	public void lancerEcoutePartie() {
-		this.partieReceive = new PartieReceive(this);
 	}
 	
 	public void demanderStatusPartie() {
