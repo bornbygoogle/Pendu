@@ -29,18 +29,9 @@ public class Connexion extends Parent {
 	private Button boutonConnexion;
 	private Label message;
 	
-	private ConnexionReceive connexionReceive;
-	private Thread threadReceive;
-	
-	public Connexion(ConnexionReceive connexionReceive, MainGUI main) {
+	public Connexion(MainGUI main) {
 		this.main = main;
 		try {
-			// Lancement du theard d'ï¿½coute de la connexion
-			connexionReceive = new ConnexionReceive(this);
-			this.connexionReceive = connexionReceive;
-			this.threadReceive = new Thread(this.connexionReceive);
-			this.threadReceive.start();
-			
 			this.login = new TextField();
 			this.login.setPrefWidth(200);
 			this.login.setPrefHeight(20);
@@ -116,6 +107,10 @@ public class Connexion extends Parent {
 		return password;
 	}
 	
+	public Button getBouton() {
+		return this.boutonConnexion;
+	}
+	
 	public MainGUI getMain() {
 		return main;
 	}
@@ -136,35 +131,39 @@ public class Connexion extends Parent {
 	
 	public void envoyerDemandeConnexion() {
 		this.definirIdentifiantsJoueur();
-		boolean verif = this.main.getClient().envoyer(this.main.getJoueur());
-		System.out.println("Vérification : " + verif);
+		this.main.getClient().envoyer(this.main.getJoueur());
 	}
 	
-	public void verifierReponseConnexion(Joueur unJoueur) {
-		// Check du status renvoyï¿½
-		if(unJoueur.getStatus()) {
-			// Si connexion ok -> redï¿½finir le joueur + mettre connexion ï¿½ true + charger le jeu
-			this.main.setJoueur(unJoueur);
-			this.main.setConnecte(true);
-			// On Charge le jeu
-			this.main.ChargerJeu();
-		} else {
-			// Si connexion pas bonne, afficher le message d'erreur renvoyï¿½ par le serveur et laisser la page de connexion
-			this.setMessageColor(Color.RED);
-			if(unJoueur.getMessage().length() > 0) {
-				Platform.runLater(new Runnable() {
-				    @Override
-				    public void run() {
-						setMessageText(unJoueur.getMessage());
-				    }
-				});
+	public void verifierReponseConnexion() {
+		Object element = this.main.getClient().attenteReponse();
+		if(element != null && element instanceof Joueur) {
+			Joueur unJoueur = (Joueur)element;
+			// Check du status renvoyï¿½
+			if(unJoueur.getStatus()) {
+				// Si connexion ok -> redï¿½finir le joueur + mettre connexion ï¿½ true + charger le jeu
+				this.main.setJoueur(unJoueur);
+				this.main.setConnecte(true);
+				// On Charge le jeu
+				this.main.InitialisationPartie();
 			} else {
-				Platform.runLater(new Runnable() {
-				    @Override
-				    public void run() {
-						setMessageText("Login ou mot de passe incorrect");
-				    }
-				});
+				// Si connexion pas bonne, afficher le message d'erreur renvoyï¿½ par le serveur et laisser la page de connexion
+				this.setMessageColor(Color.RED);
+				if(unJoueur.getMessage().length() > 0) {
+					Platform.runLater(new Runnable() {
+					    @Override
+					    public void run() {
+							setMessageText(unJoueur.getMessage());
+					    }
+					});
+				} else {
+					Platform.runLater(new Runnable() {
+					    @Override
+					    public void run() {
+							setMessageText("Login ou mot de passe incorrect");
+					    }
+					});
+				}
+				this.boutonConnexion.setDisable(false);
 			}
 		}
 	}

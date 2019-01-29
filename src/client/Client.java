@@ -1,6 +1,7 @@
 package client;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
@@ -13,27 +14,23 @@ public class Client {
 	private int port;
 	private Socket socket;
 	private ObjectOutputStream out;
+	private ObjectInputStream in;
 	
-	public Client(String address, int port) {
+	public Client(MainGUI main, String address, int port) {
 		// D�finition des attributs pass�s
 		this.address = address;
 		this.port = port;
 		
 		try {
 			// Connexion au serveur
-			System.out.println(this.address);
-			System.out.println(this.port);
-
 			this.socket = new Socket(this.address, this.port);
 
-			System.out.println(this.socket.getLocalAddress());
-			System.out.println(this.socket.getPort());
-
 			// Cr�ation du thread d'envoie
+			this.in = new ObjectInputStream(this.socket.getInputStream());
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
 		} catch (IOException e) {
 			// Si probl�me lors de connexion au serveur, on affiche un message et on ferme l'appli
-			e.printStackTrace();/*
+			e.printStackTrace();
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Pendu");
 			alert.setHeaderText(null);
@@ -41,7 +38,22 @@ public class Client {
 
 			alert.showAndWait();
 			
-			System.exit(0);*/
+			System.exit(0);
+		}
+	}
+	
+	public Object attenteReponse() {
+		try {
+			Object reponse = this.in.readObject();
+			return reponse;
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
@@ -61,6 +73,8 @@ public class Client {
 
 	public void disconnectedServer() {
 		try {
+			if(this.in != null)
+				this.in.close();
 			if(this.out != null)
 				this.out.close();
 			if(this.socket != null)
@@ -68,9 +82,5 @@ public class Client {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public Socket getSocket() {
-		return socket;
 	}
 }

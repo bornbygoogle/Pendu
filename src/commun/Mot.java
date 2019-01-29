@@ -1,7 +1,13 @@
 package commun;
 
-public class Mot {
+import java.io.Serializable;
+
+public class Mot implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id = 0;
 	private String mot = "";
 	private Theme theme = new Theme();
