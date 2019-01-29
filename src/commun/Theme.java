@@ -1,9 +1,14 @@
 package commun;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Theme {
+public class Theme implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String libelle;
 	private List<Mot> mots;

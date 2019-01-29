@@ -1,6 +1,8 @@
 package commun;
 
-public enum StatusJoueur {
+import java.io.Serializable;
+
+public enum StatusJoueur implements Serializable {
 		Perdu,
 		Trouve,
 		EnJeu
