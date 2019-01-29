@@ -53,7 +53,10 @@ public class ConnectionBDD
 			} catch (ClassNotFoundException | IOException | SQLException e) {
 				e.printStackTrace();
 			}
+			System.out.println("Intiancier la connection !");
 		}
+		else
+			System.out.println("Connection existe !");
 		return connection;
 	}
 }

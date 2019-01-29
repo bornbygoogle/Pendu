@@ -126,7 +126,7 @@ public class Connexion extends Parent {
 	public void definirIdentifiantsJoueur() {
 		this.main.setJoueur(new Joueur());
 		this.main.getJoueur().setPseudo(this.login.getText());
-		this.main.getJoueur().setPass(Utils.encrypt(this.password.getText()));
+		this.main.getJoueur().setPass(Utils.encrypt(this.getPassword().getText(), Utils.getSecretKey()));
 	}
 	
 	public void envoyerDemandeConnexion() {

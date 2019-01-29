@@ -1,30 +1,59 @@
 package commun;
 
 import java.security.Key;
+import java.security.spec.KeySpec;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Calendar;
 
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class Utils {
-	
-	public static String encrypt(String password) {
-		return password;
-		/*
-		try	{
-			Key clef = new SecretKeySpec("Key@1PenduKey@1Pendu".getBytes(), "AES");
-			Cipher cipher = Cipher.getInstance("AES");
-			cipher.init(Cipher.ENCRYPT_MODE, clef);
-			return new String(cipher.doFinal(password.getBytes()));
+public class Utils 
+{
+	private static final String SECRET_KEY = "Key1PenduKey1Pendu1819G3";
+	private static String salt = "ssshhhhhhhhhhh!!!!";
+
+	public static String encrypt(String strToEncrypt, String secret) {
+		try {
+			byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			IvParameterSpec ivspec = new IvParameterSpec(iv);
+			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+			KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(), salt.getBytes(), 65536, 256);
+			SecretKey tmp = factory.generateSecret(spec);
+			SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
+
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivspec);
+			return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
+		} catch (Exception e) {
+			System.out.println("Error while encrypting: " + e.toString());
 		}
-		catch (Exception e)
-		{
-			return null;
-		}
-		*/
+		return null;
 	}
+
+	/*
+	public static String decrypt(String strToDecrypt, String secret) { try {
+	byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	IvParameterSpec ivspec = new IvParameterSpec(iv);
+
+	SecretKeyFactory factory =
+	SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256"); KeySpec spec = new
+	PBEKeySpec(secretKey.toCharArray(), salt.getBytes(), 65536, 256); SecretKey
+	tmp = factory.generateSecret(spec); SecretKeySpec secretKey = new
+	SecretKeySpec(tmp.getEncoded(), "AES");
+	
+	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+	cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec); return new
+	String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt))); } catch
+	(Exception e) { System.out.println("Error while decrypting: " +
+	e.toString()); } return null; }
+	*/
 
 	public static String getCurrentTimeUsingCalendar() {
 		Calendar cal = Calendar.getInstance();
@@ -32,5 +61,9 @@ public class Utils {
 		DateFormat dateFormat = new SimpleDateFormat("DD/MM/YYYY");
 		String formattedDate = dateFormat.format(date);
 		return formattedDate;
+	}
+
+	public static String getSecretKey() {
+		return SECRET_KEY;
 	}
 }
