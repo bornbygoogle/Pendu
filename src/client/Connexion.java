@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import commun.Joueur;
 import commun.Utils;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -127,13 +128,15 @@ public class Connexion extends Parent {
 	}
 	
 	public void definirIdentifiantsJoueur() {
+		this.main.setJoueur(new Joueur());
 		this.main.getJoueur().setPseudo(this.login.getText());
 		this.main.getJoueur().setPass(Utils.encrypt(this.password.getText()));
 	}
 	
 	public void envoyerDemandeConnexion() {
 		this.definirIdentifiantsJoueur();
-		this.main.getClient().envoyer(this.main.getJoueur());
+		boolean verif = this.main.getClient().envoyer(this.main.getJoueur());
+		System.out.println("Vérification : " + verif);
 	}
 	
 	public void verifierReponseConnexion(Joueur unJoueur) {
@@ -147,10 +150,21 @@ public class Connexion extends Parent {
 		} else {
 			// Si connexion pas bonne, afficher le message d'erreur renvoyï¿½ par le serveur et laisser la page de connexion
 			this.setMessageColor(Color.RED);
-			if(unJoueur.getMessage().length() > 0)
-				this.setMessageText(unJoueur.getMessage());
-			else
-				this.setMessageText("Login ou mot de passe incorrect.");
+			if(unJoueur.getMessage().length() > 0) {
+				Platform.runLater(new Runnable() {
+				    @Override
+				    public void run() {
+						setMessageText(unJoueur.getMessage());
+				    }
+				});
+			} else {
+				Platform.runLater(new Runnable() {
+				    @Override
+				    public void run() {
+						setMessageText("Login ou mot de passe incorrect");
+				    }
+				});
+			}
 		}
 	}
 }

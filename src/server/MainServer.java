@@ -37,34 +37,11 @@ public class MainServer extends Application
 
 		if (connection != null)
 			connection.close();
-
-		/*List<Joueur> nouveaux = new ArrayList();
-		Joueur newJ = new Joueur();
-		newJ.setPseudo("tony7");
-		newJ.setPass("tony7");
-		newJ.setDateDernierCo(null);
-		newJ.setNbScore(0);
-		newJ.setNbParties(0);
-		nouveaux.add(newJ);
-		Joueur newJ2 = new Joueur();
-		newJ2.setPseudo("tony8");
-		newJ2.setPass("tony8");
-		newJ2.setDateDernierCo(null);
-		newJ2.setNbScore(0);
-		newJ2.setNbParties(0);
-		nouveaux.add(newJ2);
-		Methods.updateJoueur(connection, nouveaux);
-		System.out.println(Methods.getMot(themes.get(1).getMots()));
-
-		Joueur unJoueur = new Joueur();
-		unJoueur.setPseudo("dylan");*/
-
-		for(Joueur j : joueurs)
-			System.out.println(j.getPseudo() + " " + j.getPass());
-			/*if (j.getPseudo().equals(unJoueur.getPseudo()))
-				// envoie status to client
-				System.out.println("true");*/
-				
+		
+		for(Joueur j : this.joueurs) {
+			System.out.println(j.getPseudo() + " : " + j.getPass());
+		}
+		
 		///////////////////////////
 		// Démarrage du serveur //
 		/////////////////////////
@@ -77,16 +54,7 @@ public class MainServer extends Application
 		stage.setScene(scene);
 
 		// Instancier une connection
-		System.out.println();
-		this.server = new Server(this.joueurs, 1026);
-
-		
-		// Déclaration des classes métiers
-		//this.joueur = new Joueur();
-		//this.partie = new Partie();
-		
-		// Verif si joueur est connecté au serveur ou non
-		//this.connecte = false;
+		this.server = new Server(this.joueurs, 1033);
 		
 		// Affichage de la page de connexion
 		this.serverGUI();
@@ -120,13 +88,5 @@ public class MainServer extends Application
 
 	public Server getServer() {
 		return server;
-	}
-
-	public Joueur getJoueur() {
-		return joueur;
-	}
-
-	public void setJoueur(Joueur unJoueur) {
-		this.joueur = unJoueur;
 	}
 }

@@ -1,6 +1,8 @@
 package commun;
 
-public enum ReponseServeur {
+import java.io.Serializable;
+
+public enum ReponseServeur implements Serializable {
 	PartieEnCours,
 	PartieEnAttenteJoueur
 }

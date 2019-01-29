@@ -12,8 +12,6 @@ public class Client {
 	private String address;
 	private int port;
 	private Socket socket;
-	private Thread threadSend;
-	private ClientSend clientSend;
 	private ObjectOutputStream out;
 	
 	public Client(String address, int port) {
@@ -33,8 +31,6 @@ public class Client {
 
 			// Cr�ation du thread d'envoie
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
-			this.clientSend = new ClientSend(this.out);
-			this.threadSend = new Thread(this.clientSend);
 		} catch (IOException e) {
 			// Si probl�me lors de connexion au serveur, on affiche un message et on ferme l'appli
 			e.printStackTrace();/*
@@ -49,8 +45,18 @@ public class Client {
 		}
 	}
 	
-	public void envoyer(Object element) {
-		this.clientSend.envoyer(this.threadSend, element); 
+	public boolean envoyer(Object element) {
+		boolean verif = false;
+		try {
+			if(element != null) {
+				this.out.writeObject(element);
+				this.out.flush();
+				verif = true;
+			}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return verif;
 	}
 
 	public void disconnectedServer() {

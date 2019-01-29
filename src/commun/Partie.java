@@ -1,9 +1,14 @@
 package commun;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Partie {
+public class Partie implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id = 0;
 	private Mot mot = new Mot();
 	private Joueur joueurGagnant = new Joueur();

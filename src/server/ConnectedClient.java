@@ -52,20 +52,23 @@ public class ConnectedClient implements Runnable {
 					if(element instanceof Joueur) {
 						Joueur joueur = (Joueur)element;
 						// On va vérifier que le joueur existe
-						Joueur vraiJoueur = null;
+						Joueur joueurLocal = null;
 						for(Joueur j : this.lesJoueurs) {
-							if(j.getPseudo().equalsIgnoreCase(joueur.getPseudo()))
-								vraiJoueur = j;
+							if(j.getPseudo().equalsIgnoreCase(joueur.getPseudo())) {
+								joueurLocal = j;
+							}
 						}
-						if(vraiJoueur != null) {
-							if(joueur.getPass().equals(vraiJoueur.getPass())) {
-								vraiJoueur.setStatus(true);
-								this.joueur = vraiJoueur;
-								this.envoyer(this.joueur);
+						if(joueurLocal != null) {
+							if(joueur.getPass().equals(joueurLocal.getPass())) {
+								joueurLocal.setStatus(true);
+								joueur = joueurLocal;
+								this.joueur = joueurLocal;
 							} else
 								joueur.setMessage("Le mot de passe n'est pas valide.");
 						} else
 							joueur.setMessage("Vous n'êtes pas incrit.");
+						
+						this.envoyer(joueur);
 					}
 				}
 			}
@@ -82,6 +85,7 @@ public class ConnectedClient implements Runnable {
 			if(element != null) {
 				this.out.writeObject(element);
 				this.out.flush();
+				verif = true;
 			}
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

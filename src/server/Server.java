@@ -64,15 +64,16 @@ public class Server {
 	public void stopServerRunning()
 	{
 		System.out.println("I'm here in stopServerRunning !");
-		if (!(clients.isEmpty()))
+		if (!(clients.isEmpty())) {
 			for(ConnectedClient client : this.clients)
 				disconnectedClient(client);
+			this.clients.clear();
+		}
 		this.conn.arret();
 	}
 
 	public void disconnectedClient(ConnectedClient discClient) {
 		discClient.closeClient();
-		this.clients.remove(discClient);
 		//this.conn.arret();
 		/*Message mess = new Message("Le client " + discClient.getId() + " nous a quitt�");
 		mess.setSender("server");

@@ -40,17 +40,18 @@ public class ClientPanel extends Parent {
 	protected int winLevel;
 	
 	public ClientPanel(MainGUI game) {
-		this.gui = game;
-		this.partie = game.getPartie();
-		this.listJoueurs = this.partie.getParticipants();
-		this.wordToFind = this.partie.getMot().getMot();
-		this.dangerLevel = 1;
-		this.winLevel = 0;
+		wordToFind = game.getPartie().getMot().getMot();
+		dangerLevel = 1;
+		winLevel = 0;
 		
 		this.setButtons();
 		this.setTexts();
-		this.setImage();
-		this.setJoueurs();
+		try {
+			this.setImage();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.setButtonsActions();
 	}
 	
@@ -126,7 +127,7 @@ public class ClientPanel extends Parent {
 			} else if (this.listJoueurs.get(j) == StatusJoueur.Perdu) {
 				joueur.setText(j.getPseudo() + " - Perdu");
 			} else if (this.listJoueurs.get(j) == StatusJoueur.Trouve) {
-				joueur.setText(j.getPseudo() + " - Gagné");
+				joueur.setText(j.getPseudo() + " - GagnÃ©");
 			}
 			joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 12));
 			this.joueurs.getChildren().add(joueur);
@@ -191,7 +192,7 @@ public class ClientPanel extends Parent {
 					}
 					
 					if (winLevel == wordToFind.length()) {
-						gui.AfficherMessage("Vous avez gagné", Color.BLACK);
+						gui.AfficherMessage("Vous avez gagnÃ©", Color.BLACK);
 					}
 				
 					int actualButton = ((int) label.charAt(0))-65;
