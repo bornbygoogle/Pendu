@@ -46,12 +46,8 @@ public class ClientPanel extends Parent {
 		
 		this.setButtons();
 		this.setTexts();
-		try {
-			this.setImage();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.setImage();
+		this.setJoueurs();
 		this.setButtonsActions();
 	}
 	
