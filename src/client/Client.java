@@ -65,7 +65,6 @@ public class Client {
 				this.out.close();
 			if(this.socket != null)
 				this.socket.close();
-			System.exit(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

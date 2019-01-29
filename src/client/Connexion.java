@@ -32,11 +32,12 @@ public class Connexion extends Parent {
 	private ConnexionReceive connexionReceive;
 	private Thread threadReceive;
 	
-	public Connexion(MainGUI main) {
+	public Connexion(ConnexionReceive connexionReceive, MainGUI main) {
 		this.main = main;
 		try {
 			// Lancement du theard d'�coute de la connexion
-			this.connexionReceive = new ConnexionReceive(this);
+			connexionReceive = new ConnexionReceive(this);
+			this.connexionReceive = connexionReceive;
 			this.threadReceive = new Thread(this.connexionReceive);
 			this.threadReceive.start();
 			

@@ -20,6 +20,7 @@ public class MainServer extends Application
 
 	private Joueur joueur;
 	private Partie partie;
+	private ReponseServeur statusPartie;
 
 	private Connection connection = null;
 	private List<ConnectedClient> clients;
@@ -42,6 +43,8 @@ public class MainServer extends Application
 			System.out.println(j.getPseudo() + " : " + j.getPass());
 		}
 		
+		this.statusPartie = ReponseServeur.PartieEnAttenteJoueur;
+		
 		///////////////////////////
 		// Démarrage du serveur //
 		/////////////////////////
@@ -54,7 +57,7 @@ public class MainServer extends Application
 		stage.setScene(scene);
 
 		// Instancier une connection
-		this.server = new Server(this.joueurs, 1033);
+		this.server = new Server(this, 1033);
 		
 		// Affichage de la page de connexion
 		this.serverGUI();
@@ -88,5 +91,13 @@ public class MainServer extends Application
 
 	public Server getServer() {
 		return server;
+	}
+	
+	public ReponseServeur getStatusPartie() {
+		return this.statusPartie;
+	}
+	
+	public List<Joueur> getListeJoueurs() {
+		return this.joueurs;
 	}
 }
