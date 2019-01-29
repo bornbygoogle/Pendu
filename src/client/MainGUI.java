@@ -1,9 +1,12 @@
 package client;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 
 import commun.Joueur;
+import commun.Mot;
 import commun.Partie;
+import commun.StatusJoueur;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -16,7 +19,7 @@ public class MainGUI extends Application {
 	private Client client;
 	
 	private Joueur joueur;
-	//private Partie partie;
+	private Partie partie;
 	
 	private boolean connecte;
 	
@@ -29,7 +32,7 @@ public class MainGUI extends Application {
 
 		// Config graphique de l'appli
 		this.groupe = new Group();
-		Scene scene = new Scene(this.groupe, 500, 925);
+		Scene scene = new Scene(this.groupe, 725, 925);
 		stage.setTitle("Pendu");
 		stage.setScene(scene);
 		
@@ -38,7 +41,19 @@ public class MainGUI extends Application {
 		
 		// Déclaration des classes métiers
 		this.joueur = new Joueur();
-		//this.partie = new Partie();
+		this.partie = new Partie();
+		
+		Mot mot = new Mot();
+		mot.setMot("ESCALIER");
+		partie.setMot(mot);
+		Joueur joueur1 = new Joueur();
+		joueur1.setPseudo("Joueur 1");
+		Joueur joueur2 = new Joueur();
+		joueur2.setPseudo("Joueur 2");
+		HashMap<Joueur, StatusJoueur> participants = new HashMap<Joueur, StatusJoueur>();
+		participants.put(joueur1, StatusJoueur.EnJeu);
+		participants.put(joueur2, StatusJoueur.EnJeu);
+		partie.setParticipants(participants);
 		
 		// Verif si joueur est connecté au serveur ou non
 		this.connecte = false;
