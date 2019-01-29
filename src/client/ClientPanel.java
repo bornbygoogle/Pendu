@@ -54,6 +54,14 @@ public class ClientPanel extends Parent {
 		this.setButtonsActions();
 	}
 	
+	public void refreshJoueurs(MainGUI game) {
+		this.gui = game;
+		this.partie = game.getPartie();
+		this.listJoueurs = this.partie.getParticipants();
+		
+		this.setJoueurs();
+	}
+	
 	protected void setButtons() {
 		alphabet = new ArrayList<Button>();
 		
