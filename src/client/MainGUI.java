@@ -56,6 +56,12 @@ public class MainGUI extends Application {
 		
 		// Affichage
 		stage.show();
+		
+		// Exit de l'application
+		stage.setOnCloseRequest(e -> 
+		{
+			Platform.exit();
+		});
 	}
 	public static void main(String[] args) {
 		launch(args);
@@ -110,8 +116,7 @@ public class MainGUI extends Application {
 	}
 	
 	public void ChargerJeu() {
-		this.AfficherMessage("En attente de joueurs...", Color.ORANGE);
-		/*
+		// On lance l'écoute sur la partie
 		this.lancerEcoutePartie();
 		// Ici on va demander le status de la partie
 		this.demanderStatusPartie();
@@ -133,7 +138,6 @@ public class MainGUI extends Application {
 				this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE);
 				break;
 		}
-		*/
 	}
 	
 	
