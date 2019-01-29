@@ -1,5 +1,8 @@
 package commun;
 
-public enum DemandeServeur {
-	StatusPartie
+import java.io.Serializable;
+
+public enum DemandeServeur implements Serializable {
+	StatusPartie,
+	Quitter
 }

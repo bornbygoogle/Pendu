@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 
+import commun.DemandeServeur;
 import commun.Joueur;
 
 public class ConnectedClient implements Runnable {
@@ -17,13 +18,12 @@ public class ConnectedClient implements Runnable {
 	private ObjectInputStream in;
 	
 	private Joueur joueur;
+	private MainServer main;
 	
-	private List<Joueur> lesJoueurs;
 	
-	
-	public ConnectedClient(Socket socket, List<Joueur> lesJoueurs) {
+	public ConnectedClient(Socket socket, MainServer main) {
 		try {
-			this.lesJoueurs = lesJoueurs;
+			this.main = main;
 			this.id = idCounter++;
 			this.socket = socket;
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
@@ -51,21 +51,37 @@ public class ConnectedClient implements Runnable {
 					// Si le client a envoye une classe joueur, cela veut dire qu'il veut s'identifier
 					if (element instanceof Joueur) {
 						Joueur joueur = (Joueur)element;
-						// On va verifier que le joueur existe
-						Joueur vraiJoueur = null;
-						for(Joueur j : this.lesJoueurs) {
-							if(j.getPseudo().equalsIgnoreCase(joueur.getPseudo()))
-								vraiJoueur = j;
+
+						// On va vérifier que le joueur existe
+						Joueur joueurLocal = null;
+						for(Joueur j : this.main.getListeJoueurs()) {
+							if(j.getPseudo().equalsIgnoreCase(joueur.getPseudo())) {
+								joueurLocal = j;
+							}
 						}
-						if(vraiJoueur != null) {
-							if(joueur.getPass().equals(vraiJoueur.getPass())) {
-								vraiJoueur.setStatus(true);
-								this.joueur = vraiJoueur;
-								this.envoyer(this.joueur);
+						if(joueurLocal != null) {
+							if(joueur.getPass().equals(joueurLocal.getPass())) {
+								joueurLocal.setStatus(true);
+								joueur = joueurLocal;
+								this.joueur = joueurLocal;
 							} else
 								joueur.setMessage("Le mot de passe n'est pas valide.");
 						} else
 							joueur.setMessage("Vous n'etes pas incrit.");
+						
+						this.envoyer(joueur);
+					} else if(element instanceof DemandeServeur) {
+						DemandeServeur demande = (DemandeServeur)element;
+						switch (demande) {
+							case StatusPartie:
+								// Renvoyer le status de la partie en cours
+								this.envoyer(this.main.getStatusPartie());
+								break;
+							case Quitter:
+								// Le client ferme son appli, il faut l'enlever de partout
+								this.closeClient();
+								break;
+						}
 					}
 				}
 			}
@@ -82,6 +98,7 @@ public class ConnectedClient implements Runnable {
 			if(element != null) {
 				this.out.writeObject(element);
 				this.out.flush();
+				verif = true;
 			}
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

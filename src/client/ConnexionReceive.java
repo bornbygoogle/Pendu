@@ -9,7 +9,7 @@ import commun.Joueur;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-public class ConnexionReceive implements Runnable {
+public class ConnexionReceive implements Runnable, IReceive {
 	
 	private Connexion connexion;
 	
@@ -29,7 +29,7 @@ public class ConnexionReceive implements Runnable {
 			// Lancement de l'�coute du r�seau
 			this.in = new ObjectInputStream(this.socket.getInputStream());
 			// Tant que le joueur n'est pas connect�, ce theard tournera toujours
-			while(this.connexion.getMain().isConnecte()) {
+			while(!this.connexion.getMain().isConnecte()) {
 				// R�cup�ration de l'objet envoy� par le serveur
 				Object element = in.readObject();
 				// Si cet objet n'est pas null et que c'est un objet de type joueur, sinon on attend que ce soit bien un objet de type joueur qui nous est renvoy�
@@ -51,6 +51,15 @@ public class ConnexionReceive implements Runnable {
 			alert.setContentText("Impossible de joindre le serveur.");
 
 			alert.showAndWait();
+		}
+	}
+	
+	public void close() {
+		try {
+			this.in.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 } 

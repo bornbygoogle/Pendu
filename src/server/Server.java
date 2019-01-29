@@ -16,13 +16,13 @@ public class Server {
 
 	private List<ConnectedClient> clients;
 	
-	public Server(List<Joueur> lesJoueurs, int _port) throws IOException 
+	public Server(MainServer main, int _port) throws IOException 
 	{
 		this.port = _port;
 		this.clients = new ArrayList<ConnectedClient>();
 		System.out.println("Connect to server port " + port);
 
-		conn = new Connection(lesJoueurs, this);
+		conn = new Connection(main, this);
 		Thread threadConnection = new Thread(conn);
 		threadConnection.start();
 	}
@@ -64,14 +64,16 @@ public class Server {
 	public void stopServerRunning()
 	{
 		if (!(clients.isEmpty()))
+		{
 			for(ConnectedClient client : this.clients)
 				disconnectedClient(client);
+			this.clients.clear();
+		}
 		this.conn.arret();
 	}
 
 	public void disconnectedClient(ConnectedClient discClient) {
 		discClient.closeClient();
-		this.clients.remove(discClient);
 		//this.conn.arret();
 		/*Message mess = new Message("Le client " + discClient.getId() + " nous a quitt�");
 		mess.setSender("server");

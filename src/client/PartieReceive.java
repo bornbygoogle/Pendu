@@ -7,7 +7,7 @@ import java.net.Socket;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-public class PartieReceive {
+public class PartieReceive implements IReceive {
 	
 	private Client client;
 	private Socket socket;
@@ -73,4 +73,13 @@ public class PartieReceive {
 		}
 	}
 	*/
+	
+	public void close() {
+		try {
+			this.in.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
