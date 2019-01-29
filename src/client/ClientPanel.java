@@ -39,7 +39,7 @@ public class ClientPanel extends Parent {
 	protected int dangerLevel;
 	protected int winLevel;
 	
-	public ClientPanel(MainGUI game) throws FileNotFoundException {
+	public ClientPanel(MainGUI game) {
 		this.gui = game;
 		this.partie = game.getPartie();
 		this.listJoueurs = this.partie.getParticipants();
@@ -135,15 +135,21 @@ public class ClientPanel extends Parent {
 		this.getChildren().add(this.joueurs);
 	}
 	
-	protected void setImage() throws FileNotFoundException {
-		Image image = new Image(new FileInputStream("./Images/etape1.png"));
-		screen = new ImageView(image);
-		screen.setLayoutX(50);
-		screen.setLayoutY(0);
-		screen.setFitHeight(550);
-		screen.setFitWidth(400);
-		
-		this.getChildren().add(screen);
+	protected void setImage() {
+		Image image;
+		try {
+			image = new Image(new FileInputStream("./Images/etape1.png"));
+			screen = new ImageView(image);
+			screen.setLayoutX(50);
+			screen.setLayoutY(0);
+			screen.setFitHeight(550);
+			screen.setFitWidth(400);
+			
+			this.getChildren().add(screen);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	protected void setButtonsActions() {

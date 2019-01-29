@@ -106,12 +106,8 @@ public class MainGUI extends Application {
 	}
 	
 	public void AfficherJeu() {
-		try {
-			this.groupe.getChildren().clear();
-			this.groupe.getChildren().add(new ClientPanel(this));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		this.groupe.getChildren().clear();
+		this.groupe.getChildren().add(new ClientPanel(this));
 	}
 	
 	public void AfficherMessage(String message, Color couleur) {
