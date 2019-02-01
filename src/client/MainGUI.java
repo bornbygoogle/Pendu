@@ -24,6 +24,8 @@ public class MainGUI extends Application {
 	private boolean connecte;
 	private boolean enPartie;
 	
+	private Thread threadJeu;
+	
 	@Override
 	public void start(Stage stage) throws Exception {
 		
@@ -111,7 +113,10 @@ public class MainGUI extends Application {
 	public void AfficherJeu() {
 		Platform.runLater(() -> {
 			this.groupe.getChildren().clear();
-			this.groupe.getChildren().add(new ClientPanel(this));
+			JeuPanel jeuPanel = new  JeuPanel(this);
+			this.threadJeu = new Thread(jeuPanel);
+			this.threadJeu.start();
+			this.groupe.getChildren().add(jeuPanel);
 		});
 	}
 	
