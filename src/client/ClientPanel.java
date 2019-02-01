@@ -54,6 +54,14 @@ public class ClientPanel extends Parent implements Runnable {
 		this.setButtonsActions();
 	}
 	
+	public void refreshJoueurs(MainGUI game) {
+		this.gui = game;
+		this.partie = game.getPartie();
+		this.listJoueurs = this.partie.getParticipants();
+		
+		this.setJoueurs();
+	}
+	
 	protected void setButtons() {
 		alphabet = new ArrayList<Button>();
 		
@@ -191,7 +199,7 @@ public class ClientPanel extends Parent implements Runnable {
 					}
 					
 					if (winLevel == wordToFind.length()) {
-						gui.AfficherMessage("Vous avez gagnÃ©", Color.BLACK);
+						gui.AfficherMessage("Vous avez gagné", Color.BLACK);
 					}
 				
 					int actualButton = ((int) label.charAt(0))-65;
