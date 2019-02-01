@@ -63,8 +63,8 @@ public class Server {
 
 	public void stopServerRunning()
 	{
-		System.out.println("I'm here in stopServerRunning !");
-		if (!(clients.isEmpty())) {
+		if (!(clients.isEmpty()))
+		{
 			for(ConnectedClient client : this.clients)
 				disconnectedClient(client);
 			this.clients.clear();

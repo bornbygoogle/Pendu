@@ -1,6 +1,8 @@
 package server;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import commun.Joueur;
 import commun.Utils;
@@ -21,7 +23,7 @@ import javafx.scene.text.FontPosture;
 public class AjoutJoueur extends Parent 
 {
 
-	private Server mainServer;
+	private MainServer mainServer;
 
 	private TextField login;
 	private PasswordField password;
@@ -29,9 +31,11 @@ public class AjoutJoueur extends Parent
 	private Button boutonRegister;
 	private Button boutonFermer;
 	private Label message;
-	private Joueur newJoueur;
 
-	public AjoutJoueur(Server mainServeur) {
+	private Joueur newJoueur = new Joueur();
+	private List<Joueur> newJoueurs = new ArrayList<Joueur>();
+
+	public AjoutJoueur(MainServer mainServeur) {
 		this.mainServer = mainServeur;
 		try {
 			// Lancement du theard d'�coute de la connexion
@@ -51,7 +55,7 @@ public class AjoutJoueur extends Parent
 			this.boutonRegister = new Button("Register");
 			this.boutonRegister.setOnMouseClicked(new BoutonRegisterClicked(this));
 			this.boutonFermer = new Button("Fermer");
-			//this.boutonFermer.setOnMouseClicked(/*Connection.arret()*/);
+			//this.boutonFermer.setOnMouseClicked(Connection.arret());
 			this.message = new Label("");
 			this.message.setTextFill(Color.RED);
 
@@ -132,7 +136,7 @@ public class AjoutJoueur extends Parent
 		return passwordVerif;
 	}
 
-	public Server getServer() {
+	public MainServer getServer() {
 		return mainServer;
 	}
 
@@ -145,20 +149,30 @@ public class AjoutJoueur extends Parent
 	}
 
 	public void definirIdentifiantsJoueur() {
+		//this.newJoueur = new Joueur();
 		newJoueur.setPseudo(this.getLogin().getText());
-		newJoueur.setPass(Utils.encrypt(this.password.getText()));
+		newJoueur.setPass(this.getPassword().getText());
+		this.newJoueurs.add(newJoueur);
+		//newJoueur.setPass(Utils.encrypt(this.password.getText()));
 		/*this.main.getJoueur().setPseudo(this.login.getText());
 		this.main.getJoueur().setPass(Utils.encrypt(this.password.getText()));*/
 	}
 	
-	public void envoyerDemandeConnexion() {
-		newJoueur = new Joueur();
-		newJoueur.setPseudo(this.getLogin().getText());
+	public void registerJoueurs() throws Exception {
+		//newJoueur = new Joueur();
+		//newJoueur.setPseudo(this.getLogin().getText());
+		//newJoueur.setPass(this.getPassword().getText());
 		//this.mainServer.getJoueur().setPseudo(this.getLogin().getText());
 		//this.mainServer.getJoueur().setPass(Utils.encrypt(this.password.getText()));
-		//this.definirIdentifiantsJoueur();
-		System.out.println(Utils.getCurrentTimeUsingCalendar());
-		System.out.println(this.newJoueur.getPseudo());
+		newJoueur.setPseudo(this.getLogin().getText());
+		newJoueur.setPass(Utils.encrypt(this.getPassword().getText(), Utils.getSecretKey()));
+		this.newJoueurs.add(newJoueur);
+
+		//System.out.println(Utils.getCurrentTimeUsingCalendar());
+
+		//System.out.println(Utils.encrypt(this.newJoueur.getPass(), "Key1PenduKey1Pendu1819G3"));
+
+		mainServer.setNewJoueurs(newJoueurs);
 		//this.main.getServer().envoyer(this.main.getJoueur());
 	}
 }

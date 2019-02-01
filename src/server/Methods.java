@@ -46,13 +46,26 @@ public class Methods
 
 	public static void updateJoueur(Connection connectionDB, List<Joueur> nouveauxJoueurs) throws SQLException
 	{
+		int rowCount = 0;
+
 		for (Joueur j : nouveauxJoueurs)
 		{
-			Statement statement = connectionDB.createStatement();
-			statement.executeUpdate("INSERT INTO PENDU_JOUEUR (pseudo, pass, dateInscription, dateDerniereCo, score, nbParties) " +
-									"VALUES ('" + j.getPseudo() + "', '" + j.getPass() + "', to_date('" + Utils.getCurrentTimeUsingCalendar() + "','DD/MM/RRRR'),null, 0, 0)");
-			if (statement != null)
-				statement.close();
+			while (rowCount == 0)
+			{
+				statement = connectionDB.createStatement();
+				statement.executeUpdate("INSERT INTO PENDU_JOUEUR (pseudo, pass, dateInscription, dateDerniereCo, score, nbParties) " +
+										"VALUES ('" + j.getPseudo() + "', '" + j.getPass() + "', to_date('" + Utils.getCurrentTimeUsingCalendar() + "','DD/MM/RRRR'),null, 0, 0)");
+				if (statement != null)
+					statement.close();
+
+				// Verification l'ajout de joueur
+				String selectJoueurSQL = "SELECT PSEUDO FROM PENDU_JOUEUR WHERE PSEUDO = '" + j.getPseudo() + "'";
+				ResultSet rs = SQLQuery(connectionDB, selectJoueurSQL);
+				while (rs.next()) 
+					rowCount = rs.getRow();
+					
+				SQLStatementClean();
+			}
 		}
 	}
 	
@@ -101,9 +114,6 @@ public class Methods
 		int index = randomGenerator.nextInt(mots.size());
 		return mots.get(index).getMot().toUpperCase();
 	}
-
-// status true --> renvoie les infos : nbr de parties
-// status false --> mise a jour message : "Login failed !"
 
 	private static ResultSet SQLQuery(Connection connectionDB, String requeteSQL) throws SQLException
 	{

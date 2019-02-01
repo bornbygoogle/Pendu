@@ -27,7 +27,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
-public class ClientPanel extends Parent {
+public class ClientPanel extends Parent implements Runnable {
 	protected ImageView screen;
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
@@ -208,6 +208,18 @@ public class ClientPanel extends Parent {
 				}
 				
 			});
+		}
+	}
+
+	@Override
+	public void run() {
+		while(true) {
+			Object objet = this.gui.getClient().attenteReponse();
+			if(objet != null && objet instanceof Partie) {
+				// Il faudra mettre à jour la partie en cours avec les nouvelles stats envoyées par le serv
+				//this.gui.getClient().envoyer(StatusJoueur.Trouve);
+				// Définir enPartie à false
+			}
 		}
 	}
 	
