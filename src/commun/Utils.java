@@ -1,6 +1,5 @@
 package commun;
 
-import java.security.Key;
 import java.security.spec.KeySpec;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
