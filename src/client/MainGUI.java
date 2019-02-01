@@ -26,6 +26,8 @@ public class MainGUI extends Application {
 	
 	private Thread threadJeu;
 	
+	private boolean enTest = false;
+	
 	@Override
 	public void start(Stage stage) throws Exception {
 		
@@ -49,7 +51,10 @@ public class MainGUI extends Application {
 		this.enPartie = false;
 		
 		// Affichage de la page de connexion
-		this.AfficherJeu();
+		if(this.enTest)
+			this.AfficherJeu();
+		else
+			this.AfficherConnexion();
 		
 		// Affichage
 		stage.show();
