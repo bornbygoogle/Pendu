@@ -27,17 +27,18 @@ public class MainServer extends Application
 
 	private List<Theme> themes = new ArrayList<Theme>();
 	private List<Joueur> joueurs = new ArrayList<Joueur>();
+	private List<Joueur> newJoueurs = new ArrayList<Joueur>();
 
 	@Override
-	public void start(Stage stage) throws Exception {
-
+	public void start(Stage stage) throws Exception 
+	{
 		// Recuperation des donnees necessaires de la BDD
 		connection = ConnectionBDD.getInstance();
 		this.themes = Methods.getListThemes(connection);
 		this.joueurs = Methods.getListJoueurs(connection);
 
-		if (connection != null)
-			connection.close();
+		/*if (connection != null)
+			connection.close();*/
 		
 		for(Joueur j : this.joueurs) {
 			System.out.println(j.getPseudo() + " : " + j.getPass());
@@ -57,6 +58,14 @@ public class MainServer extends Application
 		stage.setScene(scene);
 
 		// Instancier une connection
+
+		
+		// Déclaration des classes métiers
+		//this.joueur = new Joueur();
+		//this.partie = new Partie();
+		
+		// Verif si joueur est connecté au serveur ou non
+		//this.connecte = false;
 		this.server = new Server(this, 1033);
 		
 		// Affichage de la page de connexion
@@ -68,9 +77,27 @@ public class MainServer extends Application
 		// Exit de l'application
 		stage.setOnCloseRequest(e -> 
 		{
+			for (Joueur j : newJoueurs)
+				System.out.println("Joueur " + j.getPseudo() + " a mdp " + j.getPass());
+
+			try {
+				//connection = ConnectionBDD.getInstance();
+
+				Methods.updateJoueur(connection, newJoueurs);
+
+				if (connection != null)
+					connection.close();
+
+			} catch (SQLException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+
 			this.shutdown();
 			Platform.exit();
+			System.exit(0);
 		});
+		
 	}
 
 	public static void main(String[] args) {
@@ -78,7 +105,7 @@ public class MainServer extends Application
 	}
 
 	public void serverGUI() {
-		this.groupe.getChildren().add(new AjoutJoueur(this.server));
+		this.groupe.getChildren().add(new AjoutJoueur(this));
 	}
 
     public void shutdown() {
@@ -99,5 +126,10 @@ public class MainServer extends Application
 	
 	public List<Joueur> getListeJoueurs() {
 		return this.joueurs;
+	}
+
+	public void setNewJoueurs(List<Joueur> _newJoueurs)
+	{
+		this.newJoueurs = _newJoueurs;
 	}
 }
