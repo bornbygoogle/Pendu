@@ -47,7 +47,7 @@ public class MainGUI extends Application {
 		this.enPartie = false;
 		
 		// Affichage de la page de connexion
-		this.AfficherConnexion();
+		this.AfficherJeu();
 		
 		// Affichage
 		stage.show();
