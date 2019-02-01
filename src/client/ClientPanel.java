@@ -54,14 +54,6 @@ public class ClientPanel extends Parent implements Runnable {
 		this.setButtonsActions();
 	}
 	
-	public void refreshJoueurs(MainGUI game) {
-		this.gui = game;
-		this.partie = game.getPartie();
-		this.listJoueurs = this.partie.getParticipants();
-		
-		this.setJoueurs();
-	}
-	
 	protected void setButtons() {
 		alphabet = new ArrayList<Button>();
 		
@@ -216,7 +208,15 @@ public class ClientPanel extends Parent implements Runnable {
 		while(true) {
 			Object objet = this.gui.getClient().attenteReponse();
 			if(objet != null && objet instanceof Partie) {
-				// Il faudra mettre à jour la partie en cours avec les nouvelles stats envoyées par le serv
+				/*
+				Partie tmp = (Partie) objet;
+				if (this.listJoueurs != tmp.getParticipants()) {
+					this.partie = (Partie) objet;
+					this.listJoueurs = this.partie.getParticipants();
+					
+					this.setJoueurs();
+				}
+				*/
 				//this.gui.getClient().envoyer(StatusJoueur.Trouve);
 				// Définir enPartie à false
 			}
