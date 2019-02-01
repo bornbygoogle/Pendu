@@ -27,7 +27,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
-public class ClientPanel extends Parent {
+public class JeuPanel extends Parent implements Runnable {
 	protected ImageView screen;
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
@@ -39,7 +39,7 @@ public class ClientPanel extends Parent {
 	protected int dangerLevel;
 	protected int winLevel;
 	
-	public ClientPanel(MainGUI game) {
+	public JeuPanel(MainGUI game) {
 		this.gui = game;
 		this.partie = game.getPartie();
 		this.wordToFind = this.partie.getMot().getMot();
@@ -52,6 +52,14 @@ public class ClientPanel extends Parent {
 		this.setImage();
 		this.setJoueurs();
 		this.setButtonsActions();
+	}
+	
+	public void refreshJoueurs(MainGUI game) {
+		this.gui = game;
+		this.partie = game.getPartie();
+		this.listJoueurs = this.partie.getParticipants();
+		
+		this.setJoueurs();
 	}
 	
 	protected void setButtons() {
@@ -191,7 +199,7 @@ public class ClientPanel extends Parent {
 					}
 					
 					if (winLevel == wordToFind.length()) {
-						gui.AfficherMessage("Vous avez gagnÃ©", Color.BLACK);
+						gui.AfficherMessage("Vous avez gagné", Color.BLACK);
 					}
 				
 					int actualButton = ((int) label.charAt(0))-65;
@@ -200,6 +208,18 @@ public class ClientPanel extends Parent {
 				}
 				
 			});
+		}
+	}
+
+	@Override
+	public void run() {
+		while(true) {
+			Object objet = this.gui.getClient().attenteReponse();
+			if(objet != null && objet instanceof Partie) {
+				// Il faudra mettre à jour la partie en cours avec les nouvelles stats envoyées par le serv
+				//this.gui.getClient().envoyer(StatusJoueur.Trouve);
+				// Définir enPartie à false
+			}
 		}
 	}
 	
