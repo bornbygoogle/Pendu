@@ -27,7 +27,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
-public class ClientPanel extends Parent implements Runnable {
+public class JeuPanel extends Parent implements Runnable {
 	protected ImageView screen;
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
@@ -39,7 +39,7 @@ public class ClientPanel extends Parent implements Runnable {
 	protected int dangerLevel;
 	protected int winLevel;
 	
-	public ClientPanel(MainGUI game) {
+	public JeuPanel(MainGUI game) {
 		this.gui = game;
 		this.partie = game.getPartie();
 		this.wordToFind = this.partie.getMot().getMot();
