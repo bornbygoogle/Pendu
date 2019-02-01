@@ -32,13 +32,13 @@ public class AjoutJoueur extends Parent
 	private Button boutonFermer;
 	private Label message;
 
-	private Joueur newJoueur = new Joueur();
+	private Joueur newJoueur;
 	private List<Joueur> newJoueurs = new ArrayList<Joueur>();
 
 	public AjoutJoueur(MainServer mainServeur) {
 		this.mainServer = mainServeur;
 		try {
-			// Lancement du theard d'ï¿½coute de la connexion
+			// Lancement du theard d'ïecoute de la connexion
 			/*this.connexionReceive = new ConnexionReceive(this);
 			this.threadReceive = new Thread(this.connexionReceive);
 			this.threadReceive.start();*/
@@ -159,7 +159,7 @@ public class AjoutJoueur extends Parent
 	}
 	
 	public void registerJoueurs() throws Exception {
-		//newJoueur = new Joueur();
+		newJoueur = new Joueur();
 		//newJoueur.setPseudo(this.getLogin().getText());
 		//newJoueur.setPass(this.getPassword().getText());
 		//this.mainServer.getJoueur().setPseudo(this.getLogin().getText());

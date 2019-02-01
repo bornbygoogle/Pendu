@@ -1,6 +1,5 @@
 package commun;
 
-import java.security.Key;
 import java.security.spec.KeySpec;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -58,7 +57,7 @@ public class Utils
 	public static String getCurrentTimeUsingCalendar() {
 		Calendar cal = Calendar.getInstance();
 		java.util.Date date = cal.getTime();
-		DateFormat dateFormat = new SimpleDateFormat("DD/MM/YYYY");
+		DateFormat dateFormat = new SimpleDateFormat("dd/mm/RRRR");
 		String formattedDate = dateFormat.format(date);
 		return formattedDate;
 	}
