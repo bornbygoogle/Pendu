@@ -199,7 +199,7 @@ public class ClientPanel extends Parent {
 					}
 					
 					if (winLevel == wordToFind.length()) {
-						gui.AfficherMessage("Vous avez gagnÃ©", Color.BLACK);
+						gui.AfficherMessage("Vous avez gagné", Color.BLACK);
 					}
 				
 					int actualButton = ((int) label.charAt(0))-65;
