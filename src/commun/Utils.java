@@ -5,6 +5,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -36,28 +38,10 @@ public class Utils
 		return null;
 	}
 
-	/*
-	public static String decrypt(String strToDecrypt, String secret) { try {
-	byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	IvParameterSpec ivspec = new IvParameterSpec(iv);
-
-	SecretKeyFactory factory =
-	SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256"); KeySpec spec = new
-	PBEKeySpec(secretKey.toCharArray(), salt.getBytes(), 65536, 256); SecretKey
-	tmp = factory.generateSecret(spec); SecretKeySpec secretKey = new
-	SecretKeySpec(tmp.getEncoded(), "AES");
-	
-	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-	cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec); return new
-	String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt))); } catch
-	(Exception e) { System.out.println("Error while decrypting: " +
-	e.toString()); } return null; }
-	*/
-
 	public static String getCurrentTimeUsingCalendar() {
 		Calendar cal = Calendar.getInstance();
 		java.util.Date date = cal.getTime();
-		DateFormat dateFormat = new SimpleDateFormat("dd/mm/RRRR");
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
 		String formattedDate = dateFormat.format(date);
 		return formattedDate;
 	}
@@ -65,4 +49,15 @@ public class Utils
 	public static String getSecretKey() {
 		return SECRET_KEY;
 	}
+	
+	private static Pattern pswNamePtrn = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,15})");
+	
+	public static boolean validatePassword(String password){
+        
+        Matcher mtch = pswNamePtrn.matcher(password);
+        if(mtch.matches()){
+            return true;
+        }
+        return false;
+    }
 }

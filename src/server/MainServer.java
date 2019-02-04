@@ -3,7 +3,9 @@ package server;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import commun.*;
 import javafx.application.Application;
@@ -14,17 +16,19 @@ import javafx.stage.Stage;
 
 public class MainServer extends Application
 {
+	// Eléments JAVAFX
 	private Group groupe;
 
+	// Eléments Réseau
 	private Server server;
+	private List<ConnectedClient> clients;
 
-	private Joueur joueur;
+	// Eléments jeu
 	private Partie partie;
 	private ReponseServeur statusPartie;
 
+	// Eléments BDD
 	private Connection connection = null;
-	private List<ConnectedClient> clients;
-
 	private List<Theme> themes = new ArrayList<Theme>();
 	private List<Joueur> joueurs = new ArrayList<Joueur>();
 	private List<Joueur> newJoueurs = new ArrayList<Joueur>();
@@ -32,89 +36,85 @@ public class MainServer extends Application
 	@Override
 	public void start(Stage stage) throws Exception 
 	{
+		System.out.println(Utils.getCurrentTimeUsingCalendar());
+		//////////////////////
+		// Récupération BDD //
+		//////////////////////
+
 		// Recuperation des donnees necessaires de la BDD
-		connection = ConnectionBDD.getInstance();
+		this.connection = ConnectionBDD.getInstance();
 		this.themes = Methods.getListThemes(connection);
 		this.joueurs = Methods.getListJoueurs(connection);
-
-		/*if (connection != null)
-			connection.close();*/
 		
-		for(Joueur j : this.joueurs) {
-			System.out.println(j.getPseudo() + " : " + j.getPass());
-		}
+		this.afficherJoueursEnregistres();
 		
-		this.statusPartie = ReponseServeur.PartieEnAttenteJoueur;
-		
-		///////////////////////////
-		// Démarrage du serveur //
 		/////////////////////////
+		// Démarrage du réseau //
+		/////////////////////////
+
+		this.server = new Server(this, 1033);
+
+		///////////////////////
+		// Configuration jeu //
+		///////////////////////
+		
+		// Définition du status de la partie à en attente joueur au lancement du serveur
+		this.statusPartie = ReponseServeur.PartieEnAttenteJoueur;
+
+
+		//////////////////////
+		// Interface JAVAFX //
+		//////////////////////
 
 		// Config graphique de l'appli
 		this.groupe = new Group();
 		Scene scene = new Scene(this.groupe, 500, 925);
 
-		stage.setTitle("GUI Serveur");
+		stage.setTitle("Pendu serveur");
 		stage.setScene(scene);
-
-		// Instancier une connection
-
-		
-		// Déclaration des classes métiers
-		//this.joueur = new Joueur();
-		//this.partie = new Partie();
-		
-		// Verif si joueur est connecté au serveur ou non
-		//this.connecte = false;
-		this.server = new Server(this, 1033);
 		
 		// Affichage de la page de connexion
-		this.serverGUI();
+		this.afficherPanelAjouterJoueur();
 
 		// Affichage
 		stage.show();
 
-		// Exit de l'application
+		///////////////////
+		// Arrêt serveur //
+		///////////////////
+
 		stage.setOnCloseRequest(e -> 
 		{
-			for (Joueur j : newJoueurs)
-				System.out.println("Joueur " + j.getPseudo() + " a mdp " + j.getPass());
-
+			// On enregistre les nouveaux joueurs en BDD
 			try {
-				//connection = ConnectionBDD.getInstance();
-
+				System.out.println("Enregistrement des joueurs dans la BDD :");
+				for(Joueur j : this.newJoueurs)
+					System.out.println("\t- " + j.getPseudo());
+				
 				Methods.updateJoueur(connection, newJoueurs);
 
 				if (connection != null)
 					connection.close();
 
 			} catch (SQLException e2) {
-				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
 
-			this.shutdown();
+			// On stop le réseau
+			this.server.stopServerRunning();
 			Platform.exit();
 			System.exit(0);
 		});
-		
 	}
 
 	public static void main(String[] args) {
 		launch(args);
 	}
 
-	public void serverGUI() {
-		this.groupe.getChildren().add(new AjoutJoueur(this));
-	}
 
-    public void shutdown() {
-        // cleanup code here...
-		System.out.println("Stop");
-		if (this.server != null)
-			System.out.println(this.server.getPort());
-		this.server.stopServerRunning();
-	}
+
+
+
 
 	public Server getServer() {
 		return server;
@@ -128,8 +128,85 @@ public class MainServer extends Application
 		return this.joueurs;
 	}
 
-	public void setNewJoueurs(List<Joueur> _newJoueurs)
-	{
-		this.newJoueurs = _newJoueurs;
+
+
+
+
+
+	public void ajouterJoueur(Joueur unJoueur) {
+		this.joueurs.add(unJoueur);
+		this.newJoueurs.add(unJoueur);
+	}
+
+
+
+
+
+	
+
+	public void afficherPanelAjouterJoueur() {
+		this.groupe.getChildren().add(new AjoutJoueur(this));
+	}
+
+	public void afficherJoueursEnregistres() {
+		System.out.println("Liste des joueurs enregistrés :");
+		for(Joueur j : this.joueurs) {
+			System.out.println("\t- " + j.getPseudo());
+		}
+	}
+
+
+
+
+
+	public void lancementJeu() {
+		// Si une partie n'est pas lancée
+		if(this.statusPartie == ReponseServeur.PartieEnAttenteJoueur && this.partie == null) {
+			// Si il y a au moins 2 clients connectés au serveur
+			if(this.clients.size() >= 2) {
+				int cptAuthentifier = 0;
+				for(ConnectedClient client : this.clients) {
+					if(client.getJoueur() != null)
+					cptAuthentifier++;
+				}
+				// Si au moins 2 clients sont authentifiés
+				if(cptAuthentifier >= 2) {
+					// On lance une nouvelle partie
+					this.definirPartie();
+					this.statusPartie = ReponseServeur.PartieEnCours;
+					// On envoie la partie aux joueur concernés
+					this.envoyerPartie();
+				}
+			}
+		}
+	}
+
+	private void definirPartie() {
+		// On crée une nouvelle partie
+		Partie nouvellePartie = new Partie();
+		// On ajoute les joueurs authentifiés à la partie
+		HashMap<Joueur, StatusJoueur> lesParticipants = new HashMap<Joueur, StatusJoueur>();
+		for(ConnectedClient client : this.clients) {
+			if(client.getJoueur() != null)
+				lesParticipants.put(client.getJoueur(), StatusJoueur.EnJeu);
+		}
+		nouvellePartie.setParticipants(lesParticipants);
+		// On définit le mot à rechercher aléatoirement
+		Random rand = new Random();
+		Theme randomTheme = this.themes.get(rand.nextInt(this.themes.size()));
+		Mot randomMot = randomTheme.getMots().get(rand.nextInt(randomTheme.getMots().size()));
+		nouvellePartie.setMot(randomMot);
+		// On définit la partie
+		this.partie = nouvellePartie;
+	}
+
+	private void envoyerPartie() {
+		for(Joueur j : this.partie.getParticipants().keySet()) {
+			for(ConnectedClient client : this.clients) {
+				if(client.getJoueur().equals(j)) {
+					client.envoyer(this.partie);
+				}
+			}
+		}
 	}
 }
