@@ -1,12 +1,9 @@
 package server;
 
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import commun.Joueur;
 import commun.Utils;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -27,18 +24,15 @@ public class AjoutJoueur extends Parent
 
 	private TextField login;
 	private PasswordField password;
-	private PasswordField passwordVerif;
 	private Button boutonRegister;
-	private Button boutonFermer;
 	private Label message;
 
-	private Joueur newJoueur = new Joueur();
-	private List<Joueur> newJoueurs = new ArrayList<Joueur>();
+	private Joueur newJoueur;
 
 	public AjoutJoueur(MainServer mainServeur) {
 		this.mainServer = mainServeur;
 		try {
-			// Lancement du theard d'�coute de la connexion
+			// Lancement du theard d'ïecoute de la connexion
 			/*this.connexionReceive = new ConnexionReceive(this);
 			this.threadReceive = new Thread(this.connexionReceive);
 			this.threadReceive.start();*/
@@ -46,28 +40,21 @@ public class AjoutJoueur extends Parent
 			this.login = new TextField();
 			this.login.setPrefWidth(200);
 			this.login.setPrefHeight(20);
+			
 			this.password = new PasswordField();
 			this.password.setPrefWidth(200);
 			this.password.setPrefHeight(20);
-			this.passwordVerif = new PasswordField();
-			this.passwordVerif.setPrefWidth(200);
-			this.passwordVerif.setPrefHeight(20);
+			
 			this.boutonRegister = new Button("Register");
 			this.boutonRegister.setOnMouseClicked(new BoutonRegisterClicked(this));
-			this.boutonFermer = new Button("Fermer");
-			//this.boutonFermer.setOnMouseClicked(Connection.arret());
+			
 			this.message = new Label("");
 			this.message.setTextFill(Color.RED);
-
-			Button exitBtn = new Button("Exit");
-			exitBtn.setOnAction(e -> Platform.exit());
 			
 			Label texteLogin = new Label("Pseudo :");
 			texteLogin.setPrefWidth(80);
 			Label textePassword = new Label("Mot de passe :");
 			textePassword.setPrefWidth(80);
-			Label textePasswordVerif = new Label("Verification :");
-			textePasswordVerif.setPrefWidth(80);
 
 			VBox conteneur = new VBox();
 
@@ -97,8 +84,6 @@ public class AjoutJoueur extends Parent
 
 			HBox conteneurPasswordVerif = new HBox();
 			conteneurPasswordVerif.setPadding(new Insets(5, 0, 5, 0));
-			conteneurPasswordVerif.getChildren().add(textePasswordVerif);
-			conteneurPasswordVerif.getChildren().add(this.passwordVerif);
 			conteneurConnexion.getChildren().add(conteneurPasswordVerif);
 
 			Region region1 = new Region();
@@ -132,10 +117,6 @@ public class AjoutJoueur extends Parent
 		return password;
 	}
 
-	public PasswordField getPasswordVerif() {
-		return passwordVerif;
-	}
-
 	public MainServer getServer() {
 		return mainServer;
 	}
@@ -148,31 +129,11 @@ public class AjoutJoueur extends Parent
 		this.message.setText(message);
 	}
 
-	public void definirIdentifiantsJoueur() {
-		//this.newJoueur = new Joueur();
-		newJoueur.setPseudo(this.getLogin().getText());
-		newJoueur.setPass(this.getPassword().getText());
-		this.newJoueurs.add(newJoueur);
-		//newJoueur.setPass(Utils.encrypt(this.password.getText()));
-		/*this.main.getJoueur().setPseudo(this.login.getText());
-		this.main.getJoueur().setPass(Utils.encrypt(this.password.getText()));*/
-	}
-	
-	public void registerJoueurs() throws Exception {
-		//newJoueur = new Joueur();
-		//newJoueur.setPseudo(this.getLogin().getText());
-		//newJoueur.setPass(this.getPassword().getText());
-		//this.mainServer.getJoueur().setPseudo(this.getLogin().getText());
-		//this.mainServer.getJoueur().setPass(Utils.encrypt(this.password.getText()));
-		newJoueur.setPseudo(this.getLogin().getText());
-		newJoueur.setPass(Utils.encrypt(this.getPassword().getText(), Utils.getSecretKey()));
-		this.newJoueurs.add(newJoueur);
-
-		//System.out.println(Utils.getCurrentTimeUsingCalendar());
-
-		//System.out.println(Utils.encrypt(this.newJoueur.getPass(), "Key1PenduKey1Pendu1819G3"));
-
-		mainServer.setNewJoueurs(newJoueurs);
-		//this.main.getServer().envoyer(this.main.getJoueur());
+public void registerJoueurs() {
+		this.newJoueur = new Joueur();
+		this.newJoueur.setPseudo(this.getLogin().getText());
+		this.newJoueur.setPass(Utils.encrypt(this.getPassword().getText(), Utils.getSecretKey()));
+		this.newJoueur.setDateDernierCo(Utils.getCurrentTimeUsingCalendar());
+		this.mainServer.ajouterJoueur(this.newJoueur);
 	}
 }

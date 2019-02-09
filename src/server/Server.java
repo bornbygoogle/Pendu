@@ -4,13 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import commun.Joueur;
-
 public class Server {
 
 	private int port;
-	
-	private boolean serverRunning;
 
 	private Connection conn;
 
@@ -31,35 +27,9 @@ public class Server {
 		return this.port;
 	}
 	
-	public void addClient(ConnectedClient newClient) {
-		for(ConnectedClient client : this.clients) {
-			//client.sendMessage(new Message("Le client " + newClient.getId() + " vient de se connecter"));
-			System.out.println("Le client " + newClient.getId() + " vient de se connecter");
-		}
-		this.clients.add(newClient);
+	public void addClient(ConnectedClient client) {
+		this.clients.add(client);
 	}
-
-	/*public void broadcastMessage(Message mess, int id) {
-		for(ConnectedClient client : this.clients) {
-			if(client.getId() != id) {
-				client.sendMessage(mess);
-			}
-		}
-	}
-
-		public void broadcastMessage(Message message) {
-		for (ConnectedClient client : clients) {
-			client.sendMessage(message);
-		}
-	}
-
-	public void broadcastMessageExceptSender(Message message, int id) {
-		for (ConnectedClient client : clients) {
-			if (client.getId() != id) {
-				client.sendMessage(message);
-			}
-		}
-	}*/
 
 	public void stopServerRunning()
 	{
@@ -74,11 +44,5 @@ public class Server {
 
 	public void disconnectedClient(ConnectedClient discClient) {
 		discClient.closeClient();
-		//this.conn.arret();
-		/*Message mess = new Message("Le client " + discClient.getId() + " nous a quitt�");
-		mess.setSender("server");
-		for(ConnectedClient client : this.clients)
-			client.sendMessage(mess);
-		*/
 	}
 }
