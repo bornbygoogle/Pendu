@@ -54,7 +54,7 @@ public class JeuPanel extends Parent implements Runnable {
 		this.setButtonsActions();
 	}
 	
-	protected void setButtons() {
+	public void setButtons() {
 		alphabet = new ArrayList<Button>();
 		
 		for (int i=0; i<26; i++) {
@@ -80,7 +80,7 @@ public class JeuPanel extends Parent implements Runnable {
 		}
 	}
 	
-	protected void setTexts() {
+	public void setTexts() {
 		letters = new ArrayList<TextFlow>();
 		
 		for (int i=0; i<wordToFind.length(); i++) {
@@ -105,7 +105,7 @@ public class JeuPanel extends Parent implements Runnable {
 		}
 	}
 	
-	protected void setJoueurs() {
+	public void setJoueurs() {
 		this.joueurs = new TextFlow();
 		this.joueurs.setLayoutX(500);
 		this.joueurs.setLayoutY(200);
@@ -135,7 +135,7 @@ public class JeuPanel extends Parent implements Runnable {
 		this.getChildren().add(this.joueurs);
 	}
 	
-	protected void setImage() {
+	public void setImage() {
 		Image image;
 		try {
 			image = new Image(new FileInputStream("./Images/etape1.png"));
@@ -152,7 +152,7 @@ public class JeuPanel extends Parent implements Runnable {
 		}
 	}
 	
-	protected void setButtonsActions() {
+	public void setButtonsActions() {
 		for (int i=0; i<alphabet.size(); i++) {
 			alphabet.get(i).setOnAction(new EventHandler<ActionEvent>() {
 				
@@ -185,15 +185,19 @@ public class JeuPanel extends Parent implements Runnable {
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
 						}
+						/*
 						if (dangerLevel == 7) {
-							gui.AfficherMessage("Vous avez perdu", Color.BLACK);
+							gui.AfficherMessage("Vous avez perdu", Color.ORANGE);
+							
 						}
+						*/
 					}
 					
+/*
 					if (winLevel == wordToFind.length()) {
-						gui.AfficherMessage("Vous avez gagné", Color.BLACK);
+						gui.AfficherMessage("Vous avez gagné", Color.ORANGE);
 					}
-				
+	*/				
 					int actualButton = ((int) label.charAt(0))-65;
 					alphabet.get(actualButton).setDisable(true);
 					
@@ -208,7 +212,7 @@ public class JeuPanel extends Parent implements Runnable {
 		while(true) {
 			Object objet = this.gui.getClient().attenteReponse();
 			if(objet != null && objet instanceof Partie) {
-				/*
+				
 				Partie tmp = (Partie) objet;
 				if (this.listJoueurs != tmp.getParticipants()) {
 					this.partie = (Partie) objet;
@@ -216,10 +220,17 @@ public class JeuPanel extends Parent implements Runnable {
 					
 					this.setJoueurs();
 				}
-				*/
-				//this.gui.getClient().envoyer(StatusJoueur.Trouve);
-				// Définir enPartie à false
 			}
+			
+			if (this.dangerLevel == 7) {
+				this.gui.getClient().envoyer(StatusJoueur.Perdu);
+			}
+			
+			if (this.winLevel == this.wordToFind.length()) {
+				this.gui.getClient().envoyer(StatusJoueur.Trouve);
+			}
+
+			// Définir enPartie à false
 		}
 	}
 	
