@@ -1,44 +1,49 @@
 package server;
 
+import commun.Joueur;
+import commun.Utils;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 public class BoutonRegisterClicked implements EventHandler<MouseEvent> {
 
-	private AjoutJoueur ajoutjoueur;
+	private AjoutJoueur ajoutJoueur;
 
-	public BoutonRegisterClicked(AjoutJoueur ajoutjoueur) {
-		this.ajoutjoueur = ajoutjoueur;
+	public BoutonRegisterClicked(AjoutJoueur ajoutJoueur) {
+		this.ajoutJoueur = ajoutJoueur;
 	}
 
 	@Override
 	public void handle(MouseEvent arg0) {
 		// Verif format identifiant
-		if (this.ajoutjoueur.getLogin().getText().length() > 0) {
+		if (this.ajoutJoueur.getLogin().getText().length() > 0) {
 			// Verif format mot de passe
-			if (this.ajoutjoueur.getPassword().getText().length() > 0
-					&& this.ajoutjoueur.getPassword().getText()
-							.matches("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")
-					&& this.ajoutjoueur.getPasswordVerif().getText().equals(this.ajoutjoueur.getPassword().getText())) {
-				this.ajoutjoueur.setMessageText("Enregistre ...");
-				this.ajoutjoueur.setMessageColor(Color.GREEN);
-				// Demande de connexion au serveur avec les identifiants
-				try {
-					this.ajoutjoueur.registerJoueurs();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			if (this.ajoutJoueur.getPassword().getText().length() > 4
+				&& Utils.validatePassword(this.ajoutJoueur.getPassword().getText())) {
+				boolean verifExiste = false;
+				for(Joueur j : this.ajoutJoueur.getServer().getListeJoueurs()) {
+					if(j.getPseudo().toLowerCase().equals(this.ajoutJoueur.getLogin().getText().toLowerCase()))
+						verifExiste = true;
 				}
-			} 
+				if(!verifExiste) {
+					this.ajoutJoueur.registerJoueurs();
+					this.ajoutJoueur.setMessageText("Joueur " + this.ajoutJoueur.getLogin().getText() + " ajouté !");
+					this.ajoutJoueur.setMessageColor(Color.GREEN);
+				}
+				else {
+					this.ajoutJoueur.setMessageText("Le joueur existe déjà.");
+					this.ajoutJoueur.setMessageColor(Color.RED);
+				}
+			}
 			else 
 			{
-				this.ajoutjoueur.setMessageText("Le password n'est pas valide.");
-				this.ajoutjoueur.setMessageColor(Color.RED);
+				this.ajoutJoueur.setMessageText("Le password n'est pas valide.");
+				this.ajoutJoueur.setMessageColor(Color.RED);
 			}
 		} else {
-			this.ajoutjoueur.setMessageText("Le login n'est pas valide.");
-			this.ajoutjoueur.setMessageColor(Color.RED);
+			this.ajoutJoueur.setMessageText("Le login n'est pas valide.");
+			this.ajoutJoueur.setMessageColor(Color.RED);
 		}
 	}
 

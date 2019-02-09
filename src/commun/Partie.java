@@ -6,18 +6,11 @@ import java.util.HashMap;
 public class Partie implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private int id = 0;
 	private Mot mot = new Mot();
 	private Joueur joueurGagnant = new Joueur();
 	private HashMap<Joueur, StatusJoueur> participants = new HashMap<Joueur, StatusJoueur>();
 	private StatusPartie statusPartie = StatusPartie.EnCours;
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public Mot getMot() {
 		return mot;
 	}

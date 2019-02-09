@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List;
 
 import commun.DemandeServeur;
 import commun.Joueur;
@@ -26,8 +25,9 @@ public class ConnectedClient implements Runnable {
 			this.main = main;
 			this.id = idCounter++;
 			this.socket = socket;
+			this.in = new ObjectInputStream(socket.getInputStream());
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
-			System.out.println("Nouvelle connexion, id = " + this.id);
+			System.out.println("Nouveau client connect√© : " + this.id);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -42,17 +42,15 @@ public class ConnectedClient implements Runnable {
 	@Override
 	public synchronized void run() {
 		try {
-			this.in = new ObjectInputStream(socket.getInputStream());
-			boolean isActive = true;
-			while(isActive) {
-				// On recupere les infos qui ont ete envoye via le client
+			while(true) {
+				// On recupere les infos qui ont ete envoy√© via le client
 				Object element = in.readObject();
 				if(element != null) {
 					// Si le client a envoye une classe joueur, cela veut dire qu'il veut s'identifier
 					if (element instanceof Joueur) {
 						Joueur joueur = (Joueur)element;
 
-						// On va vÈrifier que le joueur existe
+						// On va vÔøΩrifier que le joueur existe
 						Joueur joueurLocal = null;
 						for(Joueur j : this.main.getListeJoueurs()) {
 							if(j.getPseudo().equalsIgnoreCase(joueur.getPseudo())) {
@@ -70,15 +68,20 @@ public class ConnectedClient implements Runnable {
 							joueur.setMessage("Vous n'etes pas incrit.");
 						
 						this.envoyer(joueur);
+					// Si le joueur fait une DemandeServeur, on lui renvoie l'info qu'il demande
 					} else if(element instanceof DemandeServeur) {
 						DemandeServeur demande = (DemandeServeur)element;
 						switch (demande) {
 							case StatusPartie:
-								// Renvoyer le status de la partie en cours
+								// Renvoyer le status de la partie actuel
 								this.envoyer(this.main.getStatusPartie());
+								// On attend 0.5s avant d'essayer de lancer une partie si il n'y en a pas une d√©j√† en cours
+								Thread.sleep(500);
+								this.main.lancementJeu();
 								break;
 							case Quitter:
-								// Le client ferme son appli, il faut l'enlever de partout
+								// TODO -> Il faut traiter la d√©connexion du client (L'enlever d'une partie si il Ètait dedans (Si une partie est en cours), voir si la partie s'arrÍte si il part, prÈvenir tout les autres clients en renvoyant la partie en cours ‡ jour)
+								// Le client ferme son appli
 								this.closeClient();
 								break;
 						}
@@ -108,11 +111,16 @@ public class ConnectedClient implements Runnable {
 
 	public void closeClient() {
 		try {
+			System.out.println("Client " + this.id + " d√©connect√©.");
 			this.in.close();
 			this.out.close();
 			this.socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Joueur getJoueur() {
+		return this.joueur;
 	}
 }
