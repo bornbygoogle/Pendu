@@ -160,6 +160,7 @@ public class MainGUI extends Application {
 		Object element = this.client.attenteReponse();
 		if(element != null && element instanceof Partie) {
 			this.partie = (Partie)element;
+			System.out.println(this.partie.getMot().getMot());
 			this.AfficherJeu();
 			this.enPartie = true;
 		}

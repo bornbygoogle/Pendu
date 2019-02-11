@@ -1,8 +1,7 @@
 package server;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class Server {
 
@@ -10,12 +9,12 @@ public class Server {
 
 	private Connection conn;
 
-	private List<ConnectedClient> clients;
+	private HashMap<ConnectedClient, Thread> clients;
 	
 	public Server(MainServer main, int _port) throws IOException 
 	{
 		this.port = _port;
-		this.clients = new ArrayList<ConnectedClient>();
+		this.clients = new HashMap<ConnectedClient, Thread>();
 		System.out.println("Connect to server port " + port);
 
 		conn = new Connection(main, this);
@@ -27,20 +26,22 @@ public class Server {
 		return this.port;
 	}
 	
-	public List<ConnectedClient> getClients() {
+	public HashMap<ConnectedClient, Thread> getClients() {
 		return this.clients;
 	}
 	
 	public void addClient(ConnectedClient client) {
-		this.clients.add(client);
+		Thread thread = new Thread(client);
+		thread.start();
+		this.clients.put(client, thread);
 	}
 
 	public void stopServerRunning()
 	{
 		if (!(clients.isEmpty()))
 		{
-			for(ConnectedClient client : this.clients)
-				disconnectedClient(client);
+			for(ConnectedClient client : this.clients.keySet())
+				client.closeClient();
 			this.clients.clear();
 		}
 		this.conn.arret();
@@ -48,5 +49,6 @@ public class Server {
 
 	public void disconnectedClient(ConnectedClient discClient) {
 		discClient.closeClient();
+		this.clients.remove(discClient);
 	}
 }

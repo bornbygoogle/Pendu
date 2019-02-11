@@ -42,7 +42,7 @@ public class JeuPanel extends Parent implements Runnable {
 	public JeuPanel(MainGUI game) {
 		this.gui = game;
 		this.partie = game.getPartie();
-		this.wordToFind = this.partie.getMot().getMot();
+		this.wordToFind = this.partie.getMot().getMot().toUpperCase();
 		this.listJoueurs = this.partie.getParticipants();
 		this.dangerLevel = 1;
 		this.winLevel = 0;
@@ -185,19 +185,16 @@ public class JeuPanel extends Parent implements Runnable {
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
 						}
-						/*
 						if (dangerLevel == 7) {
-							gui.AfficherMessage("Vous avez perdu", Color.ORANGE);
-							
+							gui.getClient().envoyer(StatusJoueur.Perdu);
 						}
-						*/
 					}
 					
-/*
+
 					if (winLevel == wordToFind.length()) {
-						gui.AfficherMessage("Vous avez gagné", Color.ORANGE);
+						gui.getClient().envoyer(StatusJoueur.Trouve);
 					}
-	*/				
+					
 					int actualButton = ((int) label.charAt(0))-65;
 					alphabet.get(actualButton).setDisable(true);
 					
@@ -221,16 +218,6 @@ public class JeuPanel extends Parent implements Runnable {
 					this.setJoueurs();
 				}
 			}
-			
-			if (this.dangerLevel == 7) {
-				this.gui.getClient().envoyer(StatusJoueur.Perdu);
-			}
-			
-			if (this.winLevel == this.wordToFind.length()) {
-				this.gui.getClient().envoyer(StatusJoueur.Trouve);
-			}
-
-			// Définir enPartie à false
 		}
 	}
 	

@@ -86,14 +86,16 @@ public class MainServer extends Application
 		{
 			// On enregistre les nouveaux joueurs en BDD
 			try {
-				System.out.println("Enregistrement des joueurs dans la BDD :");
-				for(Joueur j : this.newJoueurs)
-					System.out.println("\t- " + j.getPseudo());
-				
-				Methods.updateJoueur(connection, newJoueurs);
+				if(this.newJoueurs.size() > 0) {
+					System.out.println("Enregistrement des joueurs dans la BDD :");
+					for(Joueur j : this.newJoueurs)
+						System.out.println("\t- " + j.getPseudo());
+					
+					Methods.updateJoueur(connection, newJoueurs);
+				}
 
-				if (connection != null)
-					connection.close();
+				if (this.connection != null)
+					this.connection.close();
 
 			} catch (SQLException e2) {
 				e2.printStackTrace();
@@ -164,7 +166,7 @@ public class MainServer extends Application
 			// Si il y a au moins 2 clients connectés au serveur
 			if(this.server.getClients().size() >= 2) {
 				int cptAuthentifier = 0;
-				for(ConnectedClient client : this.server.getClients()) {
+				for(ConnectedClient client : this.server.getClients().keySet()) {
 					if(client.getJoueur() != null)
 					cptAuthentifier++;
 				}
@@ -185,7 +187,7 @@ public class MainServer extends Application
 		Partie nouvellePartie = new Partie();
 		// On ajoute les joueurs authentifiés à la partie
 		HashMap<Joueur, StatusJoueur> lesParticipants = new HashMap<Joueur, StatusJoueur>();
-		for(ConnectedClient client : this.server.getClients()) {
+		for(ConnectedClient client : this.server.getClients().keySet()) {
 			if(client.getJoueur() != null)
 				lesParticipants.put(client.getJoueur(), StatusJoueur.EnJeu);
 		}
@@ -201,11 +203,15 @@ public class MainServer extends Application
 
 	private void envoyerPartie() {
 		for(Joueur j : this.partie.getParticipants().keySet()) {
-			for(ConnectedClient client : this.server.getClients()) {
+			for(ConnectedClient client : this.server.getClients().keySet()) {
 				if(client.getJoueur().equals(j)) {
 					client.envoyer(this.partie);
 				}
 			}
 		}
+	}
+	
+	public void MAJPartie() {
+		
 	}
 }
