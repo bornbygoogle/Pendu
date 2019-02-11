@@ -21,7 +21,6 @@ public class BoutonConnexionClicked implements EventHandler<MouseEvent> {
 				this.connexion.setMessageColor(Color.GREEN);
 				// Demande de connexion au serveur avec les identifiants
 				this.connexion.envoyerDemandeConnexion();
-				this.connexion.verifierReponseConnexion();
 				this.connexion.getBouton().setDisable(true);
 			} else {
 				this.connexion.setMessageText("Le password n'est pas valide.");
