@@ -27,6 +27,10 @@ public class Server {
 		return this.port;
 	}
 	
+	public List<ConnectedClient> getClients() {
+		return this.clients;
+	}
+	
 	public void addClient(ConnectedClient client) {
 		this.clients.add(client);
 	}
