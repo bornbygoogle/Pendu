@@ -30,19 +30,13 @@ public class Connection implements Runnable {
 	@Override
 	public synchronized void run() {
 		System.out.println("Ecoute réseau activée");
-		while(running) {
+		while(this.running) {
 			try {
 				// On accepte les connexions entrantes
 				Socket sockNewClient = this.serverSocket.accept();
-				
-
 				// On ajoute la connexion dans la liste des nos clients connectés
 				ConnectedClient newClient = new ConnectedClient(sockNewClient, this.main);
 				this.server.addClient(newClient);
-				// On lance une tâche qui va scanner le réseau pour récupérer les packets envoyés par le client
-				Thread threadNewClient = new Thread(newClient);
-				threadNewClient.start();
-				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
