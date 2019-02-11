@@ -16,7 +16,8 @@ public class Client {
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
 	
-	public Client(MainGUI main, String address, int port) {
+	public Client(String address, int port) {
+		
 		// D�finition des attributs pass�s
 		this.address = address;
 		this.port = port;
@@ -26,8 +27,9 @@ public class Client {
 			this.socket = new Socket(this.address, this.port);
 
 			// Cr�ation du thread d'envoie
-			this.in = new ObjectInputStream(this.socket.getInputStream());
+			
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
+			
 		} catch (IOException e) {
 			// Si probl�me lors de connexion au serveur, on affiche un message et on ferme l'appli
 			e.printStackTrace();
@@ -40,10 +42,13 @@ public class Client {
 			
 			System.exit(0);
 		}
+	
 	}
 	
 	public Object attenteReponse() {
 		try {
+			if(this.in == null)
+				this.in = new ObjectInputStream(this.socket.getInputStream());
 			Object reponse = this.in.readObject();
 			return reponse;
 		} catch (ClassNotFoundException e) {

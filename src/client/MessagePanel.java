@@ -20,12 +20,31 @@ public class MessagePanel extends Parent {
 		
 		Image image;
 		try {
-			image = new Image(new FileInputStream("./Images/etape1.png"));
-			this.screen = new ImageView(image);
-			this.screen.setLayoutX(50);
-			this.screen.setLayoutY(200);
-			this.screen.setFitHeight(550);
-			this.screen.setFitWidth(400);
+			if (message == "Vous avez gagné") {
+				image = new Image(new FileInputStream("./Images/win.png"));
+				
+				this.screen = new ImageView(image);
+				this.screen.setLayoutX(280);
+				this.screen.setLayoutY(100);
+				this.screen.setFitHeight(300);
+				this.screen.setFitWidth(150);
+			} else if (message == "Vous avez perdu") {
+				image = new Image(new FileInputStream("./Images/etape7.png"));
+				
+				this.screen = new ImageView(image);
+				this.screen.setLayoutX(50);
+				this.screen.setLayoutY(100);
+				this.screen.setFitHeight(550);
+				this.screen.setFitWidth(400);
+			} else {
+				image = new Image(new FileInputStream("./Images/etape1.png"));
+
+				this.screen = new ImageView(image);
+				this.screen.setLayoutX(50);
+				this.screen.setLayoutY(200);
+				this.screen.setFitHeight(550);
+				this.screen.setFitWidth(400);
+			}
 			
 			this.getChildren().add(screen);
 		} catch (FileNotFoundException e) {

@@ -32,7 +32,7 @@ public class AjoutJoueur extends Parent
 	public AjoutJoueur(MainServer mainServeur) {
 		this.mainServer = mainServeur;
 		try {
-			// Lancement du theard d'�coute de la connexion
+			// Lancement du theard d'ïecoute de la connexion
 			/*this.connexionReceive = new ConnexionReceive(this);
 			this.threadReceive = new Thread(this.connexionReceive);
 			this.threadReceive.start();*/
@@ -128,8 +128,8 @@ public class AjoutJoueur extends Parent
 	public void setMessageText(String message) {
 		this.message.setText(message);
 	}
-	
-	public void registerJoueurs() {
+
+public void registerJoueurs() {
 		this.newJoueur = new Joueur();
 		this.newJoueur.setPseudo(this.getLogin().getText());
 		this.newJoueur.setPass(Utils.encrypt(this.getPassword().getText(), Utils.getSecretKey()));
