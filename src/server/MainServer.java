@@ -53,6 +53,7 @@ public class MainServer extends Application
 		/////////////////////////
 
 		this.server = new Server(this, 1033);
+		this.clients = new ArrayList<ConnectedClient>();
 
 		///////////////////////
 		// Configuration jeu //

@@ -28,6 +28,7 @@ public class MainGUI extends Application {
 	private boolean connecte;
 	private boolean enPartie;
 	
+	private Thread threadConnexion;
 	private Thread threadJeu;
 	
 	private boolean enTest = false;
@@ -45,10 +46,8 @@ public class MainGUI extends Application {
 		stage.setTitle("Pendu");
 		stage.setScene(scene);
 		
-		// Lancement du réseau -> connexion au port 1025 en local 
-		//this.client = new Client(this, "127.0.0.1", 1033);
-		
-		this.joueur = new Joueur();
+		// Lancement du réseau -> connexion au port 1025 en local
+		this.client = new Client("127.0.0.1", 1033);
 		
 		// Verif si joueur est connecté au serveur ou non
 		this.connecte = false;
@@ -93,7 +92,7 @@ public class MainGUI extends Application {
 	}
 
 	public Joueur getJoueur() {
-		return joueur;
+		return this.joueur;
 	}
 	
 	public Partie getPartie() {
@@ -127,7 +126,10 @@ public class MainGUI extends Application {
 	public void AfficherConnexion() {
 		Platform.runLater(() -> {
 			this.groupe.getChildren().clear();
-			this.groupe.getChildren().add(new Connexion(this));
+			Connexion conn = new Connexion(this);
+			this.threadConnexion = new Thread(conn);
+			this.threadConnexion.start();
+			this.groupe.getChildren().add(conn);
 		});
 	}
 	
