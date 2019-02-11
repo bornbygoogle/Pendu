@@ -7,6 +7,7 @@ import java.net.Socket;
 
 import commun.DemandeServeur;
 import commun.Joueur;
+import commun.StatusJoueur;
 
 public class ConnectedClient implements Runnable {
 	
@@ -19,6 +20,8 @@ public class ConnectedClient implements Runnable {
 	private Joueur joueur;
 	private MainServer main;
 	
+	private boolean statut;
+	
 	
 	public ConnectedClient(Socket socket, MainServer main) {
 		try {
@@ -27,6 +30,7 @@ public class ConnectedClient implements Runnable {
 			this.socket = socket;
 			this.in = new ObjectInputStream(socket.getInputStream());
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
+			this.statut = true;
 			System.out.println("Nouveau client connectÃ© : " + this.id);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -42,7 +46,7 @@ public class ConnectedClient implements Runnable {
 	@Override
 	public synchronized void run() {
 		try {
-			while(true) {
+			while(this.statut) {
 				// On recupere les infos qui ont ete envoyÃ© via le client
 				Object element = in.readObject();
 				if(element != null) {
@@ -82,8 +86,17 @@ public class ConnectedClient implements Runnable {
 							case Quitter:
 								// TODO -> Il faut traiter la dÃ©connexion du client (L'enlever d'une partie si il était dedans (Si une partie est en cours), voir si la partie s'arrête si il part, prévenir tout les autres clients en renvoyant la partie en cours à jour)
 								// Le client ferme son appli
-								this.closeClient();
+								this.statut = false;
+								this.main.MAJPartie();
+								this.main.getServer().disconnectedClient(this);
 								break;
+						}
+					} else if(element instanceof StatusJoueur) {
+						StatusJoueur status = (StatusJoueur)element;
+						if(status.equals(StatusJoueur.Perdu)) {
+							// TODO
+						} else if(status.equals(StatusJoueur.Trouve)) {
+							// TODO
 						}
 					}
 				}
@@ -111,10 +124,13 @@ public class ConnectedClient implements Runnable {
 
 	public void closeClient() {
 		try {
-			System.out.println("Client " + this.id + " dÃ©connectÃ©.");
-			this.in.close();
-			this.out.close();
-			this.socket.close();
+			System.out.println("Client " + this.id + " déconnecté.");
+			if(this.in != null)
+				this.in.close();
+			if(this.out != null)
+				this.out.close();
+			if(this.socket != null)
+				this.socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
