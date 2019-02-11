@@ -21,7 +21,6 @@ public class MainServer extends Application
 
 	// Eléments Réseau
 	private Server server;
-	private List<ConnectedClient> clients;
 
 	// Eléments jeu
 	private Partie partie;
@@ -53,7 +52,6 @@ public class MainServer extends Application
 		/////////////////////////
 
 		this.server = new Server(this, 1033);
-		this.clients = new ArrayList<ConnectedClient>();
 
 		///////////////////////
 		// Configuration jeu //
@@ -164,9 +162,9 @@ public class MainServer extends Application
 		// Si une partie n'est pas lancée
 		if(this.statusPartie == ReponseServeur.PartieEnAttenteJoueur && this.partie == null) {
 			// Si il y a au moins 2 clients connectés au serveur
-			if(this.clients.size() >= 2) {
+			if(this.server.getClients().size() >= 2) {
 				int cptAuthentifier = 0;
-				for(ConnectedClient client : this.clients) {
+				for(ConnectedClient client : this.server.getClients()) {
 					if(client.getJoueur() != null)
 					cptAuthentifier++;
 				}
@@ -187,7 +185,7 @@ public class MainServer extends Application
 		Partie nouvellePartie = new Partie();
 		// On ajoute les joueurs authentifiés à la partie
 		HashMap<Joueur, StatusJoueur> lesParticipants = new HashMap<Joueur, StatusJoueur>();
-		for(ConnectedClient client : this.clients) {
+		for(ConnectedClient client : this.server.getClients()) {
 			if(client.getJoueur() != null)
 				lesParticipants.put(client.getJoueur(), StatusJoueur.EnJeu);
 		}
@@ -203,7 +201,7 @@ public class MainServer extends Application
 
 	private void envoyerPartie() {
 		for(Joueur j : this.partie.getParticipants().keySet()) {
-			for(ConnectedClient client : this.clients) {
+			for(ConnectedClient client : this.server.getClients()) {
 				if(client.getJoueur().equals(j)) {
 					client.envoyer(this.partie);
 				}
