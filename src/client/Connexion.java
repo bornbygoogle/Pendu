@@ -20,7 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 
-public class Connexion extends Parent {
+public class Connexion extends Parent implements Runnable {
 	
 	private MainGUI main;
 
@@ -134,36 +134,42 @@ public class Connexion extends Parent {
 		this.main.getClient().envoyer(this.main.getJoueur());
 	}
 	
-	public void verifierReponseConnexion() {
-		Object element = this.main.getClient().attenteReponse();
-		if(element != null && element instanceof Joueur) {
-			Joueur unJoueur = (Joueur)element;
-			// Check du status renvoy�
-			if(unJoueur.getStatus()) {
-				// Si connexion ok -> red�finir le joueur + mettre connexion � true + charger le jeu
-				this.main.setJoueur(unJoueur);
-				this.main.setConnecte(true);
-				// On Charge le jeu
-				this.main.InitialisationPartie();
+	public void verifierReponseConnexion(Joueur unJoueur) {
+		// Check du status renvoy�
+		if(unJoueur.getStatus()) {
+			// Si connexion ok -> red�finir le joueur + mettre connexion � true + charger le jeu
+			this.main.setJoueur(unJoueur);
+			this.main.setConnecte(true);
+			// On Charge le jeu
+			this.main.InitialisationPartie();
+		} else {
+			// Si connexion pas bonne, afficher le message d'erreur renvoy� par le serveur et laisser la page de connexion
+			this.setMessageColor(Color.RED);
+			if(unJoueur.getMessage().length() > 0) {
+				Platform.runLater(new Runnable() {
+				    @Override
+				    public void run() {
+						setMessageText(unJoueur.getMessage());
+				    }
+				});
 			} else {
-				// Si connexion pas bonne, afficher le message d'erreur renvoy� par le serveur et laisser la page de connexion
-				this.setMessageColor(Color.RED);
-				if(unJoueur.getMessage().length() > 0) {
-					Platform.runLater(new Runnable() {
-					    @Override
-					    public void run() {
-							setMessageText(unJoueur.getMessage());
-					    }
-					});
-				} else {
-					Platform.runLater(new Runnable() {
-					    @Override
-					    public void run() {
-							setMessageText("Login ou mot de passe incorrect");
-					    }
-					});
-				}
-				this.boutonConnexion.setDisable(false);
+				Platform.runLater(new Runnable() {
+				    @Override
+				    public void run() {
+						setMessageText("Login ou mot de passe incorrect");
+				    }
+				});
+			}
+			this.boutonConnexion.setDisable(false);
+		}
+	}
+
+	@Override
+	public void run() {
+		while(true) {
+			Object objet = this.main.getClient().attenteReponse();
+			if(objet instanceof Joueur) {
+				this.verifierReponseConnexion((Joueur) objet);
 			}
 		}
 	}
