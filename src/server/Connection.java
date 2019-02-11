@@ -32,7 +32,6 @@ public class Connection implements Runnable {
 		System.out.println("Ecoute réseau activée");
 		while(running) {
 			try {
-				
 				// On accepte les connexions entrantes
 				Socket sockNewClient = this.serverSocket.accept();
 				
@@ -46,10 +45,6 @@ public class Connection implements Runnable {
 				
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-			finally
-			{
-				this.running = false;
 			}
 		}
 		System.out.println("Ecoute réseau désactivée");

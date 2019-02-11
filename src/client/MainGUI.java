@@ -159,6 +159,7 @@ public class MainGUI extends Application {
 		// On attend que le serveur nous envoie une partie
 		Object element = this.client.attenteReponse();
 		if(element != null && element instanceof Partie) {
+			this.partie = (Partie)element;
 			this.AfficherJeu();
 			this.enPartie = true;
 		}
