@@ -1,5 +1,6 @@
 package client;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import commun.DemandeServeur;
@@ -157,33 +158,50 @@ public class MainGUI extends Application {
 		this.enPartie = false;
 		this.ChargerInterfaceAttente();
 		// On attend que le serveur nous envoie une partie
-		Object element = this.client.attenteReponse();
-		if(element != null && element instanceof Partie) {
-			this.partie = (Partie)element;
-			System.out.println(this.partie.getMot().getMot());
-			this.AfficherJeu();
-			this.enPartie = true;
+		Object element;
+		try {
+			element = this.client.attenteReponse();
+			if(element != null && element instanceof Partie) {
+				this.partie = (Partie)element;
+				System.out.println(this.partie.getMot().getMot());
+				this.AfficherJeu();
+				this.enPartie = true;
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
 	public void ChargerInterfaceAttente() {
 		// Ici on va demander le status de la partie
 		this.client.envoyer(DemandeServeur.StatusPartie);
-		Object reponse = this.client.attenteReponse();
-		if(reponse != null && reponse instanceof StatusPartie) {
-			StatusPartie repServ = (StatusPartie)reponse;
-			switch (repServ) {
-				case EnAttenteJoueur:
-					this.AfficherMessage("En attente de joueurs...", Color.ORANGE);
-					break;
-				case EnCours:
-					this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE);
-					break;
-				case ChargementPartie:
-				case Fini:
-					this.AfficherMessage("Chargement prochaine partie...", Color.ORANGE);
-					break;
+		try {
+			Object reponse = this.client.attenteReponse();
+			if(reponse != null && reponse instanceof StatusPartie) {
+				StatusPartie repServ = (StatusPartie)reponse;
+				switch (repServ) {
+					case EnAttenteJoueur:
+						this.AfficherMessage("En attente de joueurs...", Color.ORANGE);
+						break;
+					case EnCours:
+						this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE);
+						break;
+					case ChargementPartie:
+					case Fini:
+						this.AfficherMessage("Chargement prochaine partie...", Color.ORANGE);
+						break;
+				}
 			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

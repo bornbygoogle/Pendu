@@ -29,6 +29,8 @@ public class Connexion extends Parent implements Runnable {
 	private Button boutonConnexion;
 	private Label message;
 	
+	private boolean statutThread;
+	
 	public Connexion(MainGUI main) {
 		this.main = main;
 		try {
@@ -42,6 +44,8 @@ public class Connexion extends Parent implements Runnable {
 			this.boutonConnexion.setOnMouseClicked(new BoutonConnexionClicked(this));
 			this.message = new Label("");
 			this.message.setTextFill(Color.RED);
+			
+			this.statutThread = true;
 			
 			Label texteLogin = new Label("Pseudo :");
 			texteLogin.setPrefWidth(80);
@@ -140,6 +144,7 @@ public class Connexion extends Parent implements Runnable {
 			// Si connexion ok -> red�finir le joueur + mettre connexion � true + charger le jeu
 			this.main.setJoueur(unJoueur);
 			this.main.setConnecte(true);
+			this.statutThread = false;
 			// On Charge le jeu
 			this.main.InitialisationPartie();
 		} else {
@@ -166,10 +171,21 @@ public class Connexion extends Parent implements Runnable {
 
 	@Override
 	public void run() {
-		while(true) {
-			Object objet = this.main.getClient().attenteReponse();
-			if(objet instanceof Joueur) {
-				this.verifierReponseConnexion((Joueur) objet);
+		while(this.statutThread) {
+			Object objet;
+			try {
+				objet = this.main.getClient().attenteReponse();
+				if(objet instanceof Joueur) {
+					this.verifierReponseConnexion((Joueur) objet);
+				}
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				this.statutThread = false;
 			}
 		}
 	}

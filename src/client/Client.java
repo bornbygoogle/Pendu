@@ -3,6 +3,7 @@ package client;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.net.Socket;
 
 import javafx.scene.control.Alert;
@@ -45,21 +46,11 @@ public class Client {
 	
 	}
 	
-	public Object attenteReponse() {
-		try {
-			if(this.in == null)
-				this.in = new ObjectInputStream(this.socket.getInputStream());
-			Object reponse = this.in.readObject();
-			return reponse;
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+	public Object attenteReponse() throws IOException, ClassNotFoundException, StreamCorruptedException {
+		if(this.in == null)
+			this.in = new ObjectInputStream(this.socket.getInputStream());
+		Object reponse = this.in.readObject();
+		return reponse;
 	}
 	
 	public boolean envoyer(Object element) {
