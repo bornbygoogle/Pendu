@@ -144,12 +144,12 @@ public class MainGUI extends Application {
 		});
 	}
 	
-	public void AfficherMessage(String message, Color couleur) {
+	public void AfficherMessage(String message, Color couleur, int version) {
 		Platform.runLater(new Runnable() {
 		    @Override
 		    public void run() {
 				groupe.getChildren().clear();
-				groupe.getChildren().add(new MessagePanel(message, couleur));
+				groupe.getChildren().add(new MessagePanel(message, couleur, version));
 		    }
 		});
 	}
@@ -185,14 +185,14 @@ public class MainGUI extends Application {
 				StatusPartie repServ = (StatusPartie)reponse;
 				switch (repServ) {
 					case EnAttenteJoueur:
-						this.AfficherMessage("En attente de joueurs...", Color.ORANGE);
+						this.AfficherMessage("En attente de joueurs...", Color.ORANGE, 3);
 						break;
 					case EnCours:
-						this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE);
+						this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE, 3);
 						break;
 					case ChargementPartie:
 					case Fini:
-						this.AfficherMessage("Chargement prochaine partie...", Color.ORANGE);
+						this.AfficherMessage("Chargement prochaine partie...", Color.ORANGE, 3);
 						break;
 				}
 			}
