@@ -1,5 +1,7 @@
 package client;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -28,24 +30,24 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 public class JeuPanel extends Parent implements Runnable {
+	protected MainGUI gui;
+	
 	protected ImageView screen;
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
 	protected TextFlow joueurs;
-	protected MainGUI gui;
+	
 	protected Partie partie;
-	protected HashMap<Joueur, StatusJoueur> listJoueurs;
-	protected String wordToFind;
+
 	protected int dangerLevel;
 	protected int winLevel;
 	
 	public JeuPanel(MainGUI game) {
 		this.gui = game;
 		this.partie = game.getPartie();
-		this.wordToFind = this.partie.getMot().getMot().toUpperCase();
-		this.listJoueurs = this.partie.getParticipants();
 		this.dangerLevel = 1;
 		this.winLevel = 0;
+		
 		
 		this.setButtons();
 		this.setTexts();
@@ -94,7 +96,7 @@ public class JeuPanel extends Parent implements Runnable {
 		letters = new ArrayList<TextFlow>();
 
 		int k = 0;
-		for (int i=0; i<wordToFind.length(); i++) {
+		for (int i=0; i<this.partie.getMot().getMot().length(); i++) {
 			TextFlow receivedText = new TextFlow();
 			if (i/8 == 0) {
 				receivedText.setLayoutX(50+i*50 + k);
@@ -138,20 +140,30 @@ public class JeuPanel extends Parent implements Runnable {
 		titre.setFont(Font.font("Helvetica", FontPosture.REGULAR, 18));
 		this.joueurs.getChildren().add(titre);
 		
-		for (Joueur j : this.listJoueurs.keySet()) {
+		for (Joueur j : this.partie.getParticipants().keySet()) {
 			Text joueur = new Text();
-			if (this.listJoueurs.get(j) == StatusJoueur.EnJeu) {
-				joueur.setText(j.getPseudo() + "\n");
-			} else if (this.listJoueurs.get(j) == StatusJoueur.Perdu) {
-				joueur.setText(j.getPseudo() + " - Perdu");
-			} else if (this.listJoueurs.get(j) == StatusJoueur.Trouve) {
-				joueur.setText(j.getPseudo() + " - Gagné");
+			if (this.partie.getParticipants().get(j) == StatusJoueur.EnJeu) {
+				joueur.setText(j.getPseudo() + " - En cours\n");
+			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Perdu) {
+				joueur.setText(j.getPseudo() + " - Perdu\n");
+			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Trouve) {
+				joueur.setText(j.getPseudo() + " - Gagné\n");
 			}
 			joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 12));
 			this.joueurs.getChildren().add(joueur);
 		}
 		
 		this.getChildren().add(this.joueurs);
+		
+		TextFlow mainJoueur = new TextFlow();
+		mainJoueur.setLayoutX(10);
+		mainJoueur.setLayoutY(10);
+		Text joueur = new Text();
+		joueur.setText(this.gui.getJoueur().getPseudo());
+		joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 16));
+		mainJoueur.getChildren().add(joueur);
+		this.getChildren().add(mainJoueur);
+		
 	}
 	
 	public void setImage() {
@@ -182,8 +194,8 @@ public class JeuPanel extends Parent implements Runnable {
 					String label = button.substring(button.indexOf("'"));
 					label = label.substring(1, 2);
 					
-					for (int i=0; i<wordToFind.length(); i++) {
-						String letterToFind = Character.toString(wordToFind.charAt(i));
+					for (int i=0; i<partie.getMot().getMot().length(); i++) {
+						String letterToFind = Character.toString(partie.getMot().getMot().toUpperCase().charAt(i));
 						if (label.equals(letterToFind)) {
 							letters.get(i).getChildren().clear();
 							Text letter = new Text();
@@ -210,7 +222,7 @@ public class JeuPanel extends Parent implements Runnable {
 					}
 					
 
-					if (winLevel == wordToFind.length()) {
+					if (winLevel == partie.getMot().getMot().length()) {
 						gui.getClient().envoyer(StatusJoueur.Trouve);
 					}
 					
@@ -220,6 +232,7 @@ public class JeuPanel extends Parent implements Runnable {
 				}
 				
 			});
+			
 		}
 	}
 
@@ -239,5 +252,5 @@ public class JeuPanel extends Parent implements Runnable {
 			}
 		}
 	}
-	
+
 }
