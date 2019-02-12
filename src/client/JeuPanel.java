@@ -2,6 +2,7 @@ package client;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,14 +29,18 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 public class JeuPanel extends Parent implements Runnable {
+	protected MainGUI gui;
+	
 	protected ImageView screen;
+	protected TextFlow joueurs;
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
-	protected TextFlow joueurs;
-	protected MainGUI gui;
+	
 	protected Partie partie;
+	
 	protected HashMap<Joueur, StatusJoueur> listJoueurs;
 	protected String wordToFind;
+	
 	protected int dangerLevel;
 	protected int winLevel;
 	
@@ -225,17 +230,32 @@ public class JeuPanel extends Parent implements Runnable {
 
 	@Override
 	public void run() {
-		while(true) {
-			Object objet = this.gui.getClient().attenteReponse();
-			if(objet != null && objet instanceof Partie) {
-				
-				Partie tmp = (Partie) objet;
-				if (this.listJoueurs != tmp.getParticipants()) {
-					this.partie = (Partie) objet;
-					this.listJoueurs = this.partie.getParticipants();
+		boolean statut = true;
+		while(statut) {
+			try {
+				Object element = this.gui.getClient().attenteReponse();
+				if(element != null && element instanceof Partie) {
+					Partie partie = (Partie)element;
 					
-					this.setJoueurs();
+					System.out.println(partie.getParticipants().size());
+					
+					/*
+					if (this.listJoueurs.size() > partie.getParticipants().size()) {
+						this.partie.setParticipants(partie.getParticipants());
+						this.listJoueurs = this.partie.getParticipants();
+						
+						this.setJoueurs();
+					}
+					*/
 				}
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				statut = false;
 			}
 		}
 	}
