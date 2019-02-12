@@ -250,12 +250,12 @@ public class JeuPanel extends Parent implements Runnable {
 				}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
+				statut = false;
 				e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
 				statut = false;
+				e.printStackTrace();
 			}
 		}
 	}

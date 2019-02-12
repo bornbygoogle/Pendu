@@ -180,12 +180,12 @@ public class Connexion extends Parent implements Runnable {
 				}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
+				this.statutThread = false;
 				e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
 				this.statutThread = false;
+				e.printStackTrace();
 			}
 		}
 	}

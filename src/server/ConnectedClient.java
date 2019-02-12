@@ -107,9 +107,9 @@ public class ConnectedClient implements Runnable {
 					} else if(element instanceof StatusJoueur) {
 						StatusJoueur status = (StatusJoueur)element;
 						if(status.equals(StatusJoueur.Perdu)) {
-							// TODO
+							this.main.getJeu().joueurPerdu(this.joueur);
 						} else if(status.equals(StatusJoueur.Trouve)) {
-							// TODO
+							this.main.getJeu().joueurGagne(this.joueur);
 						}
 					}
 				}
