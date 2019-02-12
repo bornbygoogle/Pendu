@@ -4,12 +4,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import commun.Joueur;
 import commun.Partie;
 import commun.StatusJoueur;
+import commun.StatusPartie;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -37,18 +37,13 @@ public class JeuPanel extends Parent implements Runnable {
 	protected List<Button> alphabet;
 	
 	protected Partie partie;
-	
-	protected HashMap<Joueur, StatusJoueur> listJoueurs;
-	protected String wordToFind;
-	
+
 	protected int dangerLevel;
 	protected int winLevel;
 	
 	public JeuPanel(MainGUI game) {
 		this.gui = game;
 		this.partie = game.getPartie();
-		this.wordToFind = this.partie.getMot().getMot().toUpperCase();
-		this.listJoueurs = this.partie.getParticipants();
 		this.dangerLevel = 1;
 		this.winLevel = 0;
 		
@@ -99,7 +94,7 @@ public class JeuPanel extends Parent implements Runnable {
 		letters = new ArrayList<TextFlow>();
 
 		int k = 0;
-		for (int i=0; i<wordToFind.length(); i++) {
+		for (int i=0; i<this.partie.getMot().getMot().length(); i++) {
 			TextFlow receivedText = new TextFlow();
 			if (i/8 == 0) {
 				receivedText.setLayoutX(50+i*50 + k);
@@ -143,20 +138,30 @@ public class JeuPanel extends Parent implements Runnable {
 		titre.setFont(Font.font("Helvetica", FontPosture.REGULAR, 18));
 		this.joueurs.getChildren().add(titre);
 		
-		for (Joueur j : this.listJoueurs.keySet()) {
+		for (Joueur j : this.partie.getParticipants().keySet()) {
 			Text joueur = new Text();
-			if (this.listJoueurs.get(j) == StatusJoueur.EnJeu) {
-				joueur.setText(j.getPseudo() + "\n");
-			} else if (this.listJoueurs.get(j) == StatusJoueur.Perdu) {
-				joueur.setText(j.getPseudo() + " - Perdu");
-			} else if (this.listJoueurs.get(j) == StatusJoueur.Trouve) {
-				joueur.setText(j.getPseudo() + " - GagnÃ©");
+			if (this.partie.getParticipants().get(j) == StatusJoueur.EnJeu) {
+				joueur.setText(j.getPseudo() + " - En cours\n");
+			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Perdu) {
+				joueur.setText(j.getPseudo() + " - Perdu\n");
+			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Trouve) {
+				joueur.setText(j.getPseudo() + " - GagnÃ©\n");
 			}
 			joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 12));
 			this.joueurs.getChildren().add(joueur);
 		}
 		
 		this.getChildren().add(this.joueurs);
+		
+		TextFlow mainJoueur = new TextFlow();
+		mainJoueur.setLayoutX(10);
+		mainJoueur.setLayoutY(10);
+		Text joueur = new Text();
+		joueur.setText(this.gui.getJoueur().getPseudo());
+		joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 16));
+		mainJoueur.getChildren().add(joueur);
+		this.getChildren().add(mainJoueur);
+		
 	}
 	
 	public void setImage() {
@@ -187,8 +192,8 @@ public class JeuPanel extends Parent implements Runnable {
 					String label = button.substring(button.indexOf("'"));
 					label = label.substring(1, 2);
 					
-					for (int i=0; i<wordToFind.length(); i++) {
-						String letterToFind = Character.toString(wordToFind.charAt(i));
+					for (int i=0; i<partie.getMot().getMot().length(); i++) {
+						String letterToFind = Character.toString(partie.getMot().getMot().toUpperCase().charAt(i));
 						if (label.equals(letterToFind)) {
 							letters.get(i).getChildren().clear();
 							Text letter = new Text();
@@ -215,7 +220,7 @@ public class JeuPanel extends Parent implements Runnable {
 					}
 					
 
-					if (winLevel == wordToFind.length()) {
+					if (winLevel == partie.getMot().getMot().length()) {
 						gui.getClient().envoyer(StatusJoueur.Trouve);
 					}
 					
@@ -225,6 +230,7 @@ public class JeuPanel extends Parent implements Runnable {
 				}
 				
 			});
+			
 		}
 	}
 
@@ -236,17 +242,23 @@ public class JeuPanel extends Parent implements Runnable {
 				Object element = this.gui.getClient().attenteReponse();
 				if(element != null && element instanceof Partie) {
 					Partie partie = (Partie)element;
-					
-					System.out.println(partie.getParticipants().size());
-					
-					/*
-					if (this.listJoueurs.size() > partie.getParticipants().size()) {
+
+					if (partie.getStatusPartie() == StatusPartie.Fini) {
+						if (partie.getJoueurGagnant() != null) {
+							if (partie.getJoueurGagnant().getPseudo() == this.gui.getJoueur().getPseudo())  {
+								this.gui.AfficherMessage("Vous avez gagné ! ", Color.ORANGE, 1);
+							} else {
+								this.gui.AfficherMessage("Vous avez perdu ! \n " + partie.getJoueurGagnant().getPseudo() + " a gagné !", Color.ORANGE, 2);
+							}
+						} else {
+							this.gui.AfficherMessage("Aucun joueur n'as gagné !", Color.ORANGE, 3);
+						}
+					} else if (this.partie.getParticipants().size() > partie.getParticipants().size()) {
 						this.partie.setParticipants(partie.getParticipants());
-						this.listJoueurs = this.partie.getParticipants();
 						
 						this.setJoueurs();
 					}
-					*/
+					
 				}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -259,5 +271,5 @@ public class JeuPanel extends Parent implements Runnable {
 			}
 		}
 	}
-	
+
 }
