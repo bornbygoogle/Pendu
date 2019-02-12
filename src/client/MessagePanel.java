@@ -16,11 +16,11 @@ public class MessagePanel extends Parent {
 	private Label messageAttente;
 	private ImageView screen;
 
-	public MessagePanel(String message, Color couleur) {
+	public MessagePanel(String message, Color couleur, int version) {
 		
 		Image image;
 		try {
-			if (message == "Vous avez gagné") {
+			if (version == 1) {
 				image = new Image(new FileInputStream("./Images/win.png"));
 				
 				this.screen = new ImageView(image);
@@ -28,7 +28,7 @@ public class MessagePanel extends Parent {
 				this.screen.setLayoutY(100);
 				this.screen.setFitHeight(300);
 				this.screen.setFitWidth(150);
-			} else if (message == "Vous avez perdu") {
+			} else if (version == 2) {
 				image = new Image(new FileInputStream("./Images/etape7.png"));
 				
 				this.screen = new ImageView(image);
