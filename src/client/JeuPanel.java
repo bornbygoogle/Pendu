@@ -1,11 +1,9 @@
 package client;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import commun.Joueur;
@@ -33,9 +31,9 @@ public class JeuPanel extends Parent implements Runnable {
 	protected MainGUI gui;
 	
 	protected ImageView screen;
+	protected TextFlow joueurs;
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
-	protected TextFlow joueurs;
 	
 	protected Partie partie;
 
@@ -47,7 +45,6 @@ public class JeuPanel extends Parent implements Runnable {
 		this.partie = game.getPartie();
 		this.dangerLevel = 1;
 		this.winLevel = 0;
-		
 		
 		this.setButtons();
 		this.setTexts();
@@ -238,17 +235,28 @@ public class JeuPanel extends Parent implements Runnable {
 
 	@Override
 	public void run() {
-		while(true) {
-			Object objet = this.gui.getClient().attenteReponse();
-			if(objet != null && objet instanceof Partie) {
-				
-				Partie tmp = (Partie) objet;
-				if (this.listJoueurs != tmp.getParticipants()) {
-					this.partie = (Partie) objet;
-					this.listJoueurs = this.partie.getParticipants();
+		boolean statut = true;
+		while(statut) {
+			try {
+				Object element = this.gui.getClient().attenteReponse();
+				if(element != null && element instanceof Partie) {
+					Partie partie = (Partie)element;
 					
-					this.setJoueurs();
+					if (this.partie.getParticipants().size() > partie.getParticipants().size()) {
+						this.partie.setParticipants(partie.getParticipants());
+						
+						this.setJoueurs();
+					}
+					
 				}
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				statut = false;
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				statut = false;
+				e.printStackTrace();
 			}
 		}
 	}
