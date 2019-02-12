@@ -7,6 +7,7 @@ import commun.Joueur;
 import commun.Utils;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -51,45 +52,54 @@ public class Connexion extends Parent implements Runnable {
 			texteLogin.setPrefWidth(80);
 			Label textePassword = new Label("Mot de passe :");
 			textePassword.setPrefWidth(80);
-
+			
 			VBox conteneur = new VBox();
+			conteneur.setAlignment(Pos.CENTER);
+			conteneur.setPrefSize(725, 925);
 
 			Image logo = new Image(new FileInputStream("./Images/logo.png"));
 			ImageView logoView = new ImageView(logo);
-			conteneur.getChildren().add(logoView);
+			HBox conteneurLogo = new HBox();
+			conteneurLogo.setAlignment(Pos.CENTER);
+			conteneurLogo.getChildren().add(logoView);
+			conteneur.getChildren().add(conteneurLogo);
 			
 
 			VBox conteneurConnexion = new VBox();
-			conteneurConnexion.setPadding(new Insets(5, 0, 5, 100));
+			conteneurConnexion.setAlignment(Pos.CENTER);
+			conteneurConnexion.setPadding(new Insets(5, 0, 5, 0));
 			
 			Label texteConnexion = new Label("Connexion");
-			texteConnexion.setPadding(new Insets(0, 0, 0, 70));
 			texteConnexion.setFont(Font.font("Helvetica", FontPosture.REGULAR, 36));
 			conteneurConnexion.getChildren().add(texteConnexion);
 			
 			
 			HBox conteneurLogin = new HBox();
-			conteneurLogin.setPadding(new Insets(5, 0, 5, 0));
+			conteneurLogin.setAlignment(Pos.CENTER);
+			conteneurLogin.setPadding(new Insets(5, 0, 5, 10));
 			conteneurLogin.getChildren().add(texteLogin);
 			conteneurLogin.getChildren().add(this.login);
 			conteneurConnexion.getChildren().add(conteneurLogin);
 			
 			
 			HBox conteneurPassword = new HBox();
-			conteneurPassword.setPadding(new Insets(5, 0, 5, 0));
+			conteneurPassword.setAlignment(Pos.CENTER);
+			conteneurPassword.setPadding(new Insets(5, 0, 5, 10));
 			conteneurPassword.getChildren().add(textePassword);
 			conteneurPassword.getChildren().add(this.password);
 			conteneurConnexion.getChildren().add(conteneurPassword);
 			
 
 			HBox conteneurBouton = new HBox();
-			conteneurBouton.setPadding(new Insets(5, 0, 5, 110));
+			conteneurBouton.setAlignment(Pos.CENTER);
+			conteneurBouton.setPadding(new Insets(5, 0, 5, 0));
 			conteneurBouton.getChildren().add(this.boutonConnexion);
 			conteneurConnexion.getChildren().add(conteneurBouton);
 			
 
 			HBox conteneurMessage = new HBox();
-			conteneurMessage.setPadding(new Insets(5, 0, 5, 110));
+			conteneurMessage.setAlignment(Pos.CENTER);
+			conteneurMessage.setPadding(new Insets(5, 0, 5, 0));
 			conteneurMessage.getChildren().add(this.message);
 			conteneurConnexion.getChildren().add(conteneurMessage);
 			

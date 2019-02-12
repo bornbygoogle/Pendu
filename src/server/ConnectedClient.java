@@ -11,8 +11,6 @@ import commun.StatusJoueur;
 
 public class ConnectedClient implements Runnable {
 	
-	private static int idCounter = 0;
-	private int id;
 	private Socket socket;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
@@ -26,21 +24,16 @@ public class ConnectedClient implements Runnable {
 	public ConnectedClient(Socket socket, MainServer main) {
 		try {
 			this.main = main;
-			this.id = idCounter++;
 			this.socket = socket;
 			this.in = new ObjectInputStream(socket.getInputStream());
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
 			this.statut = true;
-			System.out.println("Client " + this.id + " connecté.");
+			System.out.println("Client connecté.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public int getId() {
-		return this.id;
 	}
 
 	@Override
@@ -137,7 +130,6 @@ public class ConnectedClient implements Runnable {
 
 	public void closeClient() {
 		try {
-			System.out.println("Client " + this.id + " déconnecté.");
 			if(this.in != null)
 				this.in.close();
 			if(this.out != null)
