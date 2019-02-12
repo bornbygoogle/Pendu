@@ -2,13 +2,14 @@ package client;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import commun.Joueur;
 import commun.Partie;
 import commun.StatusJoueur;
+import commun.StatusPartie;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -28,22 +29,21 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 public class JeuPanel extends Parent implements Runnable {
+	protected MainGUI gui;
+	
 	protected ImageView screen;
+	protected TextFlow joueurs;
 	protected List<TextFlow> letters;
 	protected List<Button> alphabet;
-	protected TextFlow joueurs;
-	protected MainGUI gui;
+	
 	protected Partie partie;
-	protected HashMap<Joueur, StatusJoueur> listJoueurs;
-	protected String wordToFind;
+
 	protected int dangerLevel;
 	protected int winLevel;
 	
 	public JeuPanel(MainGUI game) {
 		this.gui = game;
 		this.partie = game.getPartie();
-		this.wordToFind = this.partie.getMot().getMot().toUpperCase();
-		this.listJoueurs = this.partie.getParticipants();
 		this.dangerLevel = 1;
 		this.winLevel = 0;
 		
@@ -57,17 +57,18 @@ public class JeuPanel extends Parent implements Runnable {
 	public void setButtons() {
 		alphabet = new ArrayList<Button>();
 		
+		int k = 0;
 		for (int i=0; i<26; i++) {
 			Button btn = new Button();
 			if (i/9 == 0) {
-				btn.setLayoutX(25 + i*50);
+				btn.setLayoutX(25 + i*50 + k);
 				btn.setLayoutY(750);
 			} else if (i/9 == 1) {
-				btn.setLayoutX(25 + (i-9)*50);
-				btn.setLayoutY(800);
+				btn.setLayoutX(25 + (i-9)*50 + k);
+				btn.setLayoutY(805);
 			} else {
-				btn.setLayoutX(50 + (i-18)*50);
-				btn.setLayoutY(850);
+				btn.setLayoutX(50 + (i-18)*50 + k);
+				btn.setLayoutY(860);
 			}
 			btn.setPrefWidth(50);
 			btn.setPrefHeight(50);
@@ -77,31 +78,49 @@ public class JeuPanel extends Parent implements Runnable {
 			
 			alphabet.add(btn);
 			this.getChildren().add(btn);
+			
+			if(i == 8)
+				k = 0;
+			else if(i == 17) {
+				k = 0;
+			} else {
+				k += 5;
+			}
+
 		}
 	}
 	
 	public void setTexts() {
 		letters = new ArrayList<TextFlow>();
-		
-		for (int i=0; i<wordToFind.length(); i++) {
+
+		int k = 0;
+		for (int i=0; i<this.partie.getMot().getMot().length(); i++) {
 			TextFlow receivedText = new TextFlow();
 			if (i/8 == 0) {
-				receivedText.setLayoutX(50+i*50);
+				receivedText.setLayoutX(50+i*50 + k);
 				receivedText.setLayoutY(550);
 			} else if (i/8 == 1) {
-				receivedText.setLayoutX(50+(i-8)*50);
-				receivedText.setLayoutY(600);
+				receivedText.setLayoutX(50+(i-8)*50 + k);
+				receivedText.setLayoutY(605);
 			} else if (i/8 == 2) {
-				receivedText.setLayoutX(50+(i-16)*50);
-				receivedText.setLayoutY(650);
+				receivedText.setLayoutX(50+(i-16)*50 + k);
+				receivedText.setLayoutY(660);
 			}
 			receivedText.setPrefWidth(50);
 			receivedText.setPrefHeight(50);
 			receivedText.setTextAlignment(TextAlignment.CENTER);
-			receivedText.setBorder(new Border(new BorderStroke(Color.GAINSBORO, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+			receivedText.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 			
 			letters.add(receivedText);
 			this.getChildren().add(receivedText);
+			
+			if(i == 7)
+				k = 0;
+			else if(i == 15) {
+				k = 0;
+			} else {
+				k += 5;
+			}
 		}
 	}
 	
@@ -119,20 +138,30 @@ public class JeuPanel extends Parent implements Runnable {
 		titre.setFont(Font.font("Helvetica", FontPosture.REGULAR, 18));
 		this.joueurs.getChildren().add(titre);
 		
-		for (Joueur j : this.listJoueurs.keySet()) {
+		for (Joueur j : this.partie.getParticipants().keySet()) {
 			Text joueur = new Text();
-			if (this.listJoueurs.get(j) == StatusJoueur.EnJeu) {
-				joueur.setText(j.getPseudo() + "\n");
-			} else if (this.listJoueurs.get(j) == StatusJoueur.Perdu) {
-				joueur.setText(j.getPseudo() + " - Perdu");
-			} else if (this.listJoueurs.get(j) == StatusJoueur.Trouve) {
-				joueur.setText(j.getPseudo() + " - GagnÃ©");
+			if (this.partie.getParticipants().get(j) == StatusJoueur.EnJeu) {
+				joueur.setText(j.getPseudo() + " - En cours\n");
+			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Perdu) {
+				joueur.setText(j.getPseudo() + " - Perdu\n");
+			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Trouve) {
+				joueur.setText(j.getPseudo() + " - GagnÃ©\n");
 			}
 			joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 12));
 			this.joueurs.getChildren().add(joueur);
 		}
 		
 		this.getChildren().add(this.joueurs);
+		
+		TextFlow mainJoueur = new TextFlow();
+		mainJoueur.setLayoutX(10);
+		mainJoueur.setLayoutY(10);
+		Text joueur = new Text();
+		joueur.setText(this.gui.getJoueur().getPseudo());
+		joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 16));
+		mainJoueur.getChildren().add(joueur);
+		this.getChildren().add(mainJoueur);
+		
 	}
 	
 	public void setImage() {
@@ -163,8 +192,8 @@ public class JeuPanel extends Parent implements Runnable {
 					String label = button.substring(button.indexOf("'"));
 					label = label.substring(1, 2);
 					
-					for (int i=0; i<wordToFind.length(); i++) {
-						String letterToFind = Character.toString(wordToFind.charAt(i));
+					for (int i=0; i<partie.getMot().getMot().length(); i++) {
+						String letterToFind = Character.toString(partie.getMot().getMot().toUpperCase().charAt(i));
 						if (label.equals(letterToFind)) {
 							letters.get(i).getChildren().clear();
 							Text letter = new Text();
@@ -191,7 +220,7 @@ public class JeuPanel extends Parent implements Runnable {
 					}
 					
 
-					if (winLevel == wordToFind.length()) {
+					if (winLevel == partie.getMot().getMot().length()) {
 						gui.getClient().envoyer(StatusJoueur.Trouve);
 					}
 					
@@ -201,24 +230,46 @@ public class JeuPanel extends Parent implements Runnable {
 				}
 				
 			});
+			
 		}
 	}
 
 	@Override
 	public void run() {
-		while(true) {
-			Object objet = this.gui.getClient().attenteReponse();
-			if(objet != null && objet instanceof Partie) {
-				
-				Partie tmp = (Partie) objet;
-				if (this.listJoueurs != tmp.getParticipants()) {
-					this.partie = (Partie) objet;
-					this.listJoueurs = this.partie.getParticipants();
+		boolean statut = true;
+		while(statut) {
+			try {
+				Object element = this.gui.getClient().attenteReponse();
+				if(element != null && element instanceof Partie) {
+					Partie partie = (Partie)element;
+
+					if (partie.getStatusPartie() == StatusPartie.Fini) {
+						if (partie.getJoueurGagnant() != null) {
+							if (partie.getJoueurGagnant().getPseudo() == this.gui.getJoueur().getPseudo())  {
+								this.gui.AfficherMessage("Vous avez gagné ! ", Color.ORANGE, 1);
+							} else {
+								this.gui.AfficherMessage("Vous avez perdu ! \n " + partie.getJoueurGagnant().getPseudo() + " a gagné !", Color.ORANGE, 2);
+							}
+						} else {
+							this.gui.AfficherMessage("Aucun joueur n'as gagné !", Color.ORANGE, 3);
+						}
+					} else if (this.partie.getParticipants().size() > partie.getParticipants().size()) {
+						this.partie.setParticipants(partie.getParticipants());
+						
+						this.setJoueurs();
+					}
 					
-					this.setJoueurs();
 				}
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				statut = false;
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				statut = false;
+				e.printStackTrace();
 			}
 		}
 	}
-	
+
 }

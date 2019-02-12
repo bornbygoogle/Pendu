@@ -9,7 +9,7 @@ public class Partie implements Serializable {
 	private Mot mot = new Mot();
 	private Joueur joueurGagnant = new Joueur();
 	private HashMap<Joueur, StatusJoueur> participants = new HashMap<Joueur, StatusJoueur>();
-	private StatusPartie statusPartie = StatusPartie.EnCours;
+	private StatusPartie statusPartie = StatusPartie.EnAttenteJoueur;
 	
 	public Mot getMot() {
 		return mot;

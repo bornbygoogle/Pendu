@@ -29,7 +29,7 @@ public class Connection implements Runnable {
 
 	@Override
 	public synchronized void run() {
-		System.out.println("Ecoute rÃ©seau activÃ©e");
+		System.out.println("Ecoute réseau activé");
 		while(this.running) {
 			try {
 				// On accepte les connexions entrantes
@@ -41,6 +41,6 @@ public class Connection implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Ecoute rÃ©seau dÃ©sactivÃ©e");
+		System.out.println("Ecoute réseau désactivé");
 	}
 }

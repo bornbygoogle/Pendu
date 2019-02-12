@@ -1,5 +1,6 @@
 package client;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import commun.DemandeServeur;
@@ -7,8 +8,8 @@ import commun.Joueur;
 import commun.Mot;
 import commun.Partie;
 
-import commun.ReponseServeur;
 import commun.StatusJoueur;
+import commun.StatusPartie;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -143,12 +144,12 @@ public class MainGUI extends Application {
 		});
 	}
 	
-	public void AfficherMessage(String message, Color couleur) {
+	public void AfficherMessage(String message, Color couleur, int version) {
 		Platform.runLater(new Runnable() {
 		    @Override
 		    public void run() {
 				groupe.getChildren().clear();
-				groupe.getChildren().add(new MessagePanel(message, couleur));
+				groupe.getChildren().add(new MessagePanel(message, couleur, version));
 		    }
 		});
 	}
@@ -157,34 +158,50 @@ public class MainGUI extends Application {
 		this.enPartie = false;
 		this.ChargerInterfaceAttente();
 		// On attend que le serveur nous envoie une partie
-		Object element = this.client.attenteReponse();
-		if(element != null && element instanceof Partie) {
-			this.partie = (Partie)element;
-			System.out.println(this.partie.getMot().getMot());
-			this.AfficherJeu();
-			this.enPartie = true;
+		Object element;
+		try {
+			element = this.client.attenteReponse();
+			if(element != null && element instanceof Partie) {
+				this.partie = (Partie)element;
+				System.out.println(this.partie.getMot().getMot());
+				this.AfficherJeu();
+				this.enPartie = true;
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
 	public void ChargerInterfaceAttente() {
 		// Ici on va demander le status de la partie
 		this.client.envoyer(DemandeServeur.StatusPartie);
-		Object reponse = this.client.attenteReponse();
-		if(reponse != null && reponse instanceof ReponseServeur) {
-			ReponseServeur repServ = (ReponseServeur)reponse;
-			if(repServ == ReponseServeur.PartieEnAttenteJoueur || repServ == ReponseServeur.PartieEnCours || repServ == ReponseServeur.ChargementProchainePartie) {
+		try {
+			Object reponse = this.client.attenteReponse();
+			if(reponse != null && reponse instanceof StatusPartie) {
+				StatusPartie repServ = (StatusPartie)reponse;
 				switch (repServ) {
-					case PartieEnAttenteJoueur:
-						this.AfficherMessage("En attente de joueurs...", Color.ORANGE);
+					case EnAttenteJoueur:
+						this.AfficherMessage("En attente de joueurs...", Color.ORANGE, 3);
 						break;
-					case PartieEnCours:
-						this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE);
+					case EnCours:
+						this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE, 3);
 						break;
-					case ChargementProchainePartie:
-						this.AfficherMessage("Chargement prochaine partie...", Color.ORANGE);
+					case ChargementPartie:
+					case Fini:
+						this.AfficherMessage("Chargement prochaine partie...", Color.ORANGE, 3);
 						break;
 				}
 			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }
