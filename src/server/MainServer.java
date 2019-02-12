@@ -3,9 +3,7 @@ package server;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import commun.*;
 import javafx.application.Application;
@@ -23,8 +21,7 @@ public class MainServer extends Application
 	private Server server;
 
 	// Eléments jeu
-	private Partie partie;
-	private ReponseServeur statusPartie;
+	private Jeu jeu;
 
 	// Eléments BDD
 	private Connection connection = null;
@@ -35,7 +32,6 @@ public class MainServer extends Application
 	@Override
 	public void start(Stage stage) throws Exception 
 	{
-		System.out.println(Utils.getCurrentTimeUsingCalendar());
 		//////////////////////
 		// Récupération BDD //
 		//////////////////////
@@ -56,9 +52,8 @@ public class MainServer extends Application
 		///////////////////////
 		// Configuration jeu //
 		///////////////////////
-		
-		// Définition du status de la partie à en attente joueur au lancement du serveur
-		this.statusPartie = ReponseServeur.PartieEnAttenteJoueur;
+
+		this.jeu = new Jeu(this);
 
 
 		//////////////////////
@@ -118,15 +113,19 @@ public class MainServer extends Application
 
 
 	public Server getServer() {
-		return server;
+		return this.server;
 	}
-	
-	public ReponseServeur getStatusPartie() {
-		return this.statusPartie;
+
+	public Jeu getJeu() {
+		return this.jeu;
 	}
 	
 	public List<Joueur> getListeJoueurs() {
 		return this.joueurs;
+	}
+	
+	public List<Theme> getThemes() {
+		return this.themes;
 	}
 
 
@@ -154,64 +153,5 @@ public class MainServer extends Application
 		for(Joueur j : this.joueurs) {
 			System.out.println("\t- " + j.getPseudo());
 		}
-	}
-
-
-
-
-
-	public void lancementJeu() {
-		// Si une partie n'est pas lancée
-		if(this.statusPartie == ReponseServeur.PartieEnAttenteJoueur && this.partie == null) {
-			// Si il y a au moins 2 clients connectés au serveur
-			if(this.server.getClients().size() >= 2) {
-				int cptAuthentifier = 0;
-				for(ConnectedClient client : this.server.getClients().keySet()) {
-					if(client.getJoueur() != null)
-					cptAuthentifier++;
-				}
-				// Si au moins 2 clients sont authentifiés
-				if(cptAuthentifier >= 2) {
-					// On lance une nouvelle partie
-					this.definirPartie();
-					this.statusPartie = ReponseServeur.PartieEnCours;
-					// On envoie la partie aux joueur concernés
-					this.envoyerPartie();
-				}
-			}
-		}
-	}
-
-	private void definirPartie() {
-		// On crée une nouvelle partie
-		Partie nouvellePartie = new Partie();
-		// On ajoute les joueurs authentifiés à la partie
-		HashMap<Joueur, StatusJoueur> lesParticipants = new HashMap<Joueur, StatusJoueur>();
-		for(ConnectedClient client : this.server.getClients().keySet()) {
-			if(client.getJoueur() != null)
-				lesParticipants.put(client.getJoueur(), StatusJoueur.EnJeu);
-		}
-		nouvellePartie.setParticipants(lesParticipants);
-		// On définit le mot à rechercher aléatoirement
-		Random rand = new Random();
-		Theme randomTheme = this.themes.get(rand.nextInt(this.themes.size()));
-		Mot randomMot = randomTheme.getMots().get(rand.nextInt(randomTheme.getMots().size()));
-		nouvellePartie.setMot(randomMot);
-		// On définit la partie
-		this.partie = nouvellePartie;
-	}
-
-	private void envoyerPartie() {
-		for(Joueur j : this.partie.getParticipants().keySet()) {
-			for(ConnectedClient client : this.server.getClients().keySet()) {
-				if(client.getJoueur().equals(j)) {
-					client.envoyer(this.partie);
-				}
-			}
-		}
-	}
-	
-	public void MAJPartie() {
-		
 	}
 }

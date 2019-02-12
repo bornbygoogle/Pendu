@@ -4,5 +4,7 @@ import java.io.Serializable;
 
 public enum StatusPartie implements Serializable {
 	EnCours,
-	Fini
+	Fini,
+	EnAttenteJoueur,
+	ChargementPartie
 }

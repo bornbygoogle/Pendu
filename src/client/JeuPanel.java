@@ -57,17 +57,18 @@ public class JeuPanel extends Parent implements Runnable {
 	public void setButtons() {
 		alphabet = new ArrayList<Button>();
 		
+		int k = 0;
 		for (int i=0; i<26; i++) {
 			Button btn = new Button();
 			if (i/9 == 0) {
-				btn.setLayoutX(25 + i*50);
+				btn.setLayoutX(25 + i*50 + k);
 				btn.setLayoutY(750);
 			} else if (i/9 == 1) {
-				btn.setLayoutX(25 + (i-9)*50);
-				btn.setLayoutY(800);
+				btn.setLayoutX(25 + (i-9)*50 + k);
+				btn.setLayoutY(805);
 			} else {
-				btn.setLayoutX(50 + (i-18)*50);
-				btn.setLayoutY(850);
+				btn.setLayoutX(50 + (i-18)*50 + k);
+				btn.setLayoutY(860);
 			}
 			btn.setPrefWidth(50);
 			btn.setPrefHeight(50);
@@ -77,31 +78,49 @@ public class JeuPanel extends Parent implements Runnable {
 			
 			alphabet.add(btn);
 			this.getChildren().add(btn);
+			
+			if(i == 8)
+				k = 0;
+			else if(i == 17) {
+				k = 0;
+			} else {
+				k += 5;
+			}
+
 		}
 	}
 	
 	public void setTexts() {
 		letters = new ArrayList<TextFlow>();
-		
+
+		int k = 0;
 		for (int i=0; i<wordToFind.length(); i++) {
 			TextFlow receivedText = new TextFlow();
 			if (i/8 == 0) {
-				receivedText.setLayoutX(50+i*50);
+				receivedText.setLayoutX(50+i*50 + k);
 				receivedText.setLayoutY(550);
 			} else if (i/8 == 1) {
-				receivedText.setLayoutX(50+(i-8)*50);
-				receivedText.setLayoutY(600);
+				receivedText.setLayoutX(50+(i-8)*50 + k);
+				receivedText.setLayoutY(605);
 			} else if (i/8 == 2) {
-				receivedText.setLayoutX(50+(i-16)*50);
-				receivedText.setLayoutY(650);
+				receivedText.setLayoutX(50+(i-16)*50 + k);
+				receivedText.setLayoutY(660);
 			}
 			receivedText.setPrefWidth(50);
 			receivedText.setPrefHeight(50);
 			receivedText.setTextAlignment(TextAlignment.CENTER);
-			receivedText.setBorder(new Border(new BorderStroke(Color.GAINSBORO, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+			receivedText.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 			
 			letters.add(receivedText);
 			this.getChildren().add(receivedText);
+			
+			if(i == 7)
+				k = 0;
+			else if(i == 15) {
+				k = 0;
+			} else {
+				k += 5;
+			}
 		}
 	}
 	

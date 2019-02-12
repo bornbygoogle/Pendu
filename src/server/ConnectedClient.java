@@ -31,7 +31,7 @@ public class ConnectedClient implements Runnable {
 			this.in = new ObjectInputStream(socket.getInputStream());
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
 			this.statut = true;
-			System.out.println("Nouveau client connectÃ© : " + this.id);
+			System.out.println("Client " + this.id + " connecté.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -62,12 +62,24 @@ public class ConnectedClient implements Runnable {
 							}
 						}
 						if(joueurLocal != null) {
-							if(joueur.getPass().equals(joueurLocal.getPass())) {
-								joueurLocal.setStatus(true);
-								joueur = joueurLocal;
-								this.joueur = joueurLocal;
-							} else
-								joueur.setMessage("Le mot de passe n'est pas valide.");
+							// On vérifie que le joueur n'est pas déjà connecté
+							boolean verifDejaConnecte = false;
+							for(ConnectedClient client : this.main.getServer().getClients().keySet()) {
+								if(client.getJoueur() != null) {
+									if(client.getJoueur().getPseudo().toLowerCase().equals(joueur.getPseudo().toLowerCase()))
+										verifDejaConnecte = true;
+								}
+							}
+							if(!verifDejaConnecte) {
+								if(joueur.getPass().equals(joueurLocal.getPass())) {
+									joueurLocal.setStatus(true);
+									joueur = joueurLocal;
+									this.joueur = joueurLocal;
+								} else
+									joueur.setMessage("Le mot de passe n'est pas valide.");
+							} else {
+								joueur.setMessage("Ce joueur est déjà connecté.");
+							}
 						} else
 							joueur.setMessage("Vous n'etes pas incrit.");
 						
@@ -78,16 +90,17 @@ public class ConnectedClient implements Runnable {
 						switch (demande) {
 							case StatusPartie:
 								// Renvoyer le status de la partie actuel
-								this.envoyer(this.main.getStatusPartie());
+								this.envoyer(this.main.getJeu().getPartie().getStatusPartie());
 								// On attend 0.5s avant d'essayer de lancer une partie si il n'y en a pas une dÃ©jÃ  en cours
 								Thread.sleep(500);
-								this.main.lancementJeu();
+								this.main.getJeu().lancerPartie();
 								break;
 							case Quitter:
-								// TODO -> Il faut traiter la dÃ©connexion du client (L'enlever d'une partie si il était dedans (Si une partie est en cours), voir si la partie s'arrête si il part, prévenir tout les autres clients en renvoyant la partie en cours à jour)
 								// Le client ferme son appli
 								this.statut = false;
-								this.main.MAJPartie();
+								// On verif qu'il n'était pas dans une partie
+								this.main.getJeu().decoJoueur(this.joueur);
+								// On le déconnecte
 								this.main.getServer().disconnectedClient(this);
 								break;
 						}

@@ -7,8 +7,8 @@ import commun.Joueur;
 import commun.Mot;
 import commun.Partie;
 
-import commun.ReponseServeur;
 import commun.StatusJoueur;
+import commun.StatusPartie;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -170,20 +170,19 @@ public class MainGUI extends Application {
 		// Ici on va demander le status de la partie
 		this.client.envoyer(DemandeServeur.StatusPartie);
 		Object reponse = this.client.attenteReponse();
-		if(reponse != null && reponse instanceof ReponseServeur) {
-			ReponseServeur repServ = (ReponseServeur)reponse;
-			if(repServ == ReponseServeur.PartieEnAttenteJoueur || repServ == ReponseServeur.PartieEnCours || repServ == ReponseServeur.ChargementProchainePartie) {
-				switch (repServ) {
-					case PartieEnAttenteJoueur:
-						this.AfficherMessage("En attente de joueurs...", Color.ORANGE);
-						break;
-					case PartieEnCours:
-						this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE);
-						break;
-					case ChargementProchainePartie:
-						this.AfficherMessage("Chargement prochaine partie...", Color.ORANGE);
-						break;
-				}
+		if(reponse != null && reponse instanceof StatusPartie) {
+			StatusPartie repServ = (StatusPartie)reponse;
+			switch (repServ) {
+				case EnAttenteJoueur:
+					this.AfficherMessage("En attente de joueurs...", Color.ORANGE);
+					break;
+				case EnCours:
+					this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE);
+					break;
+				case ChargementPartie:
+				case Fini:
+					this.AfficherMessage("Chargement prochaine partie...", Color.ORANGE);
+					break;
 			}
 		}
 	}
