@@ -71,13 +71,6 @@ public class Jeu {
 		}
 	}
 	
-	public void miseAJourPartie() {
-		// Lorsque déco joueur
-		// Lorsque joueur gagne
-		// Lorsque joueur perd
-		// Lorsque plus assez de joueurs
-	}
-	
 	public void decoJoueur(Joueur unJoueur) {
 		boolean verifExiste = false;
 		for(Joueur j : this.partie.getParticipants().keySet()) {
@@ -107,6 +100,60 @@ public class Jeu {
 					}
 					this.lancerPartie();
 				}
+			}
+		}
+	}
+	
+	public void joueurGagne(Joueur unJoueur) {
+		boolean verifExiste = false;
+		for(Joueur j : this.partie.getParticipants().keySet()) {
+			if(j.equals(unJoueur))
+				verifExiste = true;
+		}
+		if(verifExiste) {
+			for(Joueur j : this.partie.getParticipants().keySet())
+				this.partie.getParticipants().replace(j, StatusJoueur.Perdu);
+			this.partie.getParticipants().replace(unJoueur, StatusJoueur.Trouve);
+			this.partie.setStatusPartie(StatusPartie.Fini);
+			this.partie.setJoueurGagnant(unJoueur);
+			this.envoyerPartie();
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.lancerPartie();
+		}
+	}
+	
+	public void joueurPerdu(Joueur unJoueur) {
+		boolean verifExiste = false;
+		for(Joueur j : this.partie.getParticipants().keySet()) {
+			if(j.equals(unJoueur))
+				verifExiste = true;
+		}
+		if(verifExiste) {
+			this.partie.getParticipants().replace(unJoueur, StatusJoueur.Perdu);
+			// Si il reste des joueurs en jeu
+			boolean verifJoueurEnJeu = false;
+			for(Joueur j : this.partie.getParticipants().keySet()) {
+				if(this.partie.getParticipants().get(j).equals(StatusJoueur.EnJeu)) {
+					verifJoueurEnJeu = true;
+				}
+			}
+			if(verifJoueurEnJeu) {
+				this.envoyerPartie();
+			} else {
+				// On arrête la partie
+				this.partie.setStatusPartie(StatusPartie.Fini);
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				this.lancerPartie();
 			}
 		}
 	}
