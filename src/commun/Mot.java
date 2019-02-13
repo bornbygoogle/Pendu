@@ -3,13 +3,13 @@ package commun;
 import java.io.Serializable;
 
 public class Mot implements Serializable {
-	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private int id = 0;
-	private String mot = "";
+	private static final long serialVersionUID = -280041720314104803L;
+	private int id;
+	private String mot;
 	private Theme theme = new Theme();
 	
 	public int getId() {

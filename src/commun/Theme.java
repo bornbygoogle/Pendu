@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Theme implements Serializable {
-
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -3499507144876514961L;
 	private int id;
 	private String libelle;
 	private List<Mot> mots;
