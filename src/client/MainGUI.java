@@ -125,13 +125,16 @@ public class MainGUI extends Application {
 		});
 	}
 	
-	public void InitialisationPartie() {
+	public void InitialisationPartie(int test) {
 		this.enPartie = false;
 		this.ChargerInterfaceAttente();
 		// On attend que le serveur nous envoie une partie
 		Object element;
 		try {
 			element = this.client.attenteReponse();
+			if (test == 2) {
+				element = this.client.attenteReponse();
+			}
 			if(element != null && element instanceof Partie) {
 				this.AfficherJeu((Partie)element);
 				this.enPartie = true;
@@ -142,7 +145,7 @@ public class MainGUI extends Application {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 	
 	public void ChargerInterfaceAttente() {
@@ -157,7 +160,7 @@ public class MainGUI extends Application {
 						this.AfficherMessage("En attente de joueurs...", Color.ORANGE, 3);
 						break;
 					case EnCours:
-						this.AfficherMessage("Une partie est en cours, veuillez patienter...", Color.ORANGE, 3);
+						this.AfficherMessage("Une partie est en cours, \nVeuillez patienter...", Color.ORANGE, 3);
 						break;
 					case ChargementPartie:
 					case Fini:
@@ -173,4 +176,5 @@ public class MainGUI extends Application {
 			e.printStackTrace();
 		}
 	}
+	
 }
