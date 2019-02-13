@@ -7,6 +7,7 @@ import java.net.Socket;
 
 import commun.DemandeServeur;
 import commun.Joueur;
+import commun.Partie;
 import commun.StatusJoueur;
 
 public class ConnectedClient implements Runnable {
@@ -115,6 +116,8 @@ public class ConnectedClient implements Runnable {
 	}
 	
 	public boolean envoyer(Object element) {
+		if (element instanceof Partie)
+			System.out.println(((Partie)element).getStatusPartie().name());
 		boolean verif = false;
 		try {
 			if(element != null) {

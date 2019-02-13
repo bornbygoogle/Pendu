@@ -111,21 +111,21 @@ public class Jeu {
 				verifExiste = true;
 		}
 		if(verifExiste) {
-			for(Joueur j : this.partie.getParticipants().keySet())
+			for(Joueur j : this.partie.getParticipants().keySet()) {
 				this.partie.getParticipants().replace(j, StatusJoueur.Perdu);
+				j.setMessage("message test");
+			}
 			this.partie.getParticipants().replace(unJoueur, StatusJoueur.Trouve);
 			this.partie.setStatusPartie(StatusPartie.Fini);
 			this.partie.setJoueurGagnant(unJoueur);
-			System.out.println(this.partie.getStatusPartie().name());
 			this.envoyerPartie();
-			System.out.println(this.partie.getStatusPartie().name());
-			try {
+			/*try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			this.lancerPartie();
+			this.lancerPartie();*/
 		}
 	}
 	
