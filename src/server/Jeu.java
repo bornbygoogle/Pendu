@@ -18,10 +18,11 @@ public class Jeu {
 	public Jeu(MainServer main) {
 		this.main = main;
 		this.partie = new Partie();
+		this.partie.setStatusPartie(StatusPartie.EnAttenteJoueur);
 	}
 	
-	public Partie getPartie() {
-		return this.partie;
+	public StatusPartie getStatusPartie() {
+		return this.partie.getStatusPartie();
 	}
 	
 	public void lancerPartie() {
@@ -62,10 +63,12 @@ public class Jeu {
 	}
 
 	private void envoyerPartie() {
+		System.out.println(this.partie.getStatusPartie().name());
 		for(Joueur j : this.partie.getParticipants().keySet()) {
 			for(ConnectedClient client : this.main.getServer().getClients().keySet()) {
-				if(client.getJoueur().equals(j)) {
+				if(client.getJoueur() != null && client.getJoueur().equals(j)) {
 					client.envoyer(this.partie);
+					break;
 				}
 			}
 		}
@@ -86,20 +89,11 @@ public class Jeu {
 					if(s.equals(StatusJoueur.EnJeu))
 						verifEnVie = true;
 				}
-				// Si joueur encore en partie, on envoie la partie mise à jour
-				if(verifEnVie) {
-					this.envoyerPartie();
-				} else {
-					// Sinon on arrête la partie
+				if(!verifEnVie) {
+					// On arrete la partie si plus de joueur en vie
 					this.partie.setStatusPartie(StatusPartie.Fini);
-					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					this.lancerPartie();
 				}
+				this.envoyerPartie();
 			}
 		}
 	}
@@ -117,13 +111,6 @@ public class Jeu {
 			this.partie.setStatusPartie(StatusPartie.Fini);
 			this.partie.setJoueurGagnant(unJoueur);
 			this.envoyerPartie();
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			this.lancerPartie();
 		}
 	}
 	
@@ -142,19 +129,11 @@ public class Jeu {
 					verifJoueurEnJeu = true;
 				}
 			}
-			if(verifJoueurEnJeu) {
-				this.envoyerPartie();
-			} else {
+			if(!verifJoueurEnJeu) {
 				// On arrête la partie
 				this.partie.setStatusPartie(StatusPartie.Fini);
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				this.lancerPartie();
 			}
+			this.envoyerPartie();
 		}
 	}
 }

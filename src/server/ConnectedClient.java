@@ -7,6 +7,7 @@ import java.net.Socket;
 
 import commun.DemandeServeur;
 import commun.Joueur;
+import commun.Partie;
 import commun.StatusJoueur;
 
 public class ConnectedClient implements Runnable {
@@ -28,7 +29,7 @@ public class ConnectedClient implements Runnable {
 			this.in = new ObjectInputStream(socket.getInputStream());
 			this.out = new ObjectOutputStream(this.socket.getOutputStream());
 			this.statut = true;
-			System.out.println("Client connecté.");
+			System.out.println("Un client s'est connecté.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -83,7 +84,7 @@ public class ConnectedClient implements Runnable {
 						switch (demande) {
 							case StatusPartie:
 								// Renvoyer le status de la partie actuel
-								this.envoyer(this.main.getJeu().getPartie().getStatusPartie());
+								this.envoyer(this.main.getJeu().getStatusPartie());
 								// On attend 0.5s avant d'essayer de lancer une partie si il n'y en a pas une dÃ©jÃ  en cours
 								Thread.sleep(500);
 								this.main.getJeu().lancerPartie();
@@ -118,12 +119,21 @@ public class ConnectedClient implements Runnable {
 		boolean verif = false;
 		try {
 			if(element != null) {
+				if(element instanceof Partie) {
+					Partie p = (Partie)element;
+					Partie newP = new Partie();
+					newP.setJoueurGagnant(p.getJoueurGagnant());
+					newP.setMot(p.getMot());
+					newP.setParticipants(p.getParticipants());
+					newP.setStatusPartie(p.getStatusPartie());
+					element = newP;
+				}
 				this.out.writeObject(element);
 				this.out.flush();
 				verif = true;
 			}
 		} catch(Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 		return verif;
 	}

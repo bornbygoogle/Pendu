@@ -29,21 +29,21 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 public class JeuPanel extends Parent implements Runnable {
-	protected MainGUI gui;
+	private MainGUI gui;
 	
-	protected ImageView screen;
-	protected TextFlow joueurs;
-	protected List<TextFlow> letters;
-	protected List<Button> alphabet;
+	private ImageView screen;
+	private TextFlow joueurs;
+	private List<TextFlow> letters;
+	private List<Button> alphabet;
 	
-	protected Partie partie;
+	private Partie partie;
 
-	protected int dangerLevel;
-	protected int winLevel;
+	private int dangerLevel;
+	private int winLevel;
 	
-	public JeuPanel(MainGUI game) {
+	public JeuPanel(MainGUI game, Partie unePartie) {
 		this.gui = game;
-		this.partie = game.getPartie();
+		this.partie = unePartie;
 		this.dangerLevel = 1;
 		this.winLevel = 0;
 		
@@ -235,15 +235,15 @@ public class JeuPanel extends Parent implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public synchronized void run() {
 		boolean statut = true;
 		while(statut) {
 			try {
 				Object element = this.gui.getClient().attenteReponse();
+				System.out.println("Run JeuPanel");
 				if(element != null && element instanceof Partie) {
 					Partie partie = (Partie)element;
-
-					if (partie.getStatusPartie() == StatusPartie.Fini) {
+					if (partie.getStatusPartie().equals(StatusPartie.Fini)) {
 						if (partie.getJoueurGagnant() != null) {
 							if (partie.getJoueurGagnant().getPseudo() == this.gui.getJoueur().getPseudo())  {
 								this.gui.AfficherMessage("Vous avez gagné ! ", Color.ORANGE, 1);
@@ -253,6 +253,14 @@ public class JeuPanel extends Parent implements Runnable {
 						} else {
 							this.gui.AfficherMessage("Aucun joueur n'as gagné !", Color.ORANGE, 3);
 						}
+						statut = false;
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						this.gui.InitialisationPartie();
 					} else if (this.partie.getParticipants().size() > partie.getParticipants().size()) {
 						this.partie.setParticipants(partie.getParticipants());
 						

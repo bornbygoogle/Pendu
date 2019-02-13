@@ -5,11 +5,14 @@ import java.util.HashMap;
 
 public class Partie implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private Mot mot = new Mot();
-	private Joueur joueurGagnant = new Joueur();
-	private HashMap<Joueur, StatusJoueur> participants = new HashMap<Joueur, StatusJoueur>();
-	private StatusPartie statusPartie = StatusPartie.EnAttenteJoueur;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -121557802955103155L;
+	private Mot mot;
+	private Joueur joueurGagnant;
+	private HashMap<Joueur, StatusJoueur> participants;
+	private StatusPartie statusPartie;
 	
 	public Mot getMot() {
 		return mot;
