@@ -30,21 +30,21 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 public class JeuPanel extends Parent implements Runnable {
-	protected MainGUI gui;
+	private MainGUI gui;
 	
-	protected ImageView screen;
-	protected TextFlow joueurs;
-	protected List<TextFlow> letters;
-	protected List<Button> alphabet;
+	private ImageView screen;
+	private TextFlow joueurs;
+	private List<TextFlow> letters;
+	private List<Button> alphabet;
 	
-	protected Partie partie;
+	private Partie partie;
 
-	protected int dangerLevel;
-	protected int winLevel;
+	private int dangerLevel;
+	private int winLevel;
 	
-	public JeuPanel(MainGUI game) {
+	public JeuPanel(MainGUI game, Partie unePartie) {
 		this.gui = game;
-		this.partie = game.getPartie();
+		this.partie = unePartie;
 		this.dangerLevel = 1;
 		this.winLevel = 0;
 		
@@ -155,7 +155,7 @@ public class JeuPanel extends Parent implements Runnable {
 			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Perdu) {
 				joueur.setText(j.getPseudo() + " - Perdu\n");
 			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Trouve) {
-				joueur.setText(j.getPseudo() + " - Gagné\n");
+				joueur.setText(j.getPseudo() + " - GagnÃ©\n");
 			}
 			joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 12));
 			this.joueurs.getChildren().add(joueur);
@@ -245,32 +245,36 @@ public class JeuPanel extends Parent implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public synchronized void run() {
 		boolean statut = true;
 		while(statut) {
 			try {
 				Object element = this.gui.getClient().attenteReponse();
+				System.out.println("Run JeuPanel");
 				if(element != null && element instanceof Partie) {
-					this.partie = (Partie)element;
-
-					System.out.println(((Partie)element).getStatusPartie().name());
-					if (this.partie.getStatusPartie().equals(StatusPartie.Fini)) {
-						if (this.partie.getJoueurGagnant() != null) {
-							if (this.partie.getJoueurGagnant().getPseudo().equals(this.gui.getJoueur().getPseudo()))  {
-								this.gui.AfficherMessage("Vous avez gagn� ! ", Color.ORANGE, 1);
+					Partie partie = (Partie)element;
+					if (partie.getStatusPartie().equals(StatusPartie.Fini)) {
+						if (partie.getJoueurGagnant() != null) {
+							if (partie.getJoueurGagnant().getPseudo() == this.gui.getJoueur().getPseudo())  {
+								this.gui.AfficherMessage("Vous avez gagné ! ", Color.ORANGE, 1);
 							} else {
-								this.gui.AfficherMessage("Vous avez perdu ! \n " + this.partie.getJoueurGagnant().getPseudo() + " a gagn� !", Color.ORANGE, 2);
+								this.gui.AfficherMessage("Vous avez perdu ! \n " + this.partie.getJoueurGagnant().getPseudo() + " a gagné !", Color.ORANGE, 2);
 							}
 						} else {
-							this.gui.AfficherMessage("Aucun joueur n'a gagn� !", Color.ORANGE, 3);
+							this.gui.AfficherMessage("Aucun joueur n'a gagné !", Color.ORANGE, 3);
 						}
-					} else {
-						Platform.runLater(new Runnable() {
-						    @Override
-						    public void run() {
-								setJoueurs();
-						    }
-						});
+						statut = false;
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						this.gui.InitialisationPartie();
+					} else if (this.partie.getParticipants().size() > partie.getParticipants().size()) {
+						this.partie.setParticipants(partie.getParticipants());
+						
+						this.setJoueurs();
 					}
 				}
 			} catch (ClassNotFoundException e) {

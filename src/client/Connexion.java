@@ -180,13 +180,13 @@ public class Connexion extends Parent implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public synchronized void run() {
 		while(this.statutThread) {
-			Object objet;
 			try {
-				objet = this.main.getClient().attenteReponse();
-				if(objet instanceof Joueur) {
-					this.verifierReponseConnexion((Joueur) objet);
+				Object element = this.main.getClient().attenteReponse();
+				System.out.println("Run connexion");
+				if(element instanceof Joueur) {
+					this.verifierReponseConnexion((Joueur) element);
 				}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block

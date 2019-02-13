@@ -6,14 +6,14 @@ public class Joueur implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private String pseudo = "";
-	private String pass = "";
-	private int score = 0;
-	private int nbParties = 0;
-	private boolean status = false;
-	private String	message = "";
-	private String	dateDernierCo = Utils.getCurrentTimeUsingCalendar();
+	private static final long serialVersionUID = -4381873174213621762L;
+	private String pseudo;
+	private String pass;
+	private int score;
+	private int nbParties;
+	private boolean status;
+	private String	message;
+	private String	dateDernierCo;
 	
 	public String getPseudo() {
 		return pseudo;

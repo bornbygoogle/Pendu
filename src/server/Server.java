@@ -15,7 +15,7 @@ public class Server {
 	{
 		this.port = _port;
 		this.clients = new HashMap<ConnectedClient, Thread>();
-		System.out.println("Connect to server port " + port);
+		System.out.println("Connect to server port " + this.port);
 
 		conn = new Connection(main, this);
 		Thread threadConnection = new Thread(conn);

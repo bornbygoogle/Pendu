@@ -1,14 +1,11 @@
 package client;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import commun.DemandeServeur;
 import commun.Joueur;
-import commun.Mot;
 import commun.Partie;
 
-import commun.StatusJoueur;
 import commun.StatusPartie;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,15 +21,12 @@ public class MainGUI extends Application {
 	private Client client;
 	
 	private Joueur joueur;
-	private Partie partie;
 	
 	private boolean connecte;
 	private boolean enPartie;
 	
 	private Thread threadConnexion;
 	private Thread threadJeu;
-	
-	private boolean enTest = false;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -55,22 +49,7 @@ public class MainGUI extends Application {
 		this.enPartie = false;
 		
 		// Affichage de la page de connexion
-		if(this.enTest) {
-			this.partie = new Partie();
-			Joueur joueur1 = new Joueur();
-			Joueur joueur2 = new Joueur();
-			joueur1.setPseudo("Joueur 1");
-			joueur2.setPseudo("Joueur 2");
-			HashMap<Joueur, StatusJoueur> participants = new HashMap<Joueur, StatusJoueur>();
-			participants.put(joueur1, StatusJoueur.EnJeu);
-			participants.put(joueur2, StatusJoueur.EnJeu);
-			partie.setParticipants(participants);
-			Mot mot = new Mot();
-			mot.setMot("ESCALIER");
-			partie.setMot(mot);
-			this.AfficherJeu();
-		} else 
-			this.AfficherConnexion();
+		this.AfficherConnexion();
 		
 		// Affichage
 		stage.show();
@@ -94,14 +73,6 @@ public class MainGUI extends Application {
 
 	public Joueur getJoueur() {
 		return this.joueur;
-	}
-	
-	public Partie getPartie() {
-		return partie;
-	}
-	
-	public void setPartie(Partie unePartie) {
-		this.partie = unePartie;
 	}
 
 	public void setJoueur(Joueur unJoueur) {
@@ -134,10 +105,10 @@ public class MainGUI extends Application {
 		});
 	}
 	
-	public void AfficherJeu() {
+	public void AfficherJeu(Partie unePartie) {
 		Platform.runLater(() -> {
 			this.groupe.getChildren().clear();
-			JeuPanel jeuPanel = new JeuPanel(this);
+			JeuPanel jeuPanel = new JeuPanel(this, unePartie);
 			this.threadJeu = new Thread(jeuPanel);
 			this.threadJeu.start();
 			this.groupe.getChildren().add(jeuPanel);
@@ -162,9 +133,7 @@ public class MainGUI extends Application {
 		try {
 			element = this.client.attenteReponse();
 			if(element != null && element instanceof Partie) {
-				this.partie = (Partie)element;
-				System.out.println(this.partie.getMot().getMot());
-				this.AfficherJeu();
+				this.AfficherJeu((Partie)element);
 				this.enPartie = true;
 			}
 		} catch (ClassNotFoundException e) {
