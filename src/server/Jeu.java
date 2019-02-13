@@ -63,7 +63,6 @@ public class Jeu {
 	}
 
 	private void envoyerPartie() {
-		System.out.println(this.partie.getStatusPartie().name());
 		for(Joueur j : this.partie.getParticipants().keySet()) {
 			for(ConnectedClient client : this.main.getServer().getClients().keySet()) {
 				if(client.getJoueur() != null && client.getJoueur().equals(j)) {
