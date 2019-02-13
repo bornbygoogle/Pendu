@@ -26,19 +26,19 @@ public class Jeu {
 	}
 	
 	public void lancerPartie() {
-		// Si une partie n'est pas d�j� en cours
+		// Si une partie n'est pas déjà en cours
 		if(this.partie.getStatusPartie().equals(StatusPartie.EnAttenteJoueur) || this.partie.getStatusPartie().equals(StatusPartie.Fini)) {
 			int cptAuthentifier = 0;
 			for(ConnectedClient client : this.main.getServer().getClients().keySet()) {
 				if(client.getJoueur() != null)
 					cptAuthentifier++;
 			}
-			// Si au moins 2 clients sont authentifiés
+			// Si au moins 2 clients sont authentifiÃ©s
 			if(cptAuthentifier >= 2) {
 				// On lance une nouvelle partie
 				this.partie.setStatusPartie(StatusPartie.ChargementPartie);
 				this.definirPartie();
-				// On envoie la partie aux joueur concernés
+				// On envoie la partie aux joueur concernÃ©s
 				this.envoyerPartie();
 			} else {
 				this.partie.setStatusPartie(StatusPartie.EnAttenteJoueur);
@@ -47,14 +47,14 @@ public class Jeu {
 	}
 
 	private void definirPartie() {
-		// On ajoute les joueurs authentifiés à la partie
+		// On ajoute les joueurs authentifiÃ©s Ã  la partie
 		HashMap<Joueur, StatusJoueur> lesParticipants = new HashMap<Joueur, StatusJoueur>();
 		for(ConnectedClient client : this.main.getServer().getClients().keySet()) {
 			if(client.getJoueur() != null)
 				lesParticipants.put(client.getJoueur(), StatusJoueur.EnJeu);
 		}
 		this.partie.setParticipants(lesParticipants);
-		// On définit le mot à rechercher aléatoirement
+		// On dÃ©finit le mot Ã  rechercher alÃ©atoirement
 		Random rand = new Random();
 		Theme randomTheme = this.main.getThemes().get(rand.nextInt(this.main.getThemes().size()));
 		Mot randomMot = randomTheme.getMots().get(rand.nextInt(randomTheme.getMots().size()));
@@ -83,7 +83,7 @@ public class Jeu {
 		if(verifExiste) {
 			this.partie.getParticipants().remove(unJoueur);
 			if(this.partie.getStatusPartie().equals(StatusPartie.EnCours)) {
-				// On v�rifie qu'il reste au minimum 1 joueur en vie dans la partie sinon on stop tout et on r�initialise le jeu
+				// On vérifie qu'il reste au minimum 1 joueur en vie dans la partie sinon on stop tout et on réinitialise le jeu
 				boolean verifEnVie = false;
 				for(StatusJoueur s : this.partie.getParticipants().values()) {
 					if(s.equals(StatusJoueur.EnJeu))
@@ -105,8 +105,10 @@ public class Jeu {
 				verifExiste = true;
 		}
 		if(verifExiste) {
-			for(Joueur j : this.partie.getParticipants().keySet())
+			for(Joueur j : this.partie.getParticipants().keySet()) {
 				this.partie.getParticipants().replace(j, StatusJoueur.Perdu);
+				j.setMessage("message test");
+			}
 			this.partie.getParticipants().replace(unJoueur, StatusJoueur.Trouve);
 			this.partie.setStatusPartie(StatusPartie.Fini);
 			this.partie.setJoueurGagnant(unJoueur);
@@ -130,7 +132,7 @@ public class Jeu {
 				}
 			}
 			if(!verifJoueurEnJeu) {
-				// On arr�te la partie
+				// On arrête la partie
 				this.partie.setStatusPartie(StatusPartie.Fini);
 			}
 			this.envoyerPartie();

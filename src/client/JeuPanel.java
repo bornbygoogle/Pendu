@@ -10,6 +10,7 @@ import commun.Joueur;
 import commun.Partie;
 import commun.StatusJoueur;
 import commun.StatusPartie;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -93,6 +94,15 @@ public class JeuPanel extends Parent implements Runnable {
 	public void setTexts() {
 		letters = new ArrayList<TextFlow>();
 
+		TextFlow theme = new TextFlow();
+		theme.setLayoutX(500);
+		theme.setLayoutY(170);
+		Text themeText = new Text();
+		themeText.setText("Theme : " + this.partie.getMot().getTheme().getLibelle());
+		themeText.setFont(Font.font("Helvetica", FontPosture.REGULAR, 16));
+		theme.getChildren().add(themeText);
+		this.getChildren().add(theme);
+		
 		int k = 0;
 		for (int i=0; i<this.partie.getMot().getMot().length(); i++) {
 			TextFlow receivedText = new TextFlow();
@@ -145,7 +155,7 @@ public class JeuPanel extends Parent implements Runnable {
 			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Perdu) {
 				joueur.setText(j.getPseudo() + " - Perdu\n");
 			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Trouve) {
-				joueur.setText(j.getPseudo() + " - Gagné\n");
+				joueur.setText(j.getPseudo() + " - GagnÃ©\n");
 			}
 			joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 12));
 			this.joueurs.getChildren().add(joueur);
@@ -246,12 +256,12 @@ public class JeuPanel extends Parent implements Runnable {
 					if (partie.getStatusPartie().equals(StatusPartie.Fini)) {
 						if (partie.getJoueurGagnant() != null) {
 							if (partie.getJoueurGagnant().getPseudo() == this.gui.getJoueur().getPseudo())  {
-								this.gui.AfficherMessage("Vous avez gagn� ! ", Color.ORANGE, 1);
+								this.gui.AfficherMessage("Vous avez gagné ! ", Color.ORANGE, 1);
 							} else {
-								this.gui.AfficherMessage("Vous avez perdu ! \n " + partie.getJoueurGagnant().getPseudo() + " a gagn� !", Color.ORANGE, 2);
+								this.gui.AfficherMessage("Vous avez perdu ! \n " + this.partie.getJoueurGagnant().getPseudo() + " a gagné !", Color.ORANGE, 2);
 							}
 						} else {
-							this.gui.AfficherMessage("Aucun joueur n'as gagn� !", Color.ORANGE, 3);
+							this.gui.AfficherMessage("Aucun joueur n'a gagné !", Color.ORANGE, 3);
 						}
 						statut = false;
 						try {
@@ -266,7 +276,6 @@ public class JeuPanel extends Parent implements Runnable {
 						
 						this.setJoueurs();
 					}
-					
 				}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -279,5 +288,4 @@ public class JeuPanel extends Parent implements Runnable {
 			}
 		}
 	}
-
 }
