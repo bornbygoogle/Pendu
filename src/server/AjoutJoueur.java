@@ -5,6 +5,8 @@ import java.util.List;
 
 import commun.Joueur;
 import commun.Utils;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -22,7 +24,6 @@ import javafx.scene.text.FontPosture;
 
 public class AjoutJoueur extends Parent 
 {
-
 	private MainServer mainServer;
 
 	private TextField login;
@@ -32,15 +33,14 @@ public class AjoutJoueur extends Parent
 
 	private Joueur newJoueur;
 	private List<Joueur> listJoueur;
+	private List<Label> listLabel;
 
-	public AjoutJoueur(MainServer mainServeur) {
+	public AjoutJoueur(MainServer mainServeur) 
+	{
 		this.mainServer = mainServeur;
 		this.listJoueur = mainServeur.getListeJoueurs();
+
 		try {
-			// Lancement du theard d'ïecoute de la connexion
-			/*this.connexionReceive = new ConnexionReceive(this);
-			this.threadReceive = new Thread(this.connexionReceive);
-			this.threadReceive.start();*/
 			
 			this.login = new TextField();
 			this.login.setPrefWidth(200);
@@ -104,7 +104,6 @@ public class AjoutJoueur extends Parent
 			conteneurMessage.getChildren().add(this.message);
 			conteneurConnexion.getChildren().add(conteneurMessage);
 
-
 			VBox conteneurListeJoueurs = new VBox();
 			conteneurListeJoueurs.setFillWidth(true);
 			conteneurListeJoueurs.setPrefWidth(500);
@@ -118,18 +117,19 @@ public class AjoutJoueur extends Parent
 			texteListeJoueurs.setFont(Font.font("Helvetica", FontPosture.REGULAR, 18));
 			conteneurTexteListeJoueurs.getChildren().add(texteListeJoueurs);
 
-
-
-
 			GridPane gridPane = new GridPane();
 			gridPane.setPadding(new Insets(10, 0, 0, 90));
 			gridPane.setHgap(70);
 			gridPane.setVgap(10);
 			gridPane.setPrefWidth(300);
+			gridPane.setPrefHeight(200);
 
 			ScrollPane sp = new ScrollPane();
+			sp.setPadding(new Insets(10, 0, 0, 90));
 			sp.setContent(gridPane);
-	 
+			sp.setPrefWidth(300);
+			sp.setPrefHeight(200);
+
 			// Always show scroll bar
 			sp.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
 			sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
@@ -137,14 +137,19 @@ public class AjoutJoueur extends Parent
 			int row = 0;
 			for (Joueur j : listJoueur)
 			{
-				gridPane.add(new Label(j.getPseudo()), 0, row, 1, 1);
+				Label pseudo = new Label(j.getPseudo());
+
+				//pseudo.textFillProperty().bind(Bindings.when(j.getStatus().equals().then(Color.BLACK).otherwise(Color.RED)
+				//));
+				//if (j.getStatus())
+					pseudo.setTextFill(Color.GREEN);
+				
+				gridPane.add(pseudo, 0, row, 1, 1);
 				gridPane.add(new Label(Integer.toString(j.getScore())), 1, row, 1, 1);
 				row += 1;
 			}
 			
-
 			conteneurListeJoueurs.getChildren().addAll(conteneurTexteListeJoueurs, sp);
-
 
 			conteneur.getChildren().addAll(conteneurConnexion, conteneurListeJoueurs);
 			
