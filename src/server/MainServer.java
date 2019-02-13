@@ -74,7 +74,7 @@ public class MainServer extends Application
 		stage.show();
 
 		///////////////////
-		// Arrêt serveur //
+		// Arr?t serveur //
 		///////////////////
 
 		stage.setOnCloseRequest(e -> 
@@ -96,7 +96,7 @@ public class MainServer extends Application
 				e2.printStackTrace();
 			}
 
-			// On stop le réseau
+			// On stop le r�seau
 			this.server.stopServerRunning();
 			Platform.exit();
 			System.exit(0);
