@@ -276,7 +276,7 @@ public class JeuPanel extends Parent implements Runnable {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						this.gui.InitialisationPartie();
+						this.gui.InitialisationPartie(1);
 					} else {
 						Platform.runLater(new Runnable() {
 						    @Override
@@ -294,7 +294,7 @@ public class JeuPanel extends Parent implements Runnable {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								gui.InitialisationPartie();
+								gui.InitialisationPartie(2);
 				    		}
 				    	}
 					}

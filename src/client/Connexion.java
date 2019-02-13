@@ -156,7 +156,7 @@ public class Connexion extends Parent implements Runnable {
 			this.main.setConnecte(true);
 			this.statutThread = false;
 			// On Charge le jeu
-			this.main.InitialisationPartie();
+			this.main.InitialisationPartie(1);
 		} else {
 			// Si connexion pas bonne, afficher le message d'erreur renvoyé par le serveur et laisser la page de connexion
 			this.setMessageColor(Color.RED);
