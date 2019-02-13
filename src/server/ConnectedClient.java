@@ -116,6 +116,8 @@ public class ConnectedClient implements Runnable {
 	}
 	
 	public boolean envoyer(Object element) {
+		if (element instanceof Partie)
+			System.out.println(((Partie)element).getStatusPartie().name());
 		boolean verif = false;
 		try {
 			if(element != null) {
