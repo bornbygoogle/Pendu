@@ -11,7 +11,7 @@ public class Joueur implements Serializable {
 	private String pass;
 	private int score;
 	private int nbParties;
-	private boolean status;
+	private boolean status = false;
 	private String	message;
 	private String	dateDernierCo;
 	

@@ -43,14 +43,14 @@ public class ConnectedClient implements Runnable {
 	public synchronized void run() {
 		try {
 			while(this.statut) {
-				// On recupere les infos qui ont ete envoyÃ© via le client
+				// On recupere les infos qui ont ete envoyé via le client
 				Object element = in.readObject();
 				if(element != null) {
 					// Si le client a envoye une classe joueur, cela veut dire qu'il veut s'identifier
 					if (element instanceof Joueur) {
 						Joueur joueur = (Joueur)element;
 
-						// On va vï¿½rifier que le joueur existe
+						// On va vérifier que le joueur existe
 						Joueur joueurLocal = null;
 						for(Joueur j : this.main.getListeJoueurs()) {
 							if(j.getPseudo().equalsIgnoreCase(joueur.getPseudo())) {
@@ -58,7 +58,7 @@ public class ConnectedClient implements Runnable {
 							}
 						}
 						if(joueurLocal != null) {
-							// On vérifie que le joueur n'est pas déjà connecté
+							// On vérifie que le joueur n'est pas déj? connecté
 							boolean verifDejaConnecte = false;
 							for(ConnectedClient client : this.main.getServer().getClients().keySet()) {
 								if(client.getJoueur() != null) {
@@ -74,7 +74,7 @@ public class ConnectedClient implements Runnable {
 								} else
 									joueur.setMessage("Le mot de passe n'est pas valide.");
 							} else {
-								joueur.setMessage("Ce joueur est déjà connecté.");
+								joueur.setMessage("Ce joueur est déj? connecté.");
 							}
 						} else
 							joueur.setMessage("Vous n'etes pas incrit.");
@@ -87,7 +87,7 @@ public class ConnectedClient implements Runnable {
 							case StatusPartie:
 								// Renvoyer le status de la partie actuel
 								this.envoyer(this.main.getJeu().getStatusPartie());
-								// On attend 0.5s avant d'essayer de lancer une partie si il n'y en a pas une dÃ©jÃ  en cours
+								// On attend 0.5s avant d'essayer de lancer une partie si il n'y en a pas une déj?  en cours
 								Thread.sleep(500);
 								this.main.getJeu().lancerPartie();
 								break;

@@ -10,6 +10,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class MainServer extends Application
@@ -71,10 +73,39 @@ public class MainServer extends Application
 		this.afficherPanelAjouterJoueur();
 
 		// Affichage
+			// longrunning operation runs on different thread
+		/*Thread thread = new Thread(new Runnable() 
+			{
+				@Override
+				public void run() {
+					Runnable updater = new Runnable() 
+					{
+						@Override
+						public void run() {
+							refreshStage(stage);
+						}
+					};
+
+					while (true) {
+					try {
+						Thread.sleep(1000);
+						} catch (InterruptedException ex) {
+						}
+						// UI update is run on the Application thread
+						Platform.runLater(updater);
+					}
+				}
+			});
+			// don't let thread prevent JVM shutdown
+			thread.setDaemon(true);
+			thread.start();*/
+
+
+		//refreshStage(stage);
 		stage.show();
 
 		///////////////////
-		// ArrÃªt serveur //
+		// Arr?t serveur //
 		///////////////////
 
 		stage.setOnCloseRequest(e -> 
@@ -96,7 +127,7 @@ public class MainServer extends Application
 				e2.printStackTrace();
 			}
 
-			// On stop le rÃ©seau
+			// On stop le réseau
 			this.server.stopServerRunning();
 			Platform.exit();
 			System.exit(0);
@@ -106,10 +137,6 @@ public class MainServer extends Application
 	public static void main(String[] args) {
 		launch(args);
 	}
-
-
-
-
 
 
 	public Server getServer() {
@@ -129,27 +156,22 @@ public class MainServer extends Application
 	}
 
 
-
-
-
-
 	public void ajouterJoueur(Joueur unJoueur) {
 		this.joueurs.add(unJoueur);
 		this.newJoueurs.add(unJoueur);
 	}
 
-
-
-
-
-	
-
 	public void afficherPanelAjouterJoueur() {
 		this.groupe.getChildren().add(new AjoutJoueur(this));
 	}
 
+	public void refreshStage(Stage stage)
+	{
+		stage.show();
+	}
+
 	public void afficherJoueursEnregistres() {
-		System.out.println("Liste des joueurs enregistrÃ©s :");
+		System.out.println("Liste des joueurs enregistrés :");
 		for(Joueur j : this.joueurs) {
 			System.out.println("\t- " + j.getPseudo());
 		}
