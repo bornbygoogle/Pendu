@@ -116,7 +116,9 @@ public class Jeu {
 			this.partie.getParticipants().replace(unJoueur, StatusJoueur.Trouve);
 			this.partie.setStatusPartie(StatusPartie.Fini);
 			this.partie.setJoueurGagnant(unJoueur);
+			System.out.println(this.partie.getStatusPartie().name());
 			this.envoyerPartie();
+			System.out.println(this.partie.getStatusPartie().name());
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {

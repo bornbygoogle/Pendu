@@ -10,6 +10,7 @@ import commun.Joueur;
 import commun.Partie;
 import commun.StatusJoueur;
 import commun.StatusPartie;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -241,24 +242,27 @@ public class JeuPanel extends Parent implements Runnable {
 			try {
 				Object element = this.gui.getClient().attenteReponse();
 				if(element != null && element instanceof Partie) {
-					Partie partie = (Partie)element;
+					this.partie = (Partie)element;
 
-					if (partie.getStatusPartie() == StatusPartie.Fini) {
-						if (partie.getJoueurGagnant() != null) {
-							if (partie.getJoueurGagnant().getPseudo() == this.gui.getJoueur().getPseudo())  {
+					System.out.println(((Partie)element).getStatusPartie().name());
+					if (this.partie.getStatusPartie().equals(StatusPartie.Fini)) {
+						if (this.partie.getJoueurGagnant() != null) {
+							if (this.partie.getJoueurGagnant().getPseudo().equals(this.gui.getJoueur().getPseudo()))  {
 								this.gui.AfficherMessage("Vous avez gagné ! ", Color.ORANGE, 1);
 							} else {
-								this.gui.AfficherMessage("Vous avez perdu ! \n " + partie.getJoueurGagnant().getPseudo() + " a gagné !", Color.ORANGE, 2);
+								this.gui.AfficherMessage("Vous avez perdu ! \n " + this.partie.getJoueurGagnant().getPseudo() + " a gagné !", Color.ORANGE, 2);
 							}
 						} else {
-							this.gui.AfficherMessage("Aucun joueur n'as gagné !", Color.ORANGE, 3);
+							this.gui.AfficherMessage("Aucun joueur n'a gagné !", Color.ORANGE, 3);
 						}
-					} else if (this.partie.getParticipants().size() > partie.getParticipants().size()) {
-						this.partie.setParticipants(partie.getParticipants());
-						
-						this.setJoueurs();
+					} else {
+						Platform.runLater(new Runnable() {
+						    @Override
+						    public void run() {
+								setJoueurs();
+						    }
+						});
 					}
-					
 				}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -271,5 +275,4 @@ public class JeuPanel extends Parent implements Runnable {
 			}
 		}
 	}
-
 }
