@@ -36,7 +36,6 @@ public class Joueur implements Serializable {
 	public int getNbParties() {
 		return nbParties;
 	}
-	
 	public void setNbParties(int nbParties) {
 		this.nbParties = nbParties;
 	}
