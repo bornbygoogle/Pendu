@@ -91,6 +91,16 @@ public class JeuPanel extends Parent implements Runnable {
 	}
 	
 	public void setTexts() {
+		
+		TextFlow theme = new TextFlow();
+		theme.setLayoutX(500);
+		theme.setLayoutY(170);
+		Text themeText = new Text();
+		themeText.setText("Theme : " + this.partie.getMot().getTheme().getLibelle());
+		themeText.setFont(Font.font("Helvetica", FontPosture.REGULAR, 16));
+		theme.getChildren().add(themeText);
+		this.getChildren().add(theme);
+		
 		letters = new ArrayList<TextFlow>();
 
 		int k = 0;
