@@ -53,11 +53,8 @@ public class Methods
 			while (rowCount == 0)
 			{
 				statement = connectionDB.createStatement();
-				//statement.executeUpdate("INSERT INTO PENDU_JOUEUR (pseudo, pass, dateInscription, dateDerniereCo, score, nbParties) " +
-				//						"VALUES ('" + j.getPseudo() + "', '" + j.getPass() + "', to_date( '" + Utils.getCurrentTimeUsingCalendar() + "' ,'dd/MM/YYYY') ', '" + Utils.getCurrentTimeUsingCalendar() + "', 0, 0)");
 				statement.executeUpdate("INSERT INTO PENDU_JOUEUR (pseudo, pass, dateInscription, dateDerniereCo, score, nbParties) " +
-						"VALUES ('" + j.getPseudo() + "', '" + j.getPass() + "', SYSDATE, SYSDATE, 0, 0)");
-				
+										"VALUES ('" + j.getPseudo() + "', '" + j.getPass() + "', '" + Utils.getCurrentTimeUsingCalendar() + "', '" + Utils.getCurrentTimeUsingCalendar() + "', 0, 0)");
 				if (statement != null)
 					statement.close();
 
