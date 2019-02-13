@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.net.Socket;
 
-import commun.Partie;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
