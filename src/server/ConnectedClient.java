@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 
 import commun.DemandeServeur;
 import commun.Joueur;
+import commun.Mot;
 import commun.Partie;
 import commun.StatusJoueur;
 
@@ -123,8 +125,20 @@ public class ConnectedClient implements Runnable {
 					Partie p = (Partie)element;
 					Partie newP = new Partie();
 					newP.setJoueurGagnant(p.getJoueurGagnant());
-					newP.setMot(p.getMot());
-					newP.setParticipants(p.getParticipants());
+					
+					Mot nMot = new Mot();
+					nMot.setMot(p.getMot().getMot());
+					nMot.setTheme(p.getMot().getTheme());
+					
+					newP.setMot(nMot);
+					
+					HashMap<Joueur, StatusJoueur> newJ = new HashMap<Joueur, StatusJoueur>();
+					for(Joueur j : p.getParticipants().keySet()) {
+						newJ.put(j, p.getParticipants().get(j));
+					}
+					
+					
+					newP.setParticipants(newJ);
 					newP.setStatusPartie(p.getStatusPartie());
 					element = newP;
 				}
