@@ -10,12 +10,15 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class MainServer extends Application
 {
 	// Eléments JAVAFX
 	private Group groupe;
+	private AjoutJoueur ajoutJoueur;
 
 	// Eléments Réseau
 	private Server server;
@@ -70,11 +73,10 @@ public class MainServer extends Application
 		// Affichage de la page de connexion
 		this.afficherPanelAjouterJoueur();
 
-		// Affichage
 		stage.show();
 
 		///////////////////
-		// Arrêt serveur //
+		// Arr?t serveur //
 		///////////////////
 
 		stage.setOnCloseRequest(e -> 
@@ -96,7 +98,7 @@ public class MainServer extends Application
 				e2.printStackTrace();
 			}
 
-			// On stop le réseau
+			// On stop le r�seau
 			this.server.stopServerRunning();
 			Platform.exit();
 			System.exit(0);
@@ -106,10 +108,6 @@ public class MainServer extends Application
 	public static void main(String[] args) {
 		launch(args);
 	}
-
-
-
-
 
 
 	public Server getServer() {
@@ -129,29 +127,25 @@ public class MainServer extends Application
 	}
 
 
-
-
-
-
 	public void ajouterJoueur(Joueur unJoueur) {
 		this.joueurs.add(unJoueur);
 		this.newJoueurs.add(unJoueur);
 	}
 
-
-
-
-
-	
-
 	public void afficherPanelAjouterJoueur() {
-		this.groupe.getChildren().add(new AjoutJoueur(this));
+		ajoutJoueur = new AjoutJoueur(this);
+		this.groupe.getChildren().add(ajoutJoueur);
 	}
 
 	public void afficherJoueursEnregistres() {
-		System.out.println("Liste des joueurs enregistrés :");
+		System.out.println("Liste des joueurs enregistr�s :");
 		for(Joueur j : this.joueurs) {
 			System.out.println("\t- " + j.getPseudo());
 		}
+	}
+
+	public AjoutJoueur getAjoutJoueur()
+	{
+		return this.ajoutJoueur;
 	}
 }

@@ -1,14 +1,22 @@
 package server;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import commun.Joueur;
 import commun.Utils;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -19,8 +27,9 @@ import javafx.scene.text.FontPosture;
 
 public class AjoutJoueur extends Parent 
 {
-
 	private MainServer mainServer;
+
+	private GridPane gridPane;
 
 	private TextField login;
 	private PasswordField password;
@@ -28,14 +37,22 @@ public class AjoutJoueur extends Parent
 	private Label message;
 
 	private Joueur newJoueur;
+	private List<Joueur> listJoueur;
+	private List<Label> listLabel;
 
-	public AjoutJoueur(MainServer mainServeur) {
+	public AjoutJoueur(MainServer mainServeur) 
+	{
 		this.mainServer = mainServeur;
+		this.listJoueur = mainServeur.getListeJoueurs();
+
+		listLabel = new ArrayList<Label>();
+		for (Joueur j : this.listJoueur)
+		{
+			listLabel.add(new Label(j.getPseudo()));
+		}
+
+
 		try {
-			// Lancement du theard d'ïecoute de la connexion
-			/*this.connexionReceive = new ConnexionReceive(this);
-			this.threadReceive = new Thread(this.connexionReceive);
-			this.threadReceive.start();*/
 			
 			this.login = new TextField();
 			this.login.setPrefWidth(200);
@@ -98,8 +115,72 @@ public class AjoutJoueur extends Parent
 			conteneurMessage.setPadding(new Insets(5, 0, 5, 60));
 			conteneurMessage.getChildren().add(this.message);
 			conteneurConnexion.getChildren().add(conteneurMessage);
+
+			VBox conteneurListeJoueurs = new VBox();
+			conteneurListeJoueurs.setFillWidth(true);
+			conteneurListeJoueurs.setPrefWidth(500);
+
+			VBox conteneurTexteListeJoueurs = new VBox();
+			conteneurTexteListeJoueurs.setFillWidth(true);
+			conteneurTexteListeJoueurs.setPrefWidth(500);
+
+			Label texteListeJoueurs = new Label("Joueurs inscrits");
+			texteListeJoueurs.setPadding(new Insets(0, 0, 0, 50));
+			texteListeJoueurs.setFont(Font.font("Helvetica", FontPosture.REGULAR, 22));
+			conteneurTexteListeJoueurs.getChildren().add(texteListeJoueurs);
+
+			this.gridPane = new GridPane();
+			this.gridPane.setPadding(new Insets(10, 0, 0, 90));
+			this.gridPane.setHgap(70);
+			this.gridPane.setVgap(10);
+			this.gridPane.setPrefWidth(300);
+			this.gridPane.setPrefHeight(200);
+
+			ScrollPane sp = new ScrollPane();
+			sp.setPadding(new Insets(10, 0, 0, 90));
+			sp.setContent(gridPane);
+			sp.setPrefWidth(300);
+			sp.setPrefHeight(200);
+
+			// Always show scroll bar
+			sp.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+			sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+
+
+			// longrunning operation runs on different thread
+			Thread thread = new Thread(new Runnable() 
+			{
+				@Override
+				public void run() 
+				{
+					Runnable updater = new Runnable() 
+					{
+						@Override
+						public void run() 
+						{
+							updateGridPane();
+						}
+					};
 			
-			conteneur.getChildren().add(conteneurConnexion);
+					while (true) {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException ex) {
+						}
+					// UI update is run on the Application thread
+					Platform.runLater(updater);
+					}
+				}
+			});
+			// don't let thread prevent JVM shutdown
+			thread.setDaemon(true);
+			thread.start();
+
+			updateGridPane();
+			
+			conteneurListeJoueurs.getChildren().addAll(conteneurTexteListeJoueurs, sp);
+
+			conteneur.getChildren().addAll(conteneurConnexion, conteneurListeJoueurs);
 			
 			this.getChildren().add(conteneur);
 		}
@@ -129,11 +210,39 @@ public class AjoutJoueur extends Parent
 		this.message.setText(message);
 	}
 
-public void registerJoueurs() {
+	public void registerJoueurs() 
+	{
 		this.newJoueur = new Joueur();
 		this.newJoueur.setPseudo(this.getLogin().getText());
 		this.newJoueur.setPass(Utils.encrypt(this.getPassword().getText(), Utils.getSecretKey()));
 		this.newJoueur.setDateDernierCo(Utils.getCurrentTimeUsingCalendar());
 		this.mainServer.ajouterJoueur(this.newJoueur);
+	}
+
+	public void updateGridPane()
+	{
+		int row = 0;
+		for (Joueur j : this.listJoueur)
+		{
+			Label pseudo = new Label(j.getPseudo());
+			pseudo.setFont(Font.font("Helvetica", FontPosture.REGULAR, 14));
+			/*pseudo.textFillProperty().bind(
+				Bindings.when(new SimpleBooleanProperty(j.getStatus()))
+						.then(Color.GREEN)
+						.otherwise(Color.BLACK) );*/
+			Label score = new Label();
+			score.setFont(Font.font("Helvetica", FontPosture.REGULAR, 14));
+
+			score.textProperty().bind(new SimpleIntegerProperty(j.getScore()).asString());
+
+			/*if (j.getStatus())
+				pseudo.setTextFill(Color.GREEN);
+			else
+				pseudo.setTextFill(Color.BLACK);*/
+
+			this.gridPane.add(pseudo, 0, row, 1, 1);
+			this.gridPane.add(score, 1, row, 1, 1);
+			row += 1;
+		}
 	}
 }

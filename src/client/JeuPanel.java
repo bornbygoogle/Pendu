@@ -10,10 +10,15 @@ import commun.Joueur;
 import commun.Partie;
 import commun.StatusJoueur;
 import commun.StatusPartie;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Border;
@@ -21,6 +26,7 @@ import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -32,9 +38,9 @@ public class JeuPanel extends Parent implements Runnable {
 	private MainGUI gui;
 	
 	private ImageView screen;
-	private TextFlow joueurs;
 	private List<TextFlow> letters;
 	private List<Button> alphabet;
+	private ListView<String> viewJoueurs;
 	
 	private Partie partie;
 
@@ -51,6 +57,7 @@ public class JeuPanel extends Parent implements Runnable {
 		this.setTexts();
 		this.setImage();
 		this.setJoueurs();
+		this.rafraichirListeJoueurs();
 		this.setButtonsActions();
 	}
 	
@@ -135,33 +142,23 @@ public class JeuPanel extends Parent implements Runnable {
 	}
 	
 	public void setJoueurs() {
-		this.joueurs = new TextFlow();
-		this.joueurs.setLayoutX(500);
-		this.joueurs.setLayoutY(200);
-		this.joueurs.setPrefWidth(150);
-		this.joueurs.setPrefHeight(200);
-		this.joueurs.setTextAlignment(TextAlignment.LEFT);
-		this.joueurs.setBorder(new Border(new BorderStroke(Color.GAINSBORO, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		VBox conteneurViewJoueurs = new VBox();
+		conteneurViewJoueurs.setAlignment(Pos.CENTER);
+		conteneurViewJoueurs.setLayoutX(500);
+		conteneurViewJoueurs.setLayoutY(200);
+		conteneurViewJoueurs.setPrefWidth(150);
+		conteneurViewJoueurs.setPrefHeight(200);
 
 		Text titre = new Text();
 		titre.setText("Joueurs : \n");
 		titre.setFont(Font.font("Helvetica", FontPosture.REGULAR, 18));
-		this.joueurs.getChildren().add(titre);
+		conteneurViewJoueurs.getChildren().add(titre);
 		
-		for (Joueur j : this.partie.getParticipants().keySet()) {
-			Text joueur = new Text();
-			if (this.partie.getParticipants().get(j) == StatusJoueur.EnJeu) {
-				joueur.setText(j.getPseudo() + " - En cours\n");
-			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Perdu) {
-				joueur.setText(j.getPseudo() + " - Perdu\n");
-			} else if (this.partie.getParticipants().get(j) == StatusJoueur.Trouve) {
-				joueur.setText(j.getPseudo() + " - Gagné\n");
-			}
-			joueur.setFont(Font.font("Helvetica", FontPosture.REGULAR, 12));
-			this.joueurs.getChildren().add(joueur);
-		}
+		this.viewJoueurs = new ListView<String>();
+		this.viewJoueurs.setBorder(new Border(new BorderStroke(Color.GAINSBORO, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		conteneurViewJoueurs.getChildren().add(this.viewJoueurs);
 		
-		this.getChildren().add(this.joueurs);
+		this.getChildren().add(conteneurViewJoueurs);
 		
 		TextFlow mainJoueur = new TextFlow();
 		mainJoueur.setLayoutX(10);
@@ -172,6 +169,15 @@ public class JeuPanel extends Parent implements Runnable {
 		mainJoueur.getChildren().add(joueur);
 		this.getChildren().add(mainJoueur);
 		
+	}
+	
+	public void rafraichirListeJoueurs() {
+		List<String> listeJoueurs = new ArrayList<String>();
+		for(Joueur j : this.partie.getParticipants().keySet()) {
+			listeJoueurs.add(j.getPseudo() + " - " + this.partie.getParticipants().get(j).name());
+		}
+		ObservableList<String> items = FXCollections.observableArrayList(listeJoueurs);
+		this.viewJoueurs.setItems(items);
 	}
 	
 	public void setImage() {
@@ -250,9 +256,9 @@ public class JeuPanel extends Parent implements Runnable {
 		while(statut) {
 			try {
 				Object element = this.gui.getClient().attenteReponse();
-				System.out.println("Run JeuPanel");
 				if(element != null && element instanceof Partie) {
 					Partie partie = (Partie)element;
+					this.partie = partie;
 					if (partie.getStatusPartie().equals(StatusPartie.Fini)) {
 						if (partie.getJoueurGagnant() != null) {
 							if (partie.getJoueurGagnant().getPseudo() == this.gui.getJoueur().getPseudo())  {
@@ -270,11 +276,27 @@ public class JeuPanel extends Parent implements Runnable {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						this.gui.InitialisationPartie();
-					} else if (this.partie.getParticipants().size() > partie.getParticipants().size()) {
-						this.partie.setParticipants(partie.getParticipants());
-						
-						this.setJoueurs();
+						this.gui.InitialisationPartie(1);
+					} else {
+						Platform.runLater(new Runnable() {
+						    @Override
+						    public void run() {
+						    	rafraichirListeJoueurs();
+						    }
+						});
+				    	for(Joueur j : partie.getParticipants().keySet()) {
+				    		if(partie.getParticipants().get(j).equals(StatusJoueur.Perdu) && gui.getJoueur().equals(j)) {
+				    			gui.AfficherMessage("Tu as perdu !", Color.ORANGE, 2);
+				    			statut = false;
+								try {
+									Thread.sleep(1000);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								gui.InitialisationPartie(2);
+				    		}
+				    	}
 					}
 					
 				}

@@ -149,16 +149,16 @@ public class Connexion extends Parent implements Runnable {
 	}
 	
 	public void verifierReponseConnexion(Joueur unJoueur) {
-		// Check du status renvoyï¿½
+		// Check du status renvoyé
 		if(unJoueur.getStatus()) {
-			// Si connexion ok -> redï¿½finir le joueur + mettre connexion ï¿½ true + charger le jeu
+			// Si connexion ok -> redéfinir le joueur + mettre connexion ? true + charger le jeu
 			this.main.setJoueur(unJoueur);
 			this.main.setConnecte(true);
 			this.statutThread = false;
 			// On Charge le jeu
-			this.main.InitialisationPartie();
+			this.main.InitialisationPartie(1);
 		} else {
-			// Si connexion pas bonne, afficher le message d'erreur renvoyï¿½ par le serveur et laisser la page de connexion
+			// Si connexion pas bonne, afficher le message d'erreur renvoyé par le serveur et laisser la page de connexion
 			this.setMessageColor(Color.RED);
 			if(unJoueur.getMessage().length() > 0) {
 				Platform.runLater(new Runnable() {
