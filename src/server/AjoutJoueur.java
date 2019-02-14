@@ -1,12 +1,15 @@
 package server;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import commun.Joueur;
 import commun.Utils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -26,6 +29,8 @@ public class AjoutJoueur extends Parent
 {
 	private MainServer mainServer;
 
+	private GridPane gridPane;
+
 	private TextField login;
 	private PasswordField password;
 	private Button boutonRegister;
@@ -39,6 +44,13 @@ public class AjoutJoueur extends Parent
 	{
 		this.mainServer = mainServeur;
 		this.listJoueur = mainServeur.getListeJoueurs();
+
+		listLabel = new ArrayList<Label>();
+		for (Joueur j : this.listJoueur)
+		{
+			listLabel.add(new Label(j.getPseudo()));
+		}
+
 
 		try {
 			
@@ -114,15 +126,15 @@ public class AjoutJoueur extends Parent
 
 			Label texteListeJoueurs = new Label("Joueurs inscrits");
 			texteListeJoueurs.setPadding(new Insets(0, 0, 0, 50));
-			texteListeJoueurs.setFont(Font.font("Helvetica", FontPosture.REGULAR, 18));
+			texteListeJoueurs.setFont(Font.font("Helvetica", FontPosture.REGULAR, 22));
 			conteneurTexteListeJoueurs.getChildren().add(texteListeJoueurs);
 
-			GridPane gridPane = new GridPane();
-			gridPane.setPadding(new Insets(10, 0, 0, 90));
-			gridPane.setHgap(70);
-			gridPane.setVgap(10);
-			gridPane.setPrefWidth(300);
-			gridPane.setPrefHeight(200);
+			this.gridPane = new GridPane();
+			this.gridPane.setPadding(new Insets(10, 0, 0, 90));
+			this.gridPane.setHgap(70);
+			this.gridPane.setVgap(10);
+			this.gridPane.setPrefWidth(300);
+			this.gridPane.setPrefHeight(200);
 
 			ScrollPane sp = new ScrollPane();
 			sp.setPadding(new Insets(10, 0, 0, 90));
@@ -134,20 +146,37 @@ public class AjoutJoueur extends Parent
 			sp.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
 			sp.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 
-			int row = 0;
-			for (Joueur j : listJoueur)
-			{
-				Label pseudo = new Label(j.getPseudo());
 
-				//pseudo.textFillProperty().bind(Bindings.when(j.getStatus().equals().then(Color.BLACK).otherwise(Color.RED)
-				//));
-				//if (j.getStatus())
-					pseudo.setTextFill(Color.GREEN);
-				
-				gridPane.add(pseudo, 0, row, 1, 1);
-				gridPane.add(new Label(Integer.toString(j.getScore())), 1, row, 1, 1);
-				row += 1;
-			}
+			// longrunning operation runs on different thread
+			Thread thread = new Thread(new Runnable() 
+			{
+				@Override
+				public void run() 
+				{
+					Runnable updater = new Runnable() 
+					{
+						@Override
+						public void run() 
+						{
+							updateGridPane();
+						}
+					};
+			
+					while (true) {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException ex) {
+						}
+					// UI update is run on the Application thread
+					Platform.runLater(updater);
+					}
+				}
+			});
+			// don't let thread prevent JVM shutdown
+			thread.setDaemon(true);
+			thread.start();
+
+			updateGridPane();
 			
 			conteneurListeJoueurs.getChildren().addAll(conteneurTexteListeJoueurs, sp);
 
@@ -181,11 +210,39 @@ public class AjoutJoueur extends Parent
 		this.message.setText(message);
 	}
 
-public void registerJoueurs() {
+	public void registerJoueurs() 
+	{
 		this.newJoueur = new Joueur();
 		this.newJoueur.setPseudo(this.getLogin().getText());
 		this.newJoueur.setPass(Utils.encrypt(this.getPassword().getText(), Utils.getSecretKey()));
 		this.newJoueur.setDateDernierCo(Utils.getCurrentTimeUsingCalendar());
 		this.mainServer.ajouterJoueur(this.newJoueur);
+	}
+
+	public void updateGridPane()
+	{
+		int row = 0;
+		for (Joueur j : this.listJoueur)
+		{
+			Label pseudo = new Label(j.getPseudo());
+			pseudo.setFont(Font.font("Helvetica", FontPosture.REGULAR, 14));
+			/*pseudo.textFillProperty().bind(
+				Bindings.when(new SimpleBooleanProperty(j.getStatus()))
+						.then(Color.GREEN)
+						.otherwise(Color.BLACK) );*/
+			Label score = new Label();
+			score.setFont(Font.font("Helvetica", FontPosture.REGULAR, 14));
+
+			score.textProperty().bind(new SimpleIntegerProperty(j.getScore()).asString());
+
+			/*if (j.getStatus())
+				pseudo.setTextFill(Color.GREEN);
+			else
+				pseudo.setTextFill(Color.BLACK);*/
+
+			this.gridPane.add(pseudo, 0, row, 1, 1);
+			this.gridPane.add(score, 1, row, 1, 1);
+			row += 1;
+		}
 	}
 }
