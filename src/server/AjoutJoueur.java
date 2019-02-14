@@ -235,10 +235,10 @@ public class AjoutJoueur extends Parent
 
 			score.textProperty().bind(new SimpleIntegerProperty(j.getScore()).asString());
 
-			/*if (j.getStatus())
+			if (j.getStatus())
 				pseudo.setTextFill(Color.GREEN);
 			else
-				pseudo.setTextFill(Color.BLACK);*/
+				pseudo.setTextFill(Color.BLACK);
 
 			this.gridPane.add(pseudo, 0, row, 1, 1);
 			this.gridPane.add(score, 1, row, 1, 1);
