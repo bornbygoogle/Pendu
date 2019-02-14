@@ -18,6 +18,7 @@ public class MainServer extends Application
 {
 	// Eléments JAVAFX
 	private Group groupe;
+	private AjoutJoueur ajoutJoueur;
 
 	// Eléments Réseau
 	private Server server;
@@ -72,36 +73,6 @@ public class MainServer extends Application
 		// Affichage de la page de connexion
 		this.afficherPanelAjouterJoueur();
 
-		// Affichage
-			// longrunning operation runs on different thread
-		/*Thread thread = new Thread(new Runnable() 
-			{
-				@Override
-				public void run() {
-					Runnable updater = new Runnable() 
-					{
-						@Override
-						public void run() {
-							refreshStage(stage);
-						}
-					};
-
-					while (true) {
-					try {
-						Thread.sleep(1000);
-						} catch (InterruptedException ex) {
-						}
-						// UI update is run on the Application thread
-						Platform.runLater(updater);
-					}
-				}
-			});
-			// don't let thread prevent JVM shutdown
-			thread.setDaemon(true);
-			thread.start();*/
-
-
-		//refreshStage(stage);
 		stage.show();
 
 		///////////////////
@@ -162,12 +133,8 @@ public class MainServer extends Application
 	}
 
 	public void afficherPanelAjouterJoueur() {
-		this.groupe.getChildren().add(new AjoutJoueur(this));
-	}
-
-	public void refreshStage(Stage stage)
-	{
-		stage.show();
+		ajoutJoueur = new AjoutJoueur(this);
+		this.groupe.getChildren().add(ajoutJoueur);
 	}
 
 	public void afficherJoueursEnregistres() {
@@ -175,5 +142,10 @@ public class MainServer extends Application
 		for(Joueur j : this.joueurs) {
 			System.out.println("\t- " + j.getPseudo());
 		}
+	}
+
+	public AjoutJoueur getAjoutJoueur()
+	{
+		return this.ajoutJoueur;
 	}
 }
